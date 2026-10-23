@@ -31,6 +31,7 @@ header h1 { margin: 0; font-size: 29px; }
 header p { color: var(--muted); margin-bottom: 0; }
 main { max-width: 950px; margin: auto; padding: 20px 14px; }
 h2 { margin-top: 0; }
+h3 { margin-bottom: 12px; }
 .toolbar {
   display: flex;
   flex-wrap: wrap;
@@ -47,6 +48,7 @@ button, select {
 }
 button { cursor: pointer; }
 button:hover { background: #405570; }
+button:disabled { opacity: .6; cursor: wait; }
 .summary {
   color: var(--muted);
   font-size: 14px;
@@ -73,6 +75,8 @@ button:hover { background: #405570; }
   font-size: 12px;
 }
 .team p { color: var(--muted); font-size: 14px; }
+section.game-section { margin: 26px 0 34px; }
+.section-note { color: var(--muted); font-size: 13px; }
 .game {
   background: var(--panel);
   border-radius: 10px;
@@ -97,8 +101,15 @@ button:hover { background: #405570; }
   font-weight: bold;
   margin: 12px 0 7px;
 }
-.score { font-size: 16px; font-weight: bold; }
+.score { font-size: 16px; font-weight: bold; margin-top: 9px; }
 .status { color: var(--muted); font-size: 13px; }
+.empty {
+  background: var(--panel);
+  border-radius: 10px;
+  padding: 16px;
+  color: var(--muted);
+  line-height: 1.5;
+}
 .notice {
   background: var(--panel);
   border-radius: 10px;
@@ -112,7 +123,8 @@ footer {
   color: #94a3b8;
   font-size: 12px;
 }
-a { color: #9ec5ff; }
+a { color: #9ec5ff; text-decoration: none; }
+a:hover { text-decoration: underline; }
 </style>
 </head>
 <body>
@@ -146,8 +158,8 @@ a { color: #9ec5ff; }
     </article>
   </section>
 
-  <h2>Fixtures and results</h2>
-  <p class="summary">Game times are shown in UK local time. Schedules load from ESPN.</p>
+  <h2>Fixtures, results and calendar</h2>
+  <p class="summary">Game times are shown in UK local time, including daylight saving. Schedules load from ESPN.</p>
 
   <div class="toolbar">
     <select id="filter" aria-label="Filter by team">
@@ -161,11 +173,28 @@ a { color: #9ec5ff; }
   </div>
 
   <p id="status" class="summary" aria-live="polite">Loading schedules…</p>
-  <section id="games"></section>
+
+  <section class="game-section">
+    <h3>Upcoming fixtures</h3>
+    <p class="section-note">Games that have not been marked as completed, shown soonest first.</p>
+    <div id="upcoming"></div>
+  </section>
+
+  <section class="game-section">
+    <h3>Latest results</h3>
+    <p class="section-note">Completed games, with the most recent first.</p>
+    <div id="results"></div>
+  </section>
+
+  <section class="game-section">
+    <h3>Combined calendar</h3>
+    <p class="section-note">All returned games in date order, across all four teams.</p>
+    <div id="calendar"></div>
+  </section>
 
   <section class="notice">
     <strong>About the data</strong>
-    <p>Schedules and scores are requested from ESPN. This is an unofficial data source and availability may change. If a league feed fails, the other leagues can still appear.</p>
+    <p>Schedules and scores are requested from ESPN. This is an unofficial data source and availability may change. Results depend on the games returned by the ESPN feeds.</p>
   </section>
 </main>
 
@@ -173,37 +202,12 @@ a { color: #9ec5ff; }
 
 <script>
 const feeds = [
-  {
-    league: "NFL",
-    team: "New England Patriots",
-    id: "17",
-    sport: "football",
-    path: "nfl"
-  },
-  {
-    league: "NBA",
-    team: "Boston Celtics",
-    id: "2",
-    sport: "basketball",
-    path: "nba"
-  },
-  {
-    league: "MLB",
-    team: "Boston Red Sox",
-    id: "2",
-    sport: "baseball",
-    path: "mlb"
-  },
-  {
-    league: "NHL",
-    team: "Boston Bruins",
-    id: "1",
-    sport: "hockey",
-    path: "nhl"
-  }
+  { league: "NFL", team: "New England Patriots", id: "17", sport: "football", path: "nfl" },
+  { league: "NBA", team: "Boston Celtics", id: "2", sport: "basketball", path: "nba" },
+  { league: "MLB", team: "Boston Red Sox", id: "2", sport: "baseball", path: "mlb" },
+  { league: "NHL", team: "Boston Bruins", id: "1", sport: "hockey", path: "nhl" }
 ];
 
-const gamesEl = document.getElementById("games");
 const statusEl = document.getElementById("status");
 const filterEl = document.getElementById("filter");
 const refreshEl = document.getElementById("refresh");
@@ -246,6 +250,7 @@ function parseEvent(event, feed) {
   const away = competitors.find(c => c.homeAway === "away");
 
   return {
+    id: `${feed.league}-${event.id || event.date + event.name}`,
     league: feed.league,
     team: feed.team,
     date: event.date || competition?.date,
@@ -253,7 +258,7 @@ function parseEvent(event, feed) {
     home: home?.team?.displayName || "Home team",
     away: away?.team?.displayName || "Away team",
     homeScore: home?.score?.displayValue ?? home?.score?.value ?? home?.score ?? null,
-awayScore: away?.score?.displayValue ?? away?.score?.value ?? away?.score ?? null,
+    awayScore: away?.score?.displayValue ?? away?.score?.value ?? away?.score ?? null,
     status: getStatus(event),
     completed: Boolean(event.status?.type?.completed),
     link: event.links?.[0]?.href || ""
@@ -261,20 +266,51 @@ awayScore: away?.score?.displayValue ?? away?.score?.value ?? away?.score ?? nul
 }
 
 async function loadFeed(feed) {
-  const url =
-    `https://site.api.espn.com/apis/site/v2/sports/` +
-    `${feed.sport}/${feed.path}/teams/${feed.id}/schedule`;
-
+  const url = `https://site.api.espn.com/apis/site/v2/sports/${feed.sport}/${feed.path}/teams/${feed.id}/schedule`;
   const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`${feed.league}: HTTP ${response.status}`);
-  }
+  if (!response.ok) throw new Error(`${feed.league}: HTTP ${response.status}`);
 
   const data = await response.json();
   const events = data.events || data.content?.events || [];
+  return events.map(event => parseEvent(event, feed)).filter(game => game.date);
+}
 
-  return events.map(event => parseEvent(event, feed))
-    .filter(game => game.date);
+function scoreIsAvailable(game) {
+  return game.homeScore !== null && game.homeScore !== undefined &&
+    game.awayScore !== null && game.awayScore !== undefined;
+}
+
+function displayScore(game) {
+  if (!scoreIsAvailable(game)) return "";
+  return `<div class="score">${game.awayScore} – ${game.homeScore}</div>`;
+}
+
+function gameCard(game) {
+  const content = `
+    <div class="game-top">
+      <span>${game.league} · ${game.team}</span>
+      <span>${dateLabel(game.date)}</span>
+    </div>
+    <div class="matchup">${game.away} @ ${game.home}</div>
+    <div class="game-top">
+      <span>${timeLabel(game.date)}</span>
+      <span class="status">${game.status}</span>
+    </div>
+    ${displayScore(game)}
+  `;
+
+  return `<article class="game ${game.league.toLowerCase()}">
+    ${game.link ? `<a href="${game.link}" target="_blank" rel="noopener">${content}</a>` : content}
+  </article>`;
+}
+
+function showGames(elementId, games, emptyMessage) {
+  const element = document.getElementById(elementId);
+  if (!games.length) {
+    element.innerHTML = `<div class="empty">${emptyMessage}</div>`;
+    return;
+  }
+  element.innerHTML = games.map(gameCard).join("");
 }
 
 function renderGames() {
@@ -283,51 +319,28 @@ function renderGames() {
     selected === "all" || game.league === selected
   );
 
-  filtered.sort((a, b) =>
-    new Date(a.date).getTime() - new Date(b.date).getTime()
-  );
+  const now = Date.now();
 
-  if (!filtered.length) {
-    gamesEl.innerHTML =
-      '<p class="notice">No games were returned for this selection. Try refreshing, or choose another team.</p>';
-    return;
-  }
+  const upcoming = filtered
+    .filter(game => !game.completed && new Date(game.date).getTime() >= now)
+    .sort((a, b) => new Date(a.date) - new Date(b.date));
 
-  gamesEl.innerHTML = filtered.map(game => {
-    const scoreAvailable =
-      game.homeScore !== undefined && game.awayScore !== undefined;
+  const results = filtered
+    .filter(game => game.completed)
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .slice(0, 20);
 
-    const score = scoreAvailable
-      ? `<div class="score">${game.awayScore} – ${game.homeScore}</div>`
-      : "";
+  const calendar = [...filtered]
+    .sort((a, b) => new Date(a.date) - new Date(b.date));
 
-    const matchup = `${game.away} @ ${game.home}`;
-
-    const content = `
-      <div class="game-top">
-        <span>${game.league} · ${game.team}</span>
-        <span>${dateLabel(game.date)}</span>
-      </div>
-      <div class="matchup">${matchup}</div>
-      <div class="game-top">
-        <span>${timeLabel(game.date)}</span>
-        <span class="status">${game.status}</span>
-      </div>
-      ${score}
-    `;
-
-    return `<article class="game ${game.league.toLowerCase()}">
-      ${game.link
-        ? `<a href="${game.link}" target="_blank" rel="noopener">${content}</a>`
-        : content}
-    </article>`;
-  }).join("");
+  showGames("upcoming", upcoming, "No upcoming fixtures were returned for this team. Try refreshing or choosing another team.");
+  showGames("results", results, "No completed results were returned for this team. The ESPN schedule may not include older games.");
+  showGames("calendar", calendar, "No games were returned. Try refreshing the feeds.");
 }
 
 async function loadAll() {
   refreshEl.disabled = true;
   statusEl.textContent = "Loading schedules from ESPN…";
-  gamesEl.innerHTML = "";
 
   const results = await Promise.allSettled(feeds.map(loadFeed));
   allGames = [];
@@ -341,23 +354,23 @@ async function loadAll() {
     }
   });
 
+  // Remove duplicate events, if any, while keeping each league's own event.
+  allGames = [...new Map(allGames.map(game => [game.id, game])).values()];
   renderGames();
 
   const loaded = feeds.length - errors.length;
   const updated = new Date().toLocaleTimeString("en-GB", {
     hour: "2-digit",
-    minute: "2-digit"
+    minute: "2-digit",
+    timeZone: "Europe/London"
   });
 
   if (loaded === 0) {
-    statusEl.textContent =
-      "The sports feeds could not be loaded. Check your connection and try again.";
+    statusEl.textContent = "The sports feeds could not be loaded. Check your connection and try again.";
   } else if (errors.length) {
-    statusEl.textContent =
-      `${loaded} of 4 league feeds loaded at ${updated}. Unavailable: ${errors.join(", ")}.`;
+    statusEl.textContent = `${loaded} of 4 league feeds loaded at ${updated} UK time. Unavailable: ${errors.join(", ")}.`;
   } else {
-    statusEl.textContent =
-      `All four league feeds loaded at ${updated}.`;
+    statusEl.textContent = `All four league feeds loaded at ${updated} UK time.`;
   }
 
   refreshEl.disabled = false;
