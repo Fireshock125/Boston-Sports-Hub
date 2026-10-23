@@ -29,7 +29,7 @@ header {
 }
 header h1 { margin: 0; font-size: 29px; }
 header p { color: var(--muted); margin-bottom: 0; }
-main { max-width: 950px; margin: auto; padding: 20px 14px; }
+main { max-width: 1100px; margin: auto; padding: 20px 14px; }
 h2 { margin-top: 0; }
 h3 { margin-bottom: 12px; }
 .toolbar {
@@ -112,8 +112,8 @@ button:disabled { opacity: .6; cursor: wait; }
 }
 .standings-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-  gap: 12px;
+  grid-template-columns: 1fr;
+  gap: 18px;
 }
 .standing-card {
   background: var(--panel);
@@ -123,9 +123,56 @@ button:disabled { opacity: .6; cursor: wait; }
   min-width: 0;
 }
 .standing-card h4 { margin: 0 0 12px; font-size: 16px; }
-.standing-record { font-size: 22px; font-weight: bold; margin: 8px 0; }
-.standing-details { color: var(--muted); font-size: 13px; line-height: 1.8; }
-.standing-group { color: #dce7f5; font-size: 12px; margin-bottom: 8px; }
+.standing-group {
+  color: #dce7f5;
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 8px;
+}
+.standings-table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 440px;
+  font-size: 13px;
+}
+.standings-table th,
+.standings-table td {
+  padding: 10px 9px;
+  text-align: right;
+  border-bottom: 1px solid #354357;
+  white-space: nowrap;
+}
+.standings-table th {
+  background: #26374b;
+  color: #dce7f5;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+.standings-table th:first-child,
+.standings-table td:first-child { text-align: left; }
+.standings-table tbody tr:last-child td { border-bottom: 0; }
+.standings-table .boston-row {
+  background: #3a2635;
+  font-weight: bold;
+  box-shadow: inset 3px 0 var(--red);
+}
+.boston-label {
+  color: #ffb8c5;
+  font-size: 10px;
+  margin-left: 5px;
+  text-transform: uppercase;
+}
+.standings-league { margin-bottom: 24px; }
+.standings-league h3 { margin: 0 0 12px; }
+.standings-league .league-note {
+  color: var(--muted);
+  font-size: 12px;
+  margin: -4px 0 12px;
+}
 footer {
   text-align: center;
   padding: 25px;
@@ -134,6 +181,13 @@ footer {
 }
 a { color: #9ec5ff; text-decoration: none; }
 a:hover { text-decoration: underline; }
+@media (max-width: 500px) {
+  main { padding: 16px 10px; }
+  header h1 { font-size: 25px; }
+  .standings-table th, .standings-table td {
+    padding: 9px 7px;
+  }
+}
 </style>
 </head>
 <body>
@@ -202,14 +256,14 @@ a:hover { text-decoration: underline; }
   </section>
 
   <section class="game-section">
-    <h3>League standings</h3>
-    <p class="section-note">Team records and available league statistics. These update when you refresh the standings.</p>
+    <h3>Full league standings</h3>
+    <p class="section-note">Every team returned by ESPN, grouped by conference or division where available. Boston teams are highlighted. Statistics depend on the current league season.</p>
     <div class="toolbar">
       <button id="refreshStandings">Refresh standings</button>
     </div>
-    <p id="standingsStatus" class="summary" aria-live="polite">Loading standings…</p>
-    <div id="standings" class="standings-grid">
-      <div class="empty">Loading league standings…</div>
+    <p id="standingsStatus" class="summary" aria-live="polite">Loading full league standings…</p>
+    <div id="standings">
+      <div class="empty">Loading league tables…</div>
     </div>
   </section>
 
@@ -251,8 +305,8 @@ function timeLabel(dateString) {
   const date = new Date(dateString);
   if (Number.isNaN(date.getTime())) return "Time TBC";
   return new Intl.DateTimeFormat("en-GB", {
-    hour: "2-digit", minute: "2-digit", timeZone: "Europe/London",
-    timeZoneName: "short"
+    hour: "2-digit", minute: "2-digit",
+    timeZone: "Europe/London", timeZoneName: "short"
   }).format(date);
 }
 
@@ -383,61 +437,14 @@ async function loadAll() {
   }
 }
 
-/* STANDINGS */
+/* FULL LEAGUE STANDINGS */
 
 const standingsFeeds = [
-  {
-    league: "NFL",
-    team: "New England Patriots",
-    sport: "football",
-    path: "nfl",
-    id: "17"
-  },
-  {
-    league: "NBA",
-    team: "Boston Celtics",
-    sport: "basketball",
-    path: "nba",
-    id: "2"
-  },
-  {
-    league: "MLB",
-    team: "Boston Red Sox",
-    sport: "baseball",
-    path: "mlb",
-    id: "2"
-  },
-  {
-    league: "NHL",
-    team: "Boston Bruins",
-    sport: "hockey",
-    path: "nhl",
-    id: "1"
-  }
+  { league: "NFL", team: "New England Patriots", id: "17", sport: "football", path: "nfl" },
+  { league: "NBA", team: "Boston Celtics", id: "2", sport: "basketball", path: "nba" },
+  { league: "MLB", team: "Boston Red Sox", id: "2", sport: "baseball", path: "mlb" },
+  { league: "NHL", team: "Boston Bruins", id: "1", sport: "hockey", path: "nhl" }
 ];
-
-function getTeamEntries(node, output = []) {
-  if (!node || typeof node !== "object") return output;
-
-  if (Array.isArray(node)) {
-    node.forEach(item => getTeamEntries(item, output));
-    return output;
-  }
-
-  if (node.team && Array.isArray(node.stats)) output.push(node);
-
-  Object.values(node).forEach(value => getTeamEntries(value, output));
-  return output;
-}
-
-function findStat(entry, names) {
-  const stats = entry?.stats || [];
-  const found = stats.find(item =>
-    names.includes(String(item.name || "").toLowerCase()) ||
-    names.includes(String(item.abbreviation || "").toLowerCase())
-  );
-  return found?.displayValue ?? found?.summary ?? null;
-}
 
 function safeText(value) {
   return String(value ?? "").replace(/[&<>"']/g, char => ({
@@ -449,100 +456,270 @@ function safeText(value) {
   })[char]);
 }
 
-async function loadOneStanding(item) {
-  const url = `https://site.api.espn.com/apis/v2/sports/${item.sport}/${item.path}/standings`;
-  const response = await fetch(url);
-  if (!response.ok) throw new Error("Standings request failed");
-
-  const data = await response.json();
-  const entries = getTeamEntries(data);
-
-  const target = entries.find(entry =>
-    String(entry.team?.id || "") === item.id
-  ) || entries.find(entry =>
-    String(entry.team?.displayName || "").toLowerCase() === item.team.toLowerCase()
-  );
-
-  if (!target) throw new Error("Team not found in standings");
-
-  return { item, entry: target };
+function getStat(entry, names) {
+  const stats = entry?.stats || [];
+  const found = stats.find(stat => {
+    const name = String(stat.name || "").toLowerCase();
+    const abbreviation = String(stat.abbreviation || "").toLowerCase();
+    return names.includes(name) || names.includes(abbreviation);
+  });
+  return found?.displayValue ?? found?.summary ??
+    (found?.value !== undefined ? found.value : null);
 }
 
-function renderStanding(result) {
-  const { item, entry } = result;
-  const wins = findStat(entry, ["wins", "w"]);
-  const losses = findStat(entry, ["losses", "l"]);
-  const ties = findStat(entry, ["ties", "t"]);
-  const games = findStat(entry, ["gamesplayed", "gp"]);
-  const pct = findStat(entry, ["winpercent", "winningpercentage", "pct"]);
-  const streak = findStat(entry, ["streak", "strk"]);
-  const points = findStat(entry, ["points", "pts"]);
-  const position = findStat(entry, ["playoffseed", "seed", "rank"]);
-  const group = entry.group?.name || entry.note?.headline || "";
-  const record = wins !== null && losses !== null
-    ? `${wins}–${losses}${ties !== null ? `–${ties}` : ""}`
-    : "Record available below";
+function getGroupEntries(node, path = [], output = []) {
+  if (!node || typeof node !== "object") return output;
 
-  const details = [
-    position !== null ? `Position / seed: ${safeText(position)}` : null,
-    games !== null ? `Games played: ${safeText(games)}` : null,
-    pct !== null ? `Win percentage: ${safeText(pct)}` : null,
-    points !== null ? `Points: ${safeText(points)}` : null,
-    streak !== null ? `Streak: ${safeText(streak)}` : null
-  ].filter(Boolean);
+  if (Array.isArray(node)) {
+    node.forEach(child => getGroupEntries(child, path, output));
+    return output;
+  }
+
+  const groupName = node.name || node.abbreviation || "";
+  const nextPath = groupName ? [...path, groupName] : path;
+
+  if (Array.isArray(node.standings?.entries)) {
+    output.push({
+      name: nextPath.join(" · ") || "League standings",
+      entries: node.standings.entries
+    });
+  }
+
+  for (const [key, value] of Object.entries(node)) {
+    if (key === "standings") continue;
+    if (value && typeof value === "object") {
+      getGroupEntries(value, nextPath, output);
+    }
+  }
+
+  return output;
+}
+
+function getAllEntries(data) {
+  let groups = getGroupEntries(data);
+
+  // Some league responses provide a flat table instead of grouped tables.
+  if (!groups.length && Array.isArray(data.standings?.entries)) {
+    groups = [{
+      name: data.name || "League standings",
+      entries: data.standings.entries
+    }];
+  }
+
+  // Avoid duplicate group tables if ESPN includes both a summary table
+  // and nested conference or division tables.
+  const seen = new Set();
+  groups = groups.filter(group => {
+    const key = group.entries.map(entry => String(entry.team?.id || entry.team?.abbreviation || entry.team?.displayName)).join("|");
+    if (!key || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+
+  return groups;
+}
+
+function isBostonTeam(team, item) {
+  const name = String(team?.displayName || "").toLowerCase();
+  const abbreviation = String(team?.abbreviation || "").toLowerCase();
+  return name === item.team.toLowerCase() ||
+    abbreviation === ({ NFL: "ne", NBA: "bos", MLB: "bos", NHL: "bos" })[item.league];
+}
+
+function teamRecord(entry, item) {
+  const wins = getStat(entry, ["wins", "w"]);
+  const losses = getStat(entry, ["losses", "l"]);
+  const ties = getStat(entry, ["ties", "t"]);
+  const otLosses = getStat(entry, ["otlosses", "otl"]);
+  const parts = [wins, losses].filter(value => value !== null);
+
+  if (parts.length < 2) return "—";
+
+  let record = `${wins}-${losses}`;
+  if (item.league === "NFL" && ties !== null) record += `-${ties}`;
+  if (item.league === "NHL" && otLosses !== null) record += `-${otLosses}`;
+  return record;
+}
+
+function standingColumns(league) {
+  if (league === "NFL") {
+    return [
+      ["W", ["wins", "w"]],
+      ["L", ["losses", "l"]],
+      ["T", ["ties", "t"]],
+      ["PCT", ["winpercent", "pct"]],
+      ["PF", ["pointsfor", "pf"]],
+      ["PA", ["pointsagainst", "pa"]],
+      ["STRK", ["streak", "strk"]]
+    ];
+  }
+
+  if (league === "NBA") {
+    return [
+      ["W", ["wins", "w"]],
+      ["L", ["losses", "l"]],
+      ["PCT", ["winpercent", "pct"]],
+      ["GB", ["gamesbehind", "gb"]],
+      ["STRK", ["streak", "strk"]]
+    ];
+  }
+
+  if (league === "MLB") {
+    return [
+      ["W", ["wins", "w"]],
+      ["L", ["losses", "l"]],
+      ["PCT", ["winpercent", "pct"]],
+      ["GB", ["gamesbehind", "gb"]],
+      ["STRK", ["streak", "strk"]]
+    ];
+  }
+
+  return [
+    ["W", ["wins", "w"]],
+    ["L", ["losses", "l"]],
+    ["OTL", ["otlosses", "otl"]],
+    ["PTS", ["points", "pts"]],
+    ["PCT", ["winpercent", "pct"]],
+    ["STRK", ["streak", "strk"]]
+  ];
+}
+
+function renderStandingsGroup(group, item) {
+  const columns = standingColumns(item.league);
+  const entries = [...group.entries].sort((a, b) => {
+    const aRank = Number(getStat(a, ["playoffseed", "seed", "rank", "divisionrank"]));
+    const bRank = Number(getStat(b, ["playoffseed", "seed", "rank", "divisionrank"]));
+
+    if (Number.isFinite(aRank) && Number.isFinite(bRank) && aRank !== bRank) {
+      return aRank - bRank;
+    }
+
+    const aWins = Number(getStat(a, ["wins", "w"]));
+    const bWins = Number(getStat(b, ["wins", "w"]));
+    if (Number.isFinite(aWins) && Number.isFinite(bWins) && aWins !== bWins) {
+      return bWins - aWins;
+    }
+
+    return String(a.team?.displayName || "").localeCompare(
+      String(b.team?.displayName || "")
+    );
+  });
+
+  const rows = entries.map((entry, index) => {
+    const team = entry.team || {};
+    const boston = isBostonTeam(team, item);
+    const teamName = team.displayName || team.name || "Unknown team";
+
+    const cells = columns.map(([, names]) => {
+      const value = getStat(entry, names);
+      return `<td>${safeText(value === null ? "—" : value)}</td>`;
+    }).join("");
+
+    return `<tr class="${boston ? "boston-row" : ""}">
+      <td>${index + 1}. ${safeText(teamName)}${boston ? '<span class="boston-label">Boston</span>' : ""}</td>
+      ${cells}
+    </tr>`;
+  }).join("");
 
   return `
     <article class="standing-card ${item.league.toLowerCase()}">
-      <div class="standing-group">${item.league}</div>
-      <h4>${item.team}</h4>
-      ${group ? `<div class="standing-details">${safeText(group)}</div>` : ""}
-      <div class="standing-record">${record}</div>
-      <div class="standing-details">
-        ${details.length ? details.join("<br>") : "Some detailed statistics were not supplied by ESPN."}
+      <div class="standing-group">${safeText(item.league)}</div>
+      <h4>${safeText(group.name)}</h4>
+      <div class="table-wrap">
+        <table class="standings-table">
+          <thead>
+            <tr>
+              <th>Team</th>
+              ${columns.map(([label]) => `<th>${safeText(label)}</th>`).join("")}
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
       </div>
     </article>
   `;
 }
 
+function renderLeague(data, item) {
+  const groups = getAllEntries(data);
+  if (!groups.length) throw new Error("No team tables found in ESPN response");
+
+  const validGroups = groups.filter(group => group.entries.length > 0);
+  if (!validGroups.length) throw new Error("No teams found");
+
+  return `
+    <section class="standings-league">
+      <h3>${safeText(item.league)} standings</h3>
+      <p class="league-note">${validGroups.reduce((total, group) => total + group.entries.length, 0)} team entries returned by ESPN</p>
+      <div class="standings-grid">
+        ${validGroups.map(group => renderStandingsGroup(group, item)).join("")}
+      </div>
+    </section>
+  `;
+}
+
+async function loadOneStanding(item) {
+  const url = `https://site.api.espn.com/apis/v2/sports/${item.sport}/${item.path}/standings`;
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  const data = await response.json();
+  return { item, html: renderLeague(data, item) };
+}
+
 async function loadStandings() {
   refreshStandingsEl.disabled = true;
-  standingsStatusEl.textContent = "Loading league standings…";
+  standingsStatusEl.textContent = "Loading all teams from ESPN…";
   standingsEl.innerHTML = "";
 
-  const outcomes = await Promise.allSettled(
-    standingsFeeds.map(loadOneStanding)
-  );
+  try {
+    const outcomes = await Promise.allSettled(
+      standingsFeeds.map(loadOneStanding)
+    );
 
-  let loaded = 0;
+    let loaded = 0;
+    const errors = [];
 
-  outcomes.forEach((outcome, index) => {
-    const item = standingsFeeds[index];
+    outcomes.forEach((outcome, index) => {
+      const item = standingsFeeds[index];
 
-    if (outcome.status === "fulfilled") {
-      standingsEl.insertAdjacentHTML("beforeend", renderStanding(outcome.value));
-      loaded++;
+      if (outcome.status === "fulfilled") {
+        standingsEl.insertAdjacentHTML("beforeend", outcome.value.html);
+        loaded++;
+      } else {
+        errors.push(item.league);
+        standingsEl.insertAdjacentHTML("beforeend", `
+          <section class="standings-league">
+            <h3>${safeText(item.league)} standings</h3>
+            <div class="empty">
+              ESPN did not return a usable table for this league just now.
+              Try refreshing later.
+            </div>
+          </section>
+        `);
+      }
+    });
+
+    const updated = new Intl.DateTimeFormat("en-GB", {
+      hour: "2-digit", minute: "2-digit",
+      timeZone: "Europe/London", timeZoneName: "short"
+    }).format(new Date());
+
+    if (loaded === 4) {
+      standingsStatusEl.textContent =
+        `All four league tables loaded at ${updated}. Boston teams are highlighted.`;
+    } else if (loaded > 0) {
+      standingsStatusEl.textContent =
+        `${loaded} of 4 league tables loaded at ${updated}. Unavailable: ${errors.join(", ")}.`;
     } else {
-      standingsEl.insertAdjacentHTML("beforeend", `
-        <article class="standing-card ${item.league.toLowerCase()}">
-          <div class="standing-group">${item.league}</div>
-          <h4>${item.team}</h4>
-          <div class="standing-details">
-            Standings are temporarily unavailable. Try refreshing later.
-          </div>
-        </article>
-      `);
+      standingsStatusEl.textContent =
+        "The standings could not be loaded. Check your connection and try again.";
     }
-  });
-
-  const updated = new Intl.DateTimeFormat("en-GB", {
-    hour: "2-digit", minute: "2-digit", timeZone: "Europe/London"
-  }).format(new Date());
-
-  standingsStatusEl.textContent = loaded === 4
-    ? `All four standings loaded at ${updated} UK time.`
-    : `${loaded} of 4 standings loaded at ${updated} UK time. Unavailable feeds may recover later.`;
-
-  refreshStandingsEl.disabled = false;
+  } catch (error) {
+    standingsStatusEl.textContent =
+      "Unable to load league standings. Please try again.";
+  } finally {
+    refreshStandingsEl.disabled = false;
+  }
 }
 
 filterEl.addEventListener("change", renderGames);
