@@ -1,0 +1,263 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Boston Celtics | Boston Sports Hub</title>
+<style>
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f3f5f4;
+  color: #17211c;
+}
+header {
+  background: #007a3e;
+  color: white;
+  text-align: center;
+  padding: 24px 16px;
+}
+header h1 { margin: 0 0 8px; }
+header p { margin: 0; }
+.home-link {
+  display: inline-block;
+  margin-top: 12px;
+  color: white;
+}
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  background: white;
+  box-shadow: 0 2px 5px #0002;
+}
+nav a {
+  color: #006b36;
+  text-decoration: none;
+  font-weight: bold;
+  padding: 9px 12px;
+  border-radius: 6px;
+  background: #e8f4ed;
+}
+main {
+  max-width: 900px;
+  margin: auto;
+  padding: 18px;
+}
+section {
+  background: white;
+  margin: 0 0 20px;
+  padding: 18px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px #0001;
+  scroll-margin-top: 78px;
+}
+h2 {
+  margin-top: 0;
+  color: #007a3e;
+}
+.game {
+  padding: 12px 0;
+  border-bottom: 1px solid #ddd;
+}
+.game:last-child { border-bottom: none; }
+.date {
+  font-size: 0.9em;
+  color: #58635c;
+  margin-top: 5px;
+}
+.status {
+  color: #58635c;
+  padding: 10px 0;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9em;
+}
+th, td {
+  padding: 9px 6px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+th { background: #e8f4ed; }
+.table-wrap { overflow-x: auto; }
+footer {
+  text-align: center;
+  padding: 20px;
+  color: #58635c;
+  font-size: 0.85em;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Boston Celtics</h1>
+  <p>Boston Sports Hub · NBA</p>
+  <a class="home-link" href="index.html">← Back to Home</a>
+</header>
+
+<nav>
+  <a href="#upcoming">Fixtures</a>
+  <a href="#results">Results</a>
+  <a href="#leagues">Leagues</a>
+</nav>
+
+<main>
+  <section id="upcoming">
+    <h2>Upcoming Fixtures</h2>
+    <div id="upcoming-games" class="status">Loading upcoming fixtures...</div>
+  </section>
+
+  <section id="results">
+    <h2>Recent Results</h2>
+    <div id="past-games" class="status">Loading results...</div>
+  </section>
+
+  <section id="leagues">
+    <h2>NBA League Standings</h2>
+    <div id="standings" class="status">Loading league standings...</div>
+  </section>
+</main>
+
+<footer>
+  Fixture, result and standings data provided by ESPN.
+</footer>
+
+<script>
+const sport = "basketball";
+const league = "nba";
+const teamId = "2";
+const timezone = "Europe/London";
+
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  return new Intl.DateTimeFormat("en-GB", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: timezone
+  }).format(date) + " UK time";
+}
+
+function gameHTML(event) {
+  const competition = event.competitions?.[0];
+  const competitors = competition?.competitors || [];
+  const home = competitors.find(team => team.homeAway === "home");
+  const away = competitors.find(team => team.homeAway === "away");
+  const status = event.status?.type;
+  const isFinal = status?.completed;
+  const isLive = status?.state === "in";
+  const homeName = home?.team?.displayName || "Home";
+  const awayName = away?.team?.displayName || "Away";
+
+  let score = "";
+  if (isFinal || isLive) {
+    score = `<div><strong>${awayName} ${away?.score ?? ""} - ${home?.score ?? ""} ${homeName}</strong></div>`;
+  } else {
+    score = `<div>${awayName} @ ${homeName}</div>`;
+  }
+
+  const stateText = isFinal ? "Final" : isLive ? "LIVE" : "";
+  return `<div class="game">
+    ${score}
+    <div class="date">${formatDate(event.date)}${stateText ? " · " + stateText : ""}</div>
+  </div>`;
+}
+
+async function loadSchedule() {
+  const container = document.getElementById("upcoming-games");
+  const resultsContainer = document.getElementById("past-games");
+
+  try {
+    const url = `https://site.api.espn.com/apis/site/v2/sports/${sport}/${league}/teams/${teamId}/schedule`;
+    const response = await fetch(url);
+    if (!response.ok) throw new Error("Schedule unavailable");
+    const data = await response.json();
+    const events = data.events || [];
+    const now = Date.now();
+
+    const upcoming = events
+      .filter(event => new Date(event.date).getTime() >= now &&
+        !event.status?.type?.completed)
+      .sort((a, b) => new Date(a.date) - new Date(b.date))
+      .slice(0, 10);
+
+    const past = events
+      .filter(event => new Date(event.date).getTime() < now ||
+        event.status?.type?.completed)
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .slice(0, 10);
+
+    container.innerHTML = upcoming.length
+      ? upcoming.map(gameHTML).join("")
+      : '<p>No upcoming fixtures currently listed.</p>';
+
+    resultsContainer.innerHTML = past.length
+      ? past.map(gameHTML).join("")
+      : '<p>No recent results currently listed.</p>';
+  } catch (error) {
+    container.innerHTML = '<p>Could not load fixtures right now. Please try again later.</p>';
+    resultsContainer.innerHTML = '<p>Could not load results right now. Please try again later.</p>';
+  }
+}
+
+async function loadStandings() {
+  const container = document.getElementById("standings");
+
+  try {
+    const response = await fetch(
+      `https://site.api.espn.com/apis/v2/sports/${sport}/${league}/standings`
+    );
+    if (!response.ok) throw new Error("Standings unavailable");
+    const data = await response.json();
+    const conferences = data.children || [];
+
+    let html = "";
+
+    conferences.forEach(conference => {
+      html += `<h3>${conference.name || "Conference"}</h3>`;
+      const entries = conference.standings?.entries || [];
+
+      html += `<div class="table-wrap"><table>
+        <thead><tr>
+          <th>Team</th><th>W</th><th>L</th><th>PCT</th>
+        </tr></thead><tbody>`;
+
+      entries.forEach(entry => {
+        const stats = entry.stats || [];
+        const getStat = name =>
+          stats.find(stat => stat.name === name || stat.abbreviation === name)?.displayValue ?? "—";
+
+        html += `<tr>
+          <td>${entry.team?.displayName || "Team"}</td>
+          <td>${getStat("wins")}</td>
+          <td>${getStat("losses")}</td>
+          <td>${getStat("winPercent")}</td>
+        </tr>`;
+      });
+
+      html += "</tbody></table></div>";
+    });
+
+    container.innerHTML = html || "<p>Standings are not currently available.</p>";
+  } catch (error) {
+    container.innerHTML = "<p>Could not load standings right now. Please try again later.</p>";
+  }
+}
+
+loadSchedule();
+loadStandings();
+</script>
+</body>
+</html>
