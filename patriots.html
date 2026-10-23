@@ -52,12 +52,6 @@ nav a {
 nav a:hover { background:#405570; text-decoration:none; }
 nav a.league-link { background:var(--red); }
 .summary { color:var(--muted); font-size:14px; line-height:1.5; }
-.toolbar { display:flex; flex-wrap:wrap; gap:10px; margin:16px 0; }
-button {
-  background:#304158; color:white; border:1px solid #52657b;
-  border-radius:8px; padding:11px 13px; font-size:14px; cursor:pointer;
-}
-button:disabled { opacity:.6; cursor:wait; }
 .section { margin:30px 0; scroll-margin-top:78px; }
 .game {
   background:var(--panel); border-left:4px solid var(--red);
@@ -74,6 +68,11 @@ button:disabled { opacity:.6; cursor:wait; }
   background:var(--panel); border-radius:10px; padding:16px;
   color:var(--muted); line-height:1.5;
 }
+button {
+  background:#304158; color:white; border:1px solid #52657b;
+  border-radius:8px; padding:11px 13px; font-size:14px; cursor:pointer;
+}
+button:disabled { opacity:.6; cursor:wait; }
 .table-wrap { overflow-x:auto; border-radius:8px; }
 table { width:100%; min-width:430px; border-collapse:collapse; font-size:13px; }
 th,td {
@@ -161,6 +160,16 @@ function parseEvent(event) {
   const competitors = competition?.competitors || [];
   const home = competitors.find(c => c.homeAway === "home");
   const away = competitors.find(c => c.homeAway === "away");
+  const type = event.status?.type || competition?.status?.type || {};
+  const statusText = [
+    type.name, type.description, type.detail, type.shortDetail
+  ].filter(Boolean).join(" ");
+
+  const completed =
+    type.completed === true ||
+    String(type.state || "").toLowerCase() === "post" ||
+    /\b(final|game over|completed|ended)\b/i.test(statusText);
+
   return {
     id:event.id,
     date:event.date || competition?.date,
@@ -168,8 +177,8 @@ function parseEvent(event) {
     away:away?.team?.displayName || "Away team",
     homeScore:home?.score?.displayValue ?? home?.score?.value ?? home?.score ?? null,
     awayScore:away?.score?.displayValue ?? away?.score?.value ?? away?.score ?? null,
-    completed:Boolean(event.status?.type?.completed),
-    status:event.status?.type?.shortDetail || event.status?.type?.description || "Scheduled",
+    completed,
+    status:type.shortDetail || type.description || type.detail || "Scheduled",
     link:event.links?.[0]?.href || ""
   };
 }
@@ -204,10 +213,13 @@ async function loadGames() {
     );
     if (!response.ok) throw new Error("Schedule unavailable");
     const data = await response.json();
+
     const games = (data.events || data.content?.events || [])
-      .map(parseEvent).filter(game => game.date);
+      .map(parseEvent)
+      .filter(game => game.date);
 
     const now = Date.now();
+
     const upcoming = games.filter(game =>
       !game.completed && new Date(game.date).getTime() >= now
     ).sort((a,b) => new Date(a.date) - new Date(b.date));
