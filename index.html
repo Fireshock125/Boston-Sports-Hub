@@ -1,0 +1,143 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Boston Sports Hub</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #101722;
+      color: #ffffff;
+    }
+
+    header {
+      background: #071d38;
+      padding: 28px 16px;
+      text-align: center;
+      border-bottom: 4px solid #c8102e;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 30px;
+    }
+
+    header p {
+      color: #cbd5e1;
+      margin-bottom: 0;
+    }
+
+    main {
+      max-width: 900px;
+      margin: auto;
+      padding: 20px 16px;
+    }
+
+    .intro {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .teams {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .team {
+      background: #1c2838;
+      border-radius: 12px;
+      padding: 22px;
+      border-top: 4px solid #c8102e;
+    }
+
+    .team h2 { margin-top: 0; }
+
+    .team p {
+      color: #cbd5e1;
+      line-height: 1.5;
+    }
+
+    .tag {
+      display: inline-block;
+      background: #304158;
+      padding: 5px 9px;
+      border-radius: 5px;
+      font-size: 12px;
+    }
+
+    .notice {
+      margin-top: 24px;
+      padding: 16px;
+      background: #1c2838;
+      border-radius: 10px;
+      color: #cbd5e1;
+      line-height: 1.6;
+    }
+
+    footer {
+      text-align: center;
+      padding: 24px;
+      color: #94a3b8;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Boston Sports Hub</h1>
+    <p>Four teams. One city. All in one place.</p>
+  </header>
+
+  <main>
+    <section class="intro">
+      <h2>Welcome to your sports dashboard</h2>
+      <p>Your home for Boston sports, from the UK.</p>
+    </section>
+
+    <section class="teams">
+      <article class="team">
+        <span class="tag">NFL</span>
+        <h2>New England Patriots</h2>
+        <p>American football</p>
+        <p>Fixtures, results, standings and team news will go here.</p>
+      </article>
+
+      <article class="team">
+        <span class="tag">NBA</span>
+        <h2>Boston Celtics</h2>
+        <p>Basketball</p>
+        <p>Fixtures, results, standings and team news will go here.</p>
+      </article>
+
+      <article class="team">
+        <span class="tag">MLB</span>
+        <h2>Boston Red Sox</h2>
+        <p>Baseball</p>
+        <p>Fixtures, results, standings and team news will go here.</p>
+      </article>
+
+      <article class="team">
+        <span class="tag">NHL</span>
+        <h2>Boston Bruins</h2>
+        <p>Ice hockey</p>
+        <p>Fixtures, results, standings and team news will go here.</p>
+      </article>
+    </section>
+
+    <section class="notice">
+      <strong>Coming next</strong>
+      <p>We’ll work towards automatically updated fixtures, results, league tables, team news and a combined calendar showing match times in UK time.</p>
+    </section>
+  </main>
+
+  <footer>
+    Boston Sports Hub · Personal project
+  </footer>
+</body>
+</html>
