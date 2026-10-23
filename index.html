@@ -75,8 +75,8 @@ button:disabled { opacity: .6; cursor: wait; }
   font-size: 12px;
 }
 .team p { color: var(--muted); font-size: 14px; }
-section.game-section { margin: 26px 0 34px; }
-.section-note { color: var(--muted); font-size: 13px; }
+.game-section { margin: 28px 0 34px; }
+.section-note { color: var(--muted); font-size: 13px; line-height: 1.5; }
 .game {
   background: var(--panel);
   border-radius: 10px;
@@ -84,10 +84,10 @@ section.game-section { margin: 26px 0 34px; }
   margin: 10px 0;
   border-left: 4px solid #64748b;
 }
-.game.nfl { border-left-color: #c8102e; }
-.game.nba { border-left-color: #007a33; }
-.game.mlb { border-left-color: #e0b13d; }
-.game.nhl { border-left-color: #8ab4f8; }
+.game.nfl, .standing-card.nfl { border-left-color: #c8102e; }
+.game.nba, .standing-card.nba { border-left-color: #007a33; }
+.game.mlb, .standing-card.mlb { border-left-color: #e0b13d; }
+.game.nhl, .standing-card.nhl { border-left-color: #8ab4f8; }
 .game-top {
   display: flex;
   flex-wrap: wrap;
@@ -103,20 +103,29 @@ section.game-section { margin: 26px 0 34px; }
 }
 .score { font-size: 16px; font-weight: bold; margin-top: 9px; }
 .status { color: var(--muted); font-size: 13px; }
-.empty {
+.empty, .notice {
   background: var(--panel);
   border-radius: 10px;
   padding: 16px;
   color: var(--muted);
   line-height: 1.5;
 }
-.notice {
+.standings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 12px;
+}
+.standing-card {
   background: var(--panel);
+  border-left: 4px solid var(--red);
   border-radius: 10px;
   padding: 16px;
-  line-height: 1.5;
-  color: var(--muted);
+  min-width: 0;
 }
+.standing-card h4 { margin: 0 0 12px; font-size: 16px; }
+.standing-record { font-size: 22px; font-weight: bold; margin: 8px 0; }
+.standing-details { color: var(--muted); font-size: 13px; line-height: 1.8; }
+.standing-group { color: #dce7f5; font-size: 12px; margin-bottom: 8px; }
 footer {
   text-align: center;
   padding: 25px;
@@ -176,25 +185,37 @@ a:hover { text-decoration: underline; }
 
   <section class="game-section">
     <h3>Upcoming fixtures</h3>
-    <p class="section-note">Games that have not been marked as completed, shown soonest first.</p>
-    <div id="upcoming"></div>
+    <p class="section-note">Upcoming games, shown soonest first.</p>
+    <div id="upcoming"><div class="empty">Loading fixtures…</div></div>
   </section>
 
   <section class="game-section">
     <h3>Latest results</h3>
     <p class="section-note">Completed games, with the most recent first.</p>
-    <div id="results"></div>
+    <div id="results"><div class="empty">Loading results…</div></div>
   </section>
 
   <section class="game-section">
     <h3>Combined calendar</h3>
-    <p class="section-note">All returned games in date order, across all four teams.</p>
-    <div id="calendar"></div>
+    <p class="section-note">All games returned by ESPN, in date order.</p>
+    <div id="calendar"><div class="empty">Loading calendar…</div></div>
+  </section>
+
+  <section class="game-section">
+    <h3>League standings</h3>
+    <p class="section-note">Team records and available league statistics. These update when you refresh the standings.</p>
+    <div class="toolbar">
+      <button id="refreshStandings">Refresh standings</button>
+    </div>
+    <p id="standingsStatus" class="summary" aria-live="polite">Loading standings…</p>
+    <div id="standings" class="standings-grid">
+      <div class="empty">Loading league standings…</div>
+    </div>
   </section>
 
   <section class="notice">
     <strong>About the data</strong>
-    <p>Schedules and scores are requested from ESPN. This is an unofficial data source and availability may change. Results depend on the games returned by the ESPN feeds.</p>
+    <p>Schedules, scores and standings are requested from ESPN. This is an unofficial data source, not an official Boston team website. Availability and the statistics provided may change.</p>
   </section>
 </main>
 
@@ -211,6 +232,9 @@ const feeds = [
 const statusEl = document.getElementById("status");
 const filterEl = document.getElementById("filter");
 const refreshEl = document.getElementById("refresh");
+const standingsStatusEl = document.getElementById("standingsStatus");
+const standingsEl = document.getElementById("standings");
+const refreshStandingsEl = document.getElementById("refreshStandings");
 
 let allGames = [];
 
@@ -218,10 +242,7 @@ function dateLabel(dateString) {
   const date = new Date(dateString);
   if (Number.isNaN(date.getTime())) return "Date TBC";
   return new Intl.DateTimeFormat("en-GB", {
-    weekday: "short",
-    day: "numeric",
-    month: "short",
-    year: "numeric",
+    weekday: "short", day: "numeric", month: "short", year: "numeric",
     timeZone: "Europe/London"
   }).format(date);
 }
@@ -230,17 +251,14 @@ function timeLabel(dateString) {
   const date = new Date(dateString);
   if (Number.isNaN(date.getTime())) return "Time TBC";
   return new Intl.DateTimeFormat("en-GB", {
-    hour: "2-digit",
-    minute: "2-digit",
-    timeZone: "Europe/London",
+    hour: "2-digit", minute: "2-digit", timeZone: "Europe/London",
     timeZoneName: "short"
   }).format(date);
 }
 
 function getStatus(event) {
-  return event.status?.type?.shortDetail
-    || event.status?.type?.description
-    || "Scheduled";
+  return event.status?.type?.shortDetail ||
+    event.status?.type?.description || "Scheduled";
 }
 
 function parseEvent(event, feed) {
@@ -269,7 +287,6 @@ async function loadFeed(feed) {
   const url = `https://site.api.espn.com/apis/site/v2/sports/${feed.sport}/${feed.path}/teams/${feed.id}/schedule`;
   const response = await fetch(url);
   if (!response.ok) throw new Error(`${feed.league}: HTTP ${response.status}`);
-
   const data = await response.json();
   const events = data.events || data.content?.events || [];
   return events.map(event => parseEvent(event, feed)).filter(game => game.date);
@@ -278,11 +295,6 @@ async function loadFeed(feed) {
 function scoreIsAvailable(game) {
   return game.homeScore !== null && game.homeScore !== undefined &&
     game.awayScore !== null && game.awayScore !== undefined;
-}
-
-function displayScore(game) {
-  if (!scoreIsAvailable(game)) return "";
-  return `<div class="score">${game.awayScore} – ${game.homeScore}</div>`;
 }
 
 function gameCard(game) {
@@ -296,9 +308,8 @@ function gameCard(game) {
       <span>${timeLabel(game.date)}</span>
       <span class="status">${game.status}</span>
     </div>
-    ${displayScore(game)}
+    ${scoreIsAvailable(game) ? `<div class="score">${game.awayScore} – ${game.homeScore}</div>` : ""}
   `;
-
   return `<article class="game ${game.league.toLowerCase()}">
     ${game.link ? `<a href="${game.link}" target="_blank" rel="noopener">${content}</a>` : content}
   </article>`;
@@ -306,11 +317,9 @@ function gameCard(game) {
 
 function showGames(elementId, games, emptyMessage) {
   const element = document.getElementById(elementId);
-  if (!games.length) {
-    element.innerHTML = `<div class="empty">${emptyMessage}</div>`;
-    return;
-  }
-  element.innerHTML = games.map(gameCard).join("");
+  element.innerHTML = games.length
+    ? games.map(gameCard).join("")
+    : `<div class="empty">${emptyMessage}</div>`;
 }
 
 function renderGames() {
@@ -318,7 +327,6 @@ function renderGames() {
   const filtered = allGames.filter(game =>
     selected === "all" || game.league === selected
   );
-
   const now = Date.now();
 
   const upcoming = filtered
@@ -330,55 +338,219 @@ function renderGames() {
     .sort((a, b) => new Date(b.date) - new Date(a.date))
     .slice(0, 20);
 
-  const calendar = [...filtered]
-    .sort((a, b) => new Date(a.date) - new Date(b.date));
+  const calendar = [...filtered].sort(
+    (a, b) => new Date(a.date) - new Date(b.date)
+  );
 
-  showGames("upcoming", upcoming, "No upcoming fixtures were returned for this team. Try refreshing or choosing another team.");
-  showGames("results", results, "No completed results were returned for this team. The ESPN schedule may not include older games.");
-  showGames("calendar", calendar, "No games were returned. Try refreshing the feeds.");
+  showGames("upcoming", upcoming, "No upcoming fixtures were returned. Try refreshing or choosing another team.");
+  showGames("results", results, "No completed results were returned by the feed.");
+  showGames("calendar", calendar, "No games were returned. Try refreshing.");
 }
 
 async function loadAll() {
   refreshEl.disabled = true;
   statusEl.textContent = "Loading schedules from ESPN…";
 
-  const results = await Promise.allSettled(feeds.map(loadFeed));
-  allGames = [];
-  const errors = [];
+  try {
+    const outcomes = await Promise.allSettled(feeds.map(loadFeed));
+    allGames = [];
+    const errors = [];
 
-  results.forEach((result, index) => {
-    if (result.status === "fulfilled") {
-      allGames.push(...result.value);
+    outcomes.forEach((result, index) => {
+      if (result.status === "fulfilled") allGames.push(...result.value);
+      else errors.push(feeds[index].league);
+    });
+
+    allGames = [...new Map(allGames.map(game => [game.id, game])).values()];
+    renderGames();
+
+    const loaded = 4 - errors.length;
+    const updated = new Intl.DateTimeFormat("en-GB", {
+      hour: "2-digit", minute: "2-digit", timeZone: "Europe/London"
+    }).format(new Date());
+
+    if (!loaded) {
+      statusEl.textContent = "The sports feeds could not be loaded. Check your connection and try again.";
+    } else if (errors.length) {
+      statusEl.textContent = `${loaded} of 4 league feeds loaded at ${updated} UK time. Unavailable: ${errors.join(", ")}.`;
     } else {
-      errors.push(feeds[index].league);
+      statusEl.textContent = `All four league feeds loaded at ${updated} UK time.`;
+    }
+  } catch (error) {
+    statusEl.textContent = "Unable to load schedules. Please try again.";
+  } finally {
+    refreshEl.disabled = false;
+  }
+}
+
+/* STANDINGS */
+
+const standingsFeeds = [
+  {
+    league: "NFL",
+    team: "New England Patriots",
+    sport: "football",
+    path: "nfl",
+    id: "17"
+  },
+  {
+    league: "NBA",
+    team: "Boston Celtics",
+    sport: "basketball",
+    path: "nba",
+    id: "2"
+  },
+  {
+    league: "MLB",
+    team: "Boston Red Sox",
+    sport: "baseball",
+    path: "mlb",
+    id: "2"
+  },
+  {
+    league: "NHL",
+    team: "Boston Bruins",
+    sport: "hockey",
+    path: "nhl",
+    id: "1"
+  }
+];
+
+function getTeamEntries(node, output = []) {
+  if (!node || typeof node !== "object") return output;
+
+  if (Array.isArray(node)) {
+    node.forEach(item => getTeamEntries(item, output));
+    return output;
+  }
+
+  if (node.team && Array.isArray(node.stats)) output.push(node);
+
+  Object.values(node).forEach(value => getTeamEntries(value, output));
+  return output;
+}
+
+function findStat(entry, names) {
+  const stats = entry?.stats || [];
+  const found = stats.find(item =>
+    names.includes(String(item.name || "").toLowerCase()) ||
+    names.includes(String(item.abbreviation || "").toLowerCase())
+  );
+  return found?.displayValue ?? found?.summary ?? null;
+}
+
+function safeText(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[char]);
+}
+
+async function loadOneStanding(item) {
+  const url = `https://site.api.espn.com/apis/v2/sports/${item.sport}/${item.path}/standings`;
+  const response = await fetch(url);
+  if (!response.ok) throw new Error("Standings request failed");
+
+  const data = await response.json();
+  const entries = getTeamEntries(data);
+
+  const target = entries.find(entry =>
+    String(entry.team?.id || "") === item.id
+  ) || entries.find(entry =>
+    String(entry.team?.displayName || "").toLowerCase() === item.team.toLowerCase()
+  );
+
+  if (!target) throw new Error("Team not found in standings");
+
+  return { item, entry: target };
+}
+
+function renderStanding(result) {
+  const { item, entry } = result;
+  const wins = findStat(entry, ["wins", "w"]);
+  const losses = findStat(entry, ["losses", "l"]);
+  const ties = findStat(entry, ["ties", "t"]);
+  const games = findStat(entry, ["gamesplayed", "gp"]);
+  const pct = findStat(entry, ["winpercent", "winningpercentage", "pct"]);
+  const streak = findStat(entry, ["streak", "strk"]);
+  const points = findStat(entry, ["points", "pts"]);
+  const position = findStat(entry, ["playoffseed", "seed", "rank"]);
+  const group = entry.group?.name || entry.note?.headline || "";
+  const record = wins !== null && losses !== null
+    ? `${wins}–${losses}${ties !== null ? `–${ties}` : ""}`
+    : "Record available below";
+
+  const details = [
+    position !== null ? `Position / seed: ${safeText(position)}` : null,
+    games !== null ? `Games played: ${safeText(games)}` : null,
+    pct !== null ? `Win percentage: ${safeText(pct)}` : null,
+    points !== null ? `Points: ${safeText(points)}` : null,
+    streak !== null ? `Streak: ${safeText(streak)}` : null
+  ].filter(Boolean);
+
+  return `
+    <article class="standing-card ${item.league.toLowerCase()}">
+      <div class="standing-group">${item.league}</div>
+      <h4>${item.team}</h4>
+      ${group ? `<div class="standing-details">${safeText(group)}</div>` : ""}
+      <div class="standing-record">${record}</div>
+      <div class="standing-details">
+        ${details.length ? details.join("<br>") : "Some detailed statistics were not supplied by ESPN."}
+      </div>
+    </article>
+  `;
+}
+
+async function loadStandings() {
+  refreshStandingsEl.disabled = true;
+  standingsStatusEl.textContent = "Loading league standings…";
+  standingsEl.innerHTML = "";
+
+  const outcomes = await Promise.allSettled(
+    standingsFeeds.map(loadOneStanding)
+  );
+
+  let loaded = 0;
+
+  outcomes.forEach((outcome, index) => {
+    const item = standingsFeeds[index];
+
+    if (outcome.status === "fulfilled") {
+      standingsEl.insertAdjacentHTML("beforeend", renderStanding(outcome.value));
+      loaded++;
+    } else {
+      standingsEl.insertAdjacentHTML("beforeend", `
+        <article class="standing-card ${item.league.toLowerCase()}">
+          <div class="standing-group">${item.league}</div>
+          <h4>${item.team}</h4>
+          <div class="standing-details">
+            Standings are temporarily unavailable. Try refreshing later.
+          </div>
+        </article>
+      `);
     }
   });
 
-  // Remove duplicate events, if any, while keeping each league's own event.
-  allGames = [...new Map(allGames.map(game => [game.id, game])).values()];
-  renderGames();
+  const updated = new Intl.DateTimeFormat("en-GB", {
+    hour: "2-digit", minute: "2-digit", timeZone: "Europe/London"
+  }).format(new Date());
 
-  const loaded = feeds.length - errors.length;
-  const updated = new Date().toLocaleTimeString("en-GB", {
-    hour: "2-digit",
-    minute: "2-digit",
-    timeZone: "Europe/London"
-  });
+  standingsStatusEl.textContent = loaded === 4
+    ? `All four standings loaded at ${updated} UK time.`
+    : `${loaded} of 4 standings loaded at ${updated} UK time. Unavailable feeds may recover later.`;
 
-  if (loaded === 0) {
-    statusEl.textContent = "The sports feeds could not be loaded. Check your connection and try again.";
-  } else if (errors.length) {
-    statusEl.textContent = `${loaded} of 4 league feeds loaded at ${updated} UK time. Unavailable: ${errors.join(", ")}.`;
-  } else {
-    statusEl.textContent = `All four league feeds loaded at ${updated} UK time.`;
-  }
-
-  refreshEl.disabled = false;
+  refreshStandingsEl.disabled = false;
 }
 
 filterEl.addEventListener("change", renderGames);
 refreshEl.addEventListener("click", loadAll);
+refreshStandingsEl.addEventListener("click", loadStandings);
+
 loadAll();
+loadStandings();
 </script>
 </body>
 </html>
