@@ -252,8 +252,8 @@ function parseEvent(event, feed) {
     name: event.name || "Game",
     home: home?.team?.displayName || "Home team",
     away: away?.team?.displayName || "Away team",
-    homeScore: home?.score,
-    awayScore: away?.score,
+    homeScore: home?.score?.displayValue ?? home?.score?.value ?? home?.score ?? null,
+awayScore: away?.score?.displayValue ?? away?.score?.value ?? away?.score ?? null,
     status: getStatus(event),
     completed: Boolean(event.status?.type?.completed),
     link: event.links?.[0]?.href || ""
