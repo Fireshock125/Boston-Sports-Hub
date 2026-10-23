@@ -2,142 +2,370 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Boston Sports Hub</title>
-  <style>
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #101722;
-      color: #ffffff;
-    }
-
-    header {
-      background: #071d38;
-      padding: 28px 16px;
-      text-align: center;
-      border-bottom: 4px solid #c8102e;
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 30px;
-    }
-
-    header p {
-      color: #cbd5e1;
-      margin-bottom: 0;
-    }
-
-    main {
-      max-width: 900px;
-      margin: auto;
-      padding: 20px 16px;
-    }
-
-    .intro {
-      text-align: center;
-      margin-bottom: 28px;
-    }
-
-    .teams {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px;
-    }
-
-    .team {
-      background: #1c2838;
-      border-radius: 12px;
-      padding: 22px;
-      border-top: 4px solid #c8102e;
-    }
-
-    .team h2 { margin-top: 0; }
-
-    .team p {
-      color: #cbd5e1;
-      line-height: 1.5;
-    }
-
-    .tag {
-      display: inline-block;
-      background: #304158;
-      padding: 5px 9px;
-      border-radius: 5px;
-      font-size: 12px;
-    }
-
-    .notice {
-      margin-top: 24px;
-      padding: 16px;
-      background: #1c2838;
-      border-radius: 10px;
-      color: #cbd5e1;
-      line-height: 1.6;
-    }
-
-    footer {
-      text-align: center;
-      padding: 24px;
-      color: #94a3b8;
-      font-size: 13px;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Boston Sports Hub</title>
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #101722;
+  --panel: #1c2838;
+  --muted: #bdc8d6;
+  --red: #c8102e;
+  --blue: #071d38;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: white;
+  font-family: Arial, sans-serif;
+}
+header {
+  background: var(--blue);
+  text-align: center;
+  padding: 26px 16px;
+  border-bottom: 4px solid var(--red);
+}
+header h1 { margin: 0; font-size: 29px; }
+header p { color: var(--muted); margin-bottom: 0; }
+main { max-width: 950px; margin: auto; padding: 20px 14px; }
+h2 { margin-top: 0; }
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 18px 0;
+}
+button, select {
+  background: #304158;
+  color: white;
+  border: 1px solid #52657b;
+  border-radius: 8px;
+  padding: 11px 13px;
+  font-size: 14px;
+}
+button { cursor: pointer; }
+button:hover { background: #405570; }
+.summary {
+  color: var(--muted);
+  font-size: 14px;
+  margin: 12px 0;
+}
+.teams {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 12px;
+  margin-bottom: 28px;
+}
+.team {
+  background: var(--panel);
+  border-top: 4px solid var(--red);
+  border-radius: 10px;
+  padding: 16px;
+}
+.team h3 { margin: 8px 0; }
+.tag {
+  color: #dce7f5;
+  background: #304158;
+  padding: 4px 7px;
+  border-radius: 5px;
+  font-size: 12px;
+}
+.team p { color: var(--muted); font-size: 14px; }
+.game {
+  background: var(--panel);
+  border-radius: 10px;
+  padding: 15px;
+  margin: 10px 0;
+  border-left: 4px solid #64748b;
+}
+.game.nfl { border-left-color: #c8102e; }
+.game.nba { border-left-color: #007a33; }
+.game.mlb { border-left-color: #e0b13d; }
+.game.nhl { border-left-color: #8ab4f8; }
+.game-top {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.matchup {
+  font-size: 17px;
+  font-weight: bold;
+  margin: 12px 0 7px;
+}
+.score { font-size: 16px; font-weight: bold; }
+.status { color: var(--muted); font-size: 13px; }
+.notice {
+  background: var(--panel);
+  border-radius: 10px;
+  padding: 16px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+footer {
+  text-align: center;
+  padding: 25px;
+  color: #94a3b8;
+  font-size: 12px;
+}
+a { color: #9ec5ff; }
+</style>
 </head>
 <body>
-  <header>
-    <h1>Boston Sports Hub</h1>
-    <p>Four teams. One city. All in one place.</p>
-  </header>
+<header>
+  <h1>Boston Sports Hub</h1>
+  <p>Four teams. One city. All in one place.</p>
+</header>
 
-  <main>
-    <section class="intro">
-      <h2>Welcome to your sports dashboard</h2>
-      <p>Your home for Boston sports, from the UK.</p>
-    </section>
+<main>
+  <h2>Your Boston teams</h2>
+  <section class="teams">
+    <article class="team">
+      <span class="tag">NFL</span>
+      <h3>New England Patriots</h3>
+      <p>American football</p>
+    </article>
+    <article class="team">
+      <span class="tag">NBA</span>
+      <h3>Boston Celtics</h3>
+      <p>Basketball</p>
+    </article>
+    <article class="team">
+      <span class="tag">MLB</span>
+      <h3>Boston Red Sox</h3>
+      <p>Baseball</p>
+    </article>
+    <article class="team">
+      <span class="tag">NHL</span>
+      <h3>Boston Bruins</h3>
+      <p>Ice hockey</p>
+    </article>
+  </section>
 
-    <section class="teams">
-      <article class="team">
-        <span class="tag">NFL</span>
-        <h2>New England Patriots</h2>
-        <p>American football</p>
-        <p>Fixtures, results, standings and team news will go here.</p>
-      </article>
+  <h2>Fixtures and results</h2>
+  <p class="summary">Game times are shown in UK local time. Schedules load from ESPN.</p>
 
-      <article class="team">
-        <span class="tag">NBA</span>
-        <h2>Boston Celtics</h2>
-        <p>Basketball</p>
-        <p>Fixtures, results, standings and team news will go here.</p>
-      </article>
+  <div class="toolbar">
+    <select id="filter" aria-label="Filter by team">
+      <option value="all">All four teams</option>
+      <option value="NFL">Patriots</option>
+      <option value="NBA">Celtics</option>
+      <option value="MLB">Red Sox</option>
+      <option value="NHL">Bruins</option>
+    </select>
+    <button id="refresh">Refresh fixtures</button>
+  </div>
 
-      <article class="team">
-        <span class="tag">MLB</span>
-        <h2>Boston Red Sox</h2>
-        <p>Baseball</p>
-        <p>Fixtures, results, standings and team news will go here.</p>
-      </article>
+  <p id="status" class="summary" aria-live="polite">Loading schedules…</p>
+  <section id="games"></section>
 
-      <article class="team">
-        <span class="tag">NHL</span>
-        <h2>Boston Bruins</h2>
-        <p>Ice hockey</p>
-        <p>Fixtures, results, standings and team news will go here.</p>
-      </article>
-    </section>
+  <section class="notice">
+    <strong>About the data</strong>
+    <p>Schedules and scores are requested from ESPN. This is an unofficial data source and availability may change. If a league feed fails, the other leagues can still appear.</p>
+  </section>
+</main>
 
-    <section class="notice">
-      <strong>Coming next</strong>
-      <p>We’ll work towards automatically updated fixtures, results, league tables, team news and a combined calendar showing match times in UK time.</p>
-    </section>
-  </main>
+<footer>Boston Sports Hub · Made for a Boston sports fan in the UK</footer>
 
-  <footer>
-    Boston Sports Hub · Personal project
-  </footer>
+<script>
+const feeds = [
+  {
+    league: "NFL",
+    team: "New England Patriots",
+    id: "17",
+    sport: "football",
+    path: "nfl"
+  },
+  {
+    league: "NBA",
+    team: "Boston Celtics",
+    id: "2",
+    sport: "basketball",
+    path: "nba"
+  },
+  {
+    league: "MLB",
+    team: "Boston Red Sox",
+    id: "2",
+    sport: "baseball",
+    path: "mlb"
+  },
+  {
+    league: "NHL",
+    team: "Boston Bruins",
+    id: "1",
+    sport: "hockey",
+    path: "nhl"
+  }
+];
+
+const gamesEl = document.getElementById("games");
+const statusEl = document.getElementById("status");
+const filterEl = document.getElementById("filter");
+const refreshEl = document.getElementById("refresh");
+
+let allGames = [];
+
+function dateLabel(dateString) {
+  const date = new Date(dateString);
+  if (Number.isNaN(date.getTime())) return "Date TBC";
+  return new Intl.DateTimeFormat("en-GB", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "Europe/London"
+  }).format(date);
+}
+
+function timeLabel(dateString) {
+  const date = new Date(dateString);
+  if (Number.isNaN(date.getTime())) return "Time TBC";
+  return new Intl.DateTimeFormat("en-GB", {
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "Europe/London",
+    timeZoneName: "short"
+  }).format(date);
+}
+
+function getStatus(event) {
+  return event.status?.type?.shortDetail
+    || event.status?.type?.description
+    || "Scheduled";
+}
+
+function parseEvent(event, feed) {
+  const competition = event.competitions?.[0];
+  const competitors = competition?.competitors || [];
+  const home = competitors.find(c => c.homeAway === "home");
+  const away = competitors.find(c => c.homeAway === "away");
+
+  return {
+    league: feed.league,
+    team: feed.team,
+    date: event.date || competition?.date,
+    name: event.name || "Game",
+    home: home?.team?.displayName || "Home team",
+    away: away?.team?.displayName || "Away team",
+    homeScore: home?.score,
+    awayScore: away?.score,
+    status: getStatus(event),
+    completed: Boolean(event.status?.type?.completed),
+    link: event.links?.[0]?.href || ""
+  };
+}
+
+async function loadFeed(feed) {
+  const url =
+    `https://site.api.espn.com/apis/site/v2/sports/` +
+    `${feed.sport}/${feed.path}/teams/${feed.id}/schedule`;
+
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`${feed.league}: HTTP ${response.status}`);
+  }
+
+  const data = await response.json();
+  const events = data.events || data.content?.events || [];
+
+  return events.map(event => parseEvent(event, feed))
+    .filter(game => game.date);
+}
+
+function renderGames() {
+  const selected = filterEl.value;
+  const filtered = allGames.filter(game =>
+    selected === "all" || game.league === selected
+  );
+
+  filtered.sort((a, b) =>
+    new Date(a.date).getTime() - new Date(b.date).getTime()
+  );
+
+  if (!filtered.length) {
+    gamesEl.innerHTML =
+      '<p class="notice">No games were returned for this selection. Try refreshing, or choose another team.</p>';
+    return;
+  }
+
+  gamesEl.innerHTML = filtered.map(game => {
+    const scoreAvailable =
+      game.homeScore !== undefined && game.awayScore !== undefined;
+
+    const score = scoreAvailable
+      ? `<div class="score">${game.awayScore} – ${game.homeScore}</div>`
+      : "";
+
+    const matchup = `${game.away} @ ${game.home}`;
+
+    const content = `
+      <div class="game-top">
+        <span>${game.league} · ${game.team}</span>
+        <span>${dateLabel(game.date)}</span>
+      </div>
+      <div class="matchup">${matchup}</div>
+      <div class="game-top">
+        <span>${timeLabel(game.date)}</span>
+        <span class="status">${game.status}</span>
+      </div>
+      ${score}
+    `;
+
+    return `<article class="game ${game.league.toLowerCase()}">
+      ${game.link
+        ? `<a href="${game.link}" target="_blank" rel="noopener">${content}</a>`
+        : content}
+    </article>`;
+  }).join("");
+}
+
+async function loadAll() {
+  refreshEl.disabled = true;
+  statusEl.textContent = "Loading schedules from ESPN…";
+  gamesEl.innerHTML = "";
+
+  const results = await Promise.allSettled(feeds.map(loadFeed));
+  allGames = [];
+  const errors = [];
+
+  results.forEach((result, index) => {
+    if (result.status === "fulfilled") {
+      allGames.push(...result.value);
+    } else {
+      errors.push(feeds[index].league);
+    }
+  });
+
+  renderGames();
+
+  const loaded = feeds.length - errors.length;
+  const updated = new Date().toLocaleTimeString("en-GB", {
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+
+  if (loaded === 0) {
+    statusEl.textContent =
+      "The sports feeds could not be loaded. Check your connection and try again.";
+  } else if (errors.length) {
+    statusEl.textContent =
+      `${loaded} of 4 league feeds loaded at ${updated}. Unavailable: ${errors.join(", ")}.`;
+  } else {
+    statusEl.textContent =
+      `All four league feeds loaded at ${updated}.`;
+  }
+
+  refreshEl.disabled = false;
+}
+
+filterEl.addEventListener("change", renderGames);
+refreshEl.addEventListener("click", loadAll);
+loadAll();
+</script>
 </body>
 </html>
