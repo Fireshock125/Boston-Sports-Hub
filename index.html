@@ -24,59 +24,64 @@ body {
 header {
   background: var(--blue);
   text-align: center;
-  padding: 26px 16px;
+  padding: 28px 16px;
   border-bottom: 4px solid var(--red);
 }
-header h1 { margin: 0; font-size: 29px; }
+header h1 { margin: 0; font-size: 30px; }
 header p { color: var(--muted); margin-bottom: 0; }
-main { max-width: 1100px; margin: auto; padding: 20px 14px; }
+main { max-width: 1100px; margin: auto; padding: 22px 14px; }
 h2 { margin-top: 0; }
-h3 { margin-bottom: 12px; }
-.toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin: 18px 0;
+.teams {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin: 20px 0 34px;
 }
-button, select {
+.team {
+  display: block;
+  color: white;
+  text-decoration: none;
+  background: var(--panel);
+  border: 1px solid #354357;
+  border-top: 4px solid var(--team-colour);
+  border-radius: 10px;
+  padding: 20px 16px;
+  transition: background .15s, transform .15s;
+}
+.team:hover {
+  background: #29394d;
+  text-decoration: none;
+  transform: translateY(-2px);
+}
+.team h3 { margin: 0 0 8px; font-size: 18px; }
+.team p { color: var(--muted); margin: 0; font-size: 14px; }
+.tag {
+  display: inline-block;
+  color: #dce7f5;
+  background: #304158;
+  padding: 4px 7px;
+  border-radius: 5px;
+  font-size: 12px;
+  margin-bottom: 12px;
+}
+.arrow { float: right; color: #bdc8d6; font-size: 22px; }
+.summary {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 10px 0 18px;
+}
+button {
   background: #304158;
   color: white;
   border: 1px solid #52657b;
   border-radius: 8px;
   padding: 11px 13px;
   font-size: 14px;
+  cursor: pointer;
 }
-button { cursor: pointer; }
 button:hover { background: #405570; }
 button:disabled { opacity: .6; cursor: wait; }
-.summary {
-  color: var(--muted);
-  font-size: 14px;
-  margin: 12px 0;
-}
-.teams {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-  gap: 12px;
-  margin-bottom: 28px;
-}
-.team {
-  background: var(--panel);
-  border-top: 4px solid var(--red);
-  border-radius: 10px;
-  padding: 16px;
-}
-.team h3 { margin: 8px 0; }
-.tag {
-  color: #dce7f5;
-  background: #304158;
-  padding: 4px 7px;
-  border-radius: 5px;
-  font-size: 12px;
-}
-.team p { color: var(--muted); font-size: 14px; }
-.game-section { margin: 28px 0 34px; }
-.section-note { color: var(--muted); font-size: 13px; line-height: 1.5; }
 .game {
   background: var(--panel);
   border-radius: 10px;
@@ -84,10 +89,10 @@ button:disabled { opacity: .6; cursor: wait; }
   margin: 10px 0;
   border-left: 4px solid #64748b;
 }
-.game.nfl, .standing-card.nfl { border-left-color: #c8102e; }
-.game.nba, .standing-card.nba { border-left-color: #007a33; }
-.game.mlb, .standing-card.mlb { border-left-color: #e0b13d; }
-.game.nhl, .standing-card.nhl { border-left-color: #8ab4f8; }
+.game.nfl { border-left-color: #c8102e; }
+.game.nba { border-left-color: #007a33; }
+.game.mlb { border-left-color: #e0b13d; }
+.game.nhl { border-left-color: #8ab4f8; }
 .game-top {
   display: flex;
   flex-wrap: wrap;
@@ -101,77 +106,13 @@ button:disabled { opacity: .6; cursor: wait; }
   font-weight: bold;
   margin: 12px 0 7px;
 }
-.score { font-size: 16px; font-weight: bold; margin-top: 9px; }
 .status { color: var(--muted); font-size: 13px; }
-.empty, .notice {
+.empty {
   background: var(--panel);
   border-radius: 10px;
   padding: 16px;
   color: var(--muted);
   line-height: 1.5;
-}
-.standings-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 18px;
-}
-.standing-card {
-  background: var(--panel);
-  border-left: 4px solid var(--red);
-  border-radius: 10px;
-  padding: 16px;
-  min-width: 0;
-}
-.standing-card h4 { margin: 0 0 12px; font-size: 16px; }
-.standing-group {
-  color: #dce7f5;
-  font-size: 12px;
-  margin-bottom: 8px;
-}
-.table-wrap {
-  width: 100%;
-  overflow-x: auto;
-  border-radius: 8px;
-}
-.standings-table {
-  border-collapse: collapse;
-  width: 100%;
-  min-width: 440px;
-  font-size: 13px;
-}
-.standings-table th,
-.standings-table td {
-  padding: 10px 9px;
-  text-align: right;
-  border-bottom: 1px solid #354357;
-  white-space: nowrap;
-}
-.standings-table th {
-  background: #26374b;
-  color: #dce7f5;
-  font-size: 11px;
-  text-transform: uppercase;
-}
-.standings-table th:first-child,
-.standings-table td:first-child { text-align: left; }
-.standings-table tbody tr:last-child td { border-bottom: 0; }
-.standings-table .boston-row {
-  background: #3a2635;
-  font-weight: bold;
-  box-shadow: inset 3px 0 var(--red);
-}
-.boston-label {
-  color: #ffb8c5;
-  font-size: 10px;
-  margin-left: 5px;
-  text-transform: uppercase;
-}
-.standings-league { margin-bottom: 24px; }
-.standings-league h3 { margin: 0 0 12px; }
-.standings-league .league-note {
-  color: var(--muted);
-  font-size: 12px;
-  margin: -4px 0 12px;
 }
 footer {
   text-align: center;
@@ -179,14 +120,12 @@ footer {
   color: #94a3b8;
   font-size: 12px;
 }
-a { color: #9ec5ff; text-decoration: none; }
-a:hover { text-decoration: underline; }
-@media (max-width: 500px) {
-  main { padding: 16px 10px; }
-  header h1 { font-size: 25px; }
-  .standings-table th, .standings-table td {
-    padding: 9px 7px;
-  }
+@media (max-width: 480px) {
+  main { padding: 17px 10px; }
+  header h1 { font-size: 26px; }
+  .teams { gap: 10px; }
+  .team { padding: 16px 12px; }
+  .team h3 { font-size: 16px; }
 }
 </style>
 </head>
@@ -198,78 +137,49 @@ a:hover { text-decoration: underline; }
 
 <main>
   <h2>Your Boston teams</h2>
+  <p class="summary">Choose a team to view its fixtures, results and league standings.</p>
+
   <section class="teams">
-    <article class="team">
+    <a class="team" href="patriots.html" style="--team-colour:#c8102e">
+      <span class="arrow">›</span>
       <span class="tag">NFL</span>
       <h3>New England Patriots</h3>
       <p>American football</p>
-    </article>
-    <article class="team">
+    </a>
+
+    <a class="team" href="celtics.html" style="--team-colour:#007a33">
+      <span class="arrow">›</span>
       <span class="tag">NBA</span>
       <h3>Boston Celtics</h3>
       <p>Basketball</p>
-    </article>
-    <article class="team">
+    </a>
+
+    <a class="team" href="red-sox.html" style="--team-colour:#e0b13d">
+      <span class="arrow">›</span>
       <span class="tag">MLB</span>
       <h3>Boston Red Sox</h3>
       <p>Baseball</p>
-    </article>
-    <article class="team">
+    </a>
+
+    <a class="team" href="bruins.html" style="--team-colour:#8ab4f8">
+      <span class="arrow">›</span>
       <span class="tag">NHL</span>
       <h3>Boston Bruins</h3>
       <p>Ice hockey</p>
-    </article>
+    </a>
   </section>
 
-  <h2>Fixtures, results and calendar</h2>
-  <p class="summary">Game times are shown in UK local time, including daylight saving. Schedules load from ESPN.</p>
-
-  <div class="toolbar">
-    <select id="filter" aria-label="Filter by team">
-      <option value="all">All four teams</option>
-      <option value="NFL">Patriots</option>
-      <option value="NBA">Celtics</option>
-      <option value="MLB">Red Sox</option>
-      <option value="NHL">Bruins</option>
-    </select>
+  <section>
+    <h2>Upcoming fixtures</h2>
+    <p class="summary">
+      All four teams, in date order. Game times are shown in UK local time,
+      including daylight saving.
+    </p>
     <button id="refresh">Refresh fixtures</button>
-  </div>
-
-  <p id="status" class="summary" aria-live="polite">Loading schedules…</p>
-
-  <section class="game-section">
-    <h3>Upcoming fixtures</h3>
-    <p class="section-note">Upcoming games, shown soonest first.</p>
-    <div id="upcoming"><div class="empty">Loading fixtures…</div></div>
-  </section>
-
-  <section class="game-section">
-    <h3>Latest results</h3>
-    <p class="section-note">Completed games, with the most recent first.</p>
-    <div id="results"><div class="empty">Loading results…</div></div>
-  </section>
-
-  <section class="game-section">
-    <h3>Combined calendar</h3>
-    <p class="section-note">All games returned by ESPN, in date order.</p>
-    <div id="calendar"><div class="empty">Loading calendar…</div></div>
-  </section>
-
-  <section class="game-section">
-    <h3>Full league standings</h3>
-    <p class="section-note">Every team returned by ESPN, grouped by conference or division where available. Boston teams are highlighted. Statistics depend on the current league season.</p>
-    <div class="toolbar">
-      <button id="refreshStandings">Refresh standings</button>
+    <p id="status" class="summary" aria-live="polite">Loading schedules…</p>
+    <div id="upcoming">
+      <div class="empty">Loading upcoming fixtures…</div>
     </div>
-    <p id="standingsStatus" class="summary" aria-live="polite">Loading full league standings…</p>
-    <div id="standings">
-      <div class="empty">Loading league tables…</div>
-    </div>
-  </section>
-
-  <section class="notice">
-    <strong>About the data</strong>
-    <p>Schedules, scores and standings are requested from ESPN. This is an unofficial data source, not an official Boston team website. Availability and the statistics provided may change.</p>
   </section>
 </main>
 
@@ -277,27 +187,25 @@ a:hover { text-decoration: underline; }
 
 <script>
 const feeds = [
-  { league: "NFL", team: "New England Patriots", id: "17", sport: "football", path: "nfl" },
-  { league: "NBA", team: "Boston Celtics", id: "2", sport: "basketball", path: "nba" },
-  { league: "MLB", team: "Boston Red Sox", id: "2", sport: "baseball", path: "mlb" },
-  { league: "NHL", team: "Boston Bruins", id: "1", sport: "hockey", path: "nhl" }
+  { league:"NFL", team:"New England Patriots", id:"17", sport:"football", path:"nfl" },
+  { league:"NBA", team:"Boston Celtics", id:"2", sport:"basketball", path:"nba" },
+  { league:"MLB", team:"Boston Red Sox", id:"2", sport:"baseball", path:"mlb" },
+  { league:"NHL", team:"Boston Bruins", id:"1", sport:"hockey", path:"nhl" }
 ];
 
 const statusEl = document.getElementById("status");
-const filterEl = document.getElementById("filter");
+const upcomingEl = document.getElementById("upcoming");
 const refreshEl = document.getElementById("refresh");
-const standingsStatusEl = document.getElementById("standingsStatus");
-const standingsEl = document.getElementById("standings");
-const refreshStandingsEl = document.getElementById("refreshStandings");
-
-let allGames = [];
 
 function dateLabel(dateString) {
   const date = new Date(dateString);
   if (Number.isNaN(date.getTime())) return "Date TBC";
   return new Intl.DateTimeFormat("en-GB", {
-    weekday: "short", day: "numeric", month: "short", year: "numeric",
-    timeZone: "Europe/London"
+    weekday:"short",
+    day:"numeric",
+    month:"short",
+    year:"numeric",
+    timeZone:"Europe/London"
   }).format(date);
 }
 
@@ -305,14 +213,11 @@ function timeLabel(dateString) {
   const date = new Date(dateString);
   if (Number.isNaN(date.getTime())) return "Time TBC";
   return new Intl.DateTimeFormat("en-GB", {
-    hour: "2-digit", minute: "2-digit",
-    timeZone: "Europe/London", timeZoneName: "short"
+    hour:"2-digit",
+    minute:"2-digit",
+    timeZone:"Europe/London",
+    timeZoneName:"short"
   }).format(date);
-}
-
-function getStatus(event) {
-  return event.status?.type?.shortDetail ||
-    event.status?.type?.description || "Scheduled";
 }
 
 function parseEvent(event, feed) {
@@ -326,13 +231,11 @@ function parseEvent(event, feed) {
     league: feed.league,
     team: feed.team,
     date: event.date || competition?.date,
-    name: event.name || "Game",
     home: home?.team?.displayName || "Home team",
     away: away?.team?.displayName || "Away team",
-    homeScore: home?.score?.displayValue ?? home?.score?.value ?? home?.score ?? null,
-    awayScore: away?.score?.displayValue ?? away?.score?.value ?? away?.score ?? null,
-    status: getStatus(event),
     completed: Boolean(event.status?.type?.completed),
+    status: event.status?.type?.shortDetail ||
+      event.status?.type?.description || "Scheduled",
     link: event.links?.[0]?.href || ""
   };
 }
@@ -340,15 +243,11 @@ function parseEvent(event, feed) {
 async function loadFeed(feed) {
   const url = `https://site.api.espn.com/apis/site/v2/sports/${feed.sport}/${feed.path}/teams/${feed.id}/schedule`;
   const response = await fetch(url);
-  if (!response.ok) throw new Error(`${feed.league}: HTTP ${response.status}`);
+  if (!response.ok) throw new Error(feed.league);
   const data = await response.json();
   const events = data.events || data.content?.events || [];
-  return events.map(event => parseEvent(event, feed)).filter(game => game.date);
-}
-
-function scoreIsAvailable(game) {
-  return game.homeScore !== null && game.homeScore !== undefined &&
-    game.awayScore !== null && game.awayScore !== undefined;
+  return events.map(event => parseEvent(event, feed))
+    .filter(game => game.date);
 }
 
 function gameCard(game) {
@@ -362,43 +261,13 @@ function gameCard(game) {
       <span>${timeLabel(game.date)}</span>
       <span class="status">${game.status}</span>
     </div>
-    ${scoreIsAvailable(game) ? `<div class="score">${game.awayScore} – ${game.homeScore}</div>` : ""}
   `;
+
   return `<article class="game ${game.league.toLowerCase()}">
-    ${game.link ? `<a href="${game.link}" target="_blank" rel="noopener">${content}</a>` : content}
+    ${game.link
+      ? `<a href="${game.link}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">${content}</a>`
+      : content}
   </article>`;
-}
-
-function showGames(elementId, games, emptyMessage) {
-  const element = document.getElementById(elementId);
-  element.innerHTML = games.length
-    ? games.map(gameCard).join("")
-    : `<div class="empty">${emptyMessage}</div>`;
-}
-
-function renderGames() {
-  const selected = filterEl.value;
-  const filtered = allGames.filter(game =>
-    selected === "all" || game.league === selected
-  );
-  const now = Date.now();
-
-  const upcoming = filtered
-    .filter(game => !game.completed && new Date(game.date).getTime() >= now)
-    .sort((a, b) => new Date(a.date) - new Date(b.date));
-
-  const results = filtered
-    .filter(game => game.completed)
-    .sort((a, b) => new Date(b.date) - new Date(a.date))
-    .slice(0, 20);
-
-  const calendar = [...filtered].sort(
-    (a, b) => new Date(a.date) - new Date(b.date)
-  );
-
-  showGames("upcoming", upcoming, "No upcoming fixtures were returned. Try refreshing or choosing another team.");
-  showGames("results", results, "No completed results were returned by the feed.");
-  showGames("calendar", calendar, "No games were returned. Try refreshing.");
 }
 
 async function loadAll() {
@@ -407,327 +276,53 @@ async function loadAll() {
 
   try {
     const outcomes = await Promise.allSettled(feeds.map(loadFeed));
-    allGames = [];
+    let games = [];
     const errors = [];
 
     outcomes.forEach((result, index) => {
-      if (result.status === "fulfilled") allGames.push(...result.value);
-      else errors.push(feeds[index].league);
+      if (result.status === "fulfilled") {
+        games.push(...result.value);
+      } else {
+        errors.push(feeds[index].league);
+      }
     });
 
-    allGames = [...new Map(allGames.map(game => [game.id, game])).values()];
-    renderGames();
+    games = [...new Map(games.map(game => [game.id, game])).values()];
+
+    const now = Date.now();
+    const upcoming = games
+      .filter(game => !game.completed && new Date(game.date).getTime() >= now)
+      .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    upcomingEl.innerHTML = upcoming.length
+      ? upcoming.map(gameCard).join("")
+      : '<div class="empty">No upcoming fixtures were returned. Try refreshing later.</div>';
 
     const loaded = 4 - errors.length;
     const updated = new Intl.DateTimeFormat("en-GB", {
-      hour: "2-digit", minute: "2-digit", timeZone: "Europe/London"
+      hour:"2-digit",
+      minute:"2-digit",
+      timeZone:"Europe/London",
+      timeZoneName:"short"
     }).format(new Date());
 
-    if (!loaded) {
-      statusEl.textContent = "The sports feeds could not be loaded. Check your connection and try again.";
-    } else if (errors.length) {
-      statusEl.textContent = `${loaded} of 4 league feeds loaded at ${updated} UK time. Unavailable: ${errors.join(", ")}.`;
+    if (loaded === 4) {
+      statusEl.textContent = `All four league feeds loaded at ${updated}.`;
+    } else if (loaded > 0) {
+      statusEl.textContent = `${loaded} of 4 league feeds loaded at ${updated}. Unavailable: ${errors.join(", ")}.`;
     } else {
-      statusEl.textContent = `All four league feeds loaded at ${updated} UK time.`;
+      statusEl.textContent = "The sports feeds could not be loaded. Check your connection and try again.";
     }
   } catch (error) {
     statusEl.textContent = "Unable to load schedules. Please try again.";
+    upcomingEl.innerHTML = '<div class="empty">Fixtures could not be loaded. Check your connection and refresh.</div>';
   } finally {
     refreshEl.disabled = false;
   }
 }
 
-/* FULL LEAGUE STANDINGS */
-
-const standingsFeeds = [
-  { league: "NFL", team: "New England Patriots", id: "17", sport: "football", path: "nfl" },
-  { league: "NBA", team: "Boston Celtics", id: "2", sport: "basketball", path: "nba" },
-  { league: "MLB", team: "Boston Red Sox", id: "2", sport: "baseball", path: "mlb" },
-  { league: "NHL", team: "Boston Bruins", id: "1", sport: "hockey", path: "nhl" }
-];
-
-function safeText(value) {
-  return String(value ?? "").replace(/[&<>"']/g, char => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#39;"
-  })[char]);
-}
-
-function getStat(entry, names) {
-  const stats = entry?.stats || [];
-  const found = stats.find(stat => {
-    const name = String(stat.name || "").toLowerCase();
-    const abbreviation = String(stat.abbreviation || "").toLowerCase();
-    return names.includes(name) || names.includes(abbreviation);
-  });
-  return found?.displayValue ?? found?.summary ??
-    (found?.value !== undefined ? found.value : null);
-}
-
-function getGroupEntries(node, path = [], output = []) {
-  if (!node || typeof node !== "object") return output;
-
-  if (Array.isArray(node)) {
-    node.forEach(child => getGroupEntries(child, path, output));
-    return output;
-  }
-
-  const groupName = node.name || node.abbreviation || "";
-  const nextPath = groupName ? [...path, groupName] : path;
-
-  if (Array.isArray(node.standings?.entries)) {
-    output.push({
-      name: nextPath.join(" · ") || "League standings",
-      entries: node.standings.entries
-    });
-  }
-
-  for (const [key, value] of Object.entries(node)) {
-    if (key === "standings") continue;
-    if (value && typeof value === "object") {
-      getGroupEntries(value, nextPath, output);
-    }
-  }
-
-  return output;
-}
-
-function getAllEntries(data) {
-  let groups = getGroupEntries(data);
-
-  // Some league responses provide a flat table instead of grouped tables.
-  if (!groups.length && Array.isArray(data.standings?.entries)) {
-    groups = [{
-      name: data.name || "League standings",
-      entries: data.standings.entries
-    }];
-  }
-
-  // Avoid duplicate group tables if ESPN includes both a summary table
-  // and nested conference or division tables.
-  const seen = new Set();
-  groups = groups.filter(group => {
-    const key = group.entries.map(entry => String(entry.team?.id || entry.team?.abbreviation || entry.team?.displayName)).join("|");
-    if (!key || seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
-
-  return groups;
-}
-
-function isBostonTeam(team, item) {
-  const name = String(team?.displayName || "").toLowerCase();
-  const abbreviation = String(team?.abbreviation || "").toLowerCase();
-  return name === item.team.toLowerCase() ||
-    abbreviation === ({ NFL: "ne", NBA: "bos", MLB: "bos", NHL: "bos" })[item.league];
-}
-
-function teamRecord(entry, item) {
-  const wins = getStat(entry, ["wins", "w"]);
-  const losses = getStat(entry, ["losses", "l"]);
-  const ties = getStat(entry, ["ties", "t"]);
-  const otLosses = getStat(entry, ["otlosses", "otl"]);
-  const parts = [wins, losses].filter(value => value !== null);
-
-  if (parts.length < 2) return "—";
-
-  let record = `${wins}-${losses}`;
-  if (item.league === "NFL" && ties !== null) record += `-${ties}`;
-  if (item.league === "NHL" && otLosses !== null) record += `-${otLosses}`;
-  return record;
-}
-
-function standingColumns(league) {
-  if (league === "NFL") {
-    return [
-      ["W", ["wins", "w"]],
-      ["L", ["losses", "l"]],
-      ["T", ["ties", "t"]],
-      ["PCT", ["winpercent", "pct"]],
-      ["PF", ["pointsfor", "pf"]],
-      ["PA", ["pointsagainst", "pa"]],
-      ["STRK", ["streak", "strk"]]
-    ];
-  }
-
-  if (league === "NBA") {
-    return [
-      ["W", ["wins", "w"]],
-      ["L", ["losses", "l"]],
-      ["PCT", ["winpercent", "pct"]],
-      ["GB", ["gamesbehind", "gb"]],
-      ["STRK", ["streak", "strk"]]
-    ];
-  }
-
-  if (league === "MLB") {
-    return [
-      ["W", ["wins", "w"]],
-      ["L", ["losses", "l"]],
-      ["PCT", ["winpercent", "pct"]],
-      ["GB", ["gamesbehind", "gb"]],
-      ["STRK", ["streak", "strk"]]
-    ];
-  }
-
-  return [
-    ["W", ["wins", "w"]],
-    ["L", ["losses", "l"]],
-    ["OTL", ["otlosses", "otl"]],
-    ["PTS", ["points", "pts"]],
-    ["PCT", ["winpercent", "pct"]],
-    ["STRK", ["streak", "strk"]]
-  ];
-}
-
-function renderStandingsGroup(group, item) {
-  const columns = standingColumns(item.league);
-  const entries = [...group.entries].sort((a, b) => {
-    const aRank = Number(getStat(a, ["playoffseed", "seed", "rank", "divisionrank"]));
-    const bRank = Number(getStat(b, ["playoffseed", "seed", "rank", "divisionrank"]));
-
-    if (Number.isFinite(aRank) && Number.isFinite(bRank) && aRank !== bRank) {
-      return aRank - bRank;
-    }
-
-    const aWins = Number(getStat(a, ["wins", "w"]));
-    const bWins = Number(getStat(b, ["wins", "w"]));
-    if (Number.isFinite(aWins) && Number.isFinite(bWins) && aWins !== bWins) {
-      return bWins - aWins;
-    }
-
-    return String(a.team?.displayName || "").localeCompare(
-      String(b.team?.displayName || "")
-    );
-  });
-
-  const rows = entries.map((entry, index) => {
-    const team = entry.team || {};
-    const boston = isBostonTeam(team, item);
-    const teamName = team.displayName || team.name || "Unknown team";
-
-    const cells = columns.map(([, names]) => {
-      const value = getStat(entry, names);
-      return `<td>${safeText(value === null ? "—" : value)}</td>`;
-    }).join("");
-
-    return `<tr class="${boston ? "boston-row" : ""}">
-      <td>${index + 1}. ${safeText(teamName)}${boston ? '<span class="boston-label">Boston</span>' : ""}</td>
-      ${cells}
-    </tr>`;
-  }).join("");
-
-  return `
-    <article class="standing-card ${item.league.toLowerCase()}">
-      <div class="standing-group">${safeText(item.league)}</div>
-      <h4>${safeText(group.name)}</h4>
-      <div class="table-wrap">
-        <table class="standings-table">
-          <thead>
-            <tr>
-              <th>Team</th>
-              ${columns.map(([label]) => `<th>${safeText(label)}</th>`).join("")}
-            </tr>
-          </thead>
-          <tbody>${rows}</tbody>
-        </table>
-      </div>
-    </article>
-  `;
-}
-
-function renderLeague(data, item) {
-  const groups = getAllEntries(data);
-  if (!groups.length) throw new Error("No team tables found in ESPN response");
-
-  const validGroups = groups.filter(group => group.entries.length > 0);
-  if (!validGroups.length) throw new Error("No teams found");
-
-  return `
-    <section class="standings-league">
-      <h3>${safeText(item.league)} standings</h3>
-      <p class="league-note">${validGroups.reduce((total, group) => total + group.entries.length, 0)} team entries returned by ESPN</p>
-      <div class="standings-grid">
-        ${validGroups.map(group => renderStandingsGroup(group, item)).join("")}
-      </div>
-    </section>
-  `;
-}
-
-async function loadOneStanding(item) {
-  const url = `https://site.api.espn.com/apis/v2/sports/${item.sport}/${item.path}/standings`;
-  const response = await fetch(url);
-  if (!response.ok) throw new Error(`HTTP ${response.status}`);
-  const data = await response.json();
-  return { item, html: renderLeague(data, item) };
-}
-
-async function loadStandings() {
-  refreshStandingsEl.disabled = true;
-  standingsStatusEl.textContent = "Loading all teams from ESPN…";
-  standingsEl.innerHTML = "";
-
-  try {
-    const outcomes = await Promise.allSettled(
-      standingsFeeds.map(loadOneStanding)
-    );
-
-    let loaded = 0;
-    const errors = [];
-
-    outcomes.forEach((outcome, index) => {
-      const item = standingsFeeds[index];
-
-      if (outcome.status === "fulfilled") {
-        standingsEl.insertAdjacentHTML("beforeend", outcome.value.html);
-        loaded++;
-      } else {
-        errors.push(item.league);
-        standingsEl.insertAdjacentHTML("beforeend", `
-          <section class="standings-league">
-            <h3>${safeText(item.league)} standings</h3>
-            <div class="empty">
-              ESPN did not return a usable table for this league just now.
-              Try refreshing later.
-            </div>
-          </section>
-        `);
-      }
-    });
-
-    const updated = new Intl.DateTimeFormat("en-GB", {
-      hour: "2-digit", minute: "2-digit",
-      timeZone: "Europe/London", timeZoneName: "short"
-    }).format(new Date());
-
-    if (loaded === 4) {
-      standingsStatusEl.textContent =
-        `All four league tables loaded at ${updated}. Boston teams are highlighted.`;
-    } else if (loaded > 0) {
-      standingsStatusEl.textContent =
-        `${loaded} of 4 league tables loaded at ${updated}. Unavailable: ${errors.join(", ")}.`;
-    } else {
-      standingsStatusEl.textContent =
-        "The standings could not be loaded. Check your connection and try again.";
-    }
-  } catch (error) {
-    standingsStatusEl.textContent =
-      "Unable to load league standings. Please try again.";
-  } finally {
-    refreshStandingsEl.disabled = false;
-  }
-}
-
-filterEl.addEventListener("change", renderGames);
 refreshEl.addEventListener("click", loadAll);
-refreshStandingsEl.addEventListener("click", loadStandings);
-
 loadAll();
-loadStandings();
 </script>
 </body>
 </html>
