@@ -241,7 +241,12 @@ function parseEvent(event) {
   const opponent = competitors.find(c => c !== ownTeam);
 
   const completed = isCompleted(event);
-  const ownScore = ownTeam?.score;
+  const ownScore = ownTeam?.score?.displayValue
+  ?? ownTeam?.score?.value
+  ?? ownTeam?.score;
+const opponentScore = opponent?.score?.displayValue
+  ?? opponent?.score?.value
+  ?? opponent?.score;
   const opponentScore = opponent?.score;
   let outcome = "";
 
