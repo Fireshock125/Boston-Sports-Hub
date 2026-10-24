@@ -368,58 +368,135 @@ function gameCard(game, resultMode = false) {
   }</article>`;
 }
 
-async function loadSchedule() {
-  const button = $("refresh-fixtures");
+async function loadStandings() {
+  const button = $("refresh-standings");
+  const container = $("standings-list");
+
   button.disabled = true;
-  $("fixture-status").textContent = "Loading schedule from ESPN…";
+  button.textContent = "Refreshing…";
+  container.innerHTML =
+    '<div class="empty">Loading NFL standings…</div>';
 
   try {
-    const response = await fetch(SCHEDULE_URL);
-    if (!response.ok) throw new Error("Schedule unavailable");
-
-    const data = await response.json();
-
-    const games = (data.events || data.content?.events || [])
-      .map(parseEvent)
-      .filter(game => game.date)
-      .sort((a, b) => new Date(a.date) - new Date(b.date));
-
-    const now = Date.now();
-
-    const upcoming = games.filter(game =>
-      !game.completed && new Date(game.date).getTime() >= now
+    const response = await fetch(
+      STANDINGS_URL + "?region=us&lang=en&season=2026&type=2&limit=100"
     );
 
-    const results = games
-      .filter(game => game.completed)
-      .reverse()
-      .slice(0, 10);
+    if (!response.ok) {
+      throw new Error("Standings request failed: " + response.status);
+    }
 
-    $("fixtures-list").innerHTML = upcoming.length
-      ? upcoming.map(game => gameCard(game)).join("")
-      : '<div class="empty">No upcoming fixtures are currently listed.</div>';
+    const data = await response.json();
+    const allTeams = [];
 
-    $("results-list").innerHTML = results.length
-      ? results.map(game => gameCard(game, true)).join("")
-      : '<div class="empty">No recent results are currently available.</div>';
+    function readEntries(entries, conferenceName = "") {
+      if (!Array.isArray(entries)) return;
 
-    $("fixture-status").textContent =
-      `Schedule updated at ${timeLabel(new Date().toISOString())}.`;
+      entries.forEach(entry => {
+        const team = entry.team || {};
+        const abbreviation = String(
+          team.abbreviation || ""
+        ).toUpperCase();
+
+        if (!abbreviation) return;
+
+        const stats = Array.isArray(entry.stats)
+          ? entry.stats
+          : Object.entries(entry.stats || {}).map(([name, value]) => ({
+              name,
+              value,
+              displayValue: String(value)
+            }));
+
+        const normalised = normaliseTeam(
+          { ...entry, team, stats },
+          conferenceName,
+          ""
+        );
+
+        allTeams.push(normalised);
+      });
+    }
+
+    function readGroup(group, inheritedConference = "") {
+      if (!group || typeof group !== "object") return;
+
+      const name = String(
+        group.abbreviation || group.name || group.displayName || ""
+      ).toUpperCase();
+
+      let conference = inheritedConference;
+
+      if (name.includes("AFC") ||
+          name.includes("AMERICAN FOOTBALL CONFERENCE")) {
+        conference = "AFC";
+      } else if (name.includes("NFC") ||
+                 name.includes("NATIONAL FOOTBALL CONFERENCE")) {
+        conference = "NFC";
+      }
+
+      // ESPN commonly stores the teams here.
+      readEntries(group.standings?.entries, conference);
+
+      // Also support responses where entries are directly on a group.
+      readEntries(group.entries, conference);
+
+      if (group.standings?.children) {
+        group.standings.children.forEach(child =>
+          readGroup(child, conference)
+        );
+      }
+
+      if (group.children) {
+        group.children.forEach(child =>
+          readGroup(child, conference)
+        );
+      }
+    }
+
+    readGroup(data);
+
+    // Remove duplicate teams if ESPN exposes the same entries in
+    // more than one part of the response.
+    const uniqueTeams = [
+      ...new Map(
+        allTeams.map(team => [
+          team.abbreviation,
+          team
+        ])
+      ).values()
+    ];
+
+    if (uniqueTeams.length !== 32) {
+      throw new Error(
+        "Expected 32 NFL teams but found " + uniqueTeams.length
+      );
+    }
+
+    // Assign the official divisions regardless of ESPN's grouping.
+    for (const [division, abbreviations] of Object.entries(NFL_DIVISIONS)) {
+      for (const team of uniqueTeams) {
+        if (abbreviations.includes(team.abbreviation)) {
+          team.division = division;
+          team.conference = division.split(" ")[0];
+        }
+      }
+    }
+
+    standingsData = { allTeams: uniqueTeams };
+    renderStandings();
 
   } catch (error) {
-    $("fixture-status").textContent =
-      "Could not load the schedule. Please try again.";
+    container.innerHTML =
+      '<div class="empty">Could not load NFL standings. Please try refreshing.</div>';
 
-    $("fixtures-list").innerHTML =
-      '<div class="empty">Fixtures could not be loaded. Check your connection and refresh.</div>';
-
-    $("results-list").innerHTML =
-      '<div class="empty">Results could not be loaded. Check your connection and refresh.</div>';
-
-    console.error("Patriots schedule error:", error);
+    console.error("NFL standings error:", error);
   } finally {
     button.disabled = false;
+    button.textContent = "Refresh standings";
   }
+}
+
 }
 
 /* STANDINGS */
