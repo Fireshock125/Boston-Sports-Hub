@@ -94,7 +94,7 @@ section { margin-bottom: 32px; scroll-margin-top: 80px; }
   border: 1px solid var(--border);
   border-radius: 9px;
 }
-table { width: 100%; border-collapse: collapse; min-width: 520px; }
+table { width: 100%; border-collapse: collapse; min-width: 550px; }
 th, td {
   padding: 11px 12px;
   border-bottom: 1px solid var(--border);
@@ -105,6 +105,7 @@ th { background: #080d14; color: var(--accent); font-size: .85rem; }
 td { font-size: .9rem; }
 tr:last-child td { border-bottom: 0; }
 tr.boston { background: #413817; font-weight: bold; }
+.position-cell { color: var(--accent); font-weight: bold; }
 button {
   background: var(--accent);
   color: #111;
@@ -269,7 +270,7 @@ function gameDetails(event) {
   );
 
   const otherTeam = competitors.find(team => team !== ownTeam) || opponent;
-  
+
   function extractScore(competitor) {
     const score = competitor?.score;
 
@@ -457,6 +458,7 @@ async function loadStandings() {
         <table>
           <thead>
             <tr>
+              <th>#</th>
               <th>Team</th>
               <th>GP</th>
               <th>W</th>
@@ -468,7 +470,7 @@ async function loadStandings() {
             </tr>
           </thead>
           <tbody>
-            ${uniqueTeams.map(team => {
+            ${uniqueTeams.map((team, index) => {
               const isBoston =
                 team.id === TEAM_ID ||
                 team.abbreviation === "BOS" ||
@@ -476,6 +478,7 @@ async function loadStandings() {
 
               return `
                 <tr class="${isBoston ? "boston" : ""}">
+                  <td class="position-cell">${index + 1}</td>
                   <td>${safeText(team.name)}</td>
                   <td>${safeText(team.gp)}</td>
                   <td>${safeText(team.wins)}</td>
@@ -490,7 +493,7 @@ async function loadStandings() {
           </tbody>
         </table>
       </div>
-      <p class="status">Standings supplied by ESPN. The table may update as the season progresses.</p>
+      <p class="status">Standings supplied by ESPN. Position numbers show the table order by points; official NHL tiebreakers and playoff seeding may differ.</p>
     `;
 
   } catch (error) {
