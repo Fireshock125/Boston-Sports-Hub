@@ -440,75 +440,9 @@ function gameDetails(event) {
   };
 }
 
-
 function renderGame(event, showResult) {
   const details = gameDetails(event);
-
-  const date = details.date ? new Date(details.date) : null;
-  const validDate = date && !Number.isNaN(date.getTime());
-
-  const americanTime = validDate
-    ? (() => {
-        const competitors = getCompetitors(event);
-        const home = competitors.find(team => team.homeAway === "home");
-        const timezone =
-          home?.venue?.address?.city ? "America/New_York" :
-          home?.team?.timeZone || "America/New_York";
-
-        return new Intl.DateTimeFormat("en-US", {
-          hour:"numeric",
-          minute:"2-digit",
-          hour12:true,
-          timeZone:timezone,
-          timeZoneName:"short"
-        }).format(date);
-      })()
-    : "Time TBC";
-
-  const ukTime = validDate
-    ? new Intl.DateTimeFormat("en-GB", {
-        hour:"2-digit",
-        minute:"2-digit",
-        timeZone:"Europe/London",
-        timeZoneName:"short"
-      }).format(date)
-    : "Time TBC";
-
-  return `
-    <article class="game">
-      <div class="game-top">
-        <span class="matchup">
-          Bruins ${details.homeAway === "Home" ? "vs" : "at"}
-          ${safeText(details.opponent)}
-        </span>
-        <span style="text-align:right;font-weight:bold;color:#fff">
-          ${safeText(dateLabel(details.date))}
-        </span>
-      </div>
-
-      ${showResult
-        ? `<div class="score">${safeText(details.scoreText)}
-            ${details.outcome ? " · " + safeText(details.outcome) : ""}
-           </div>`
-        : `
-          <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-top:12px">
-            <div class="status" style="margin:0">
-              <span style="display:block;font-size:.7rem;text-transform:uppercase">American time</span>
-              <strong style="font-size:.95rem;color:#fff">${safeText(americanTime)}</strong>
-            </div>
-            <div class="status" style="margin:0;text-align:right">
-              <span style="display:block;font-size:.7rem;text-transform:uppercase">UK time</span>
-              <strong style="font-size:.95rem;color:#fff">${safeText(ukTime)}</strong>
-            </div>
-          </div>
-          <div class="status">${safeText(details.homeAway)}
-            ${details.status ? " · " + safeText(details.status) : ""}
-          </div>
-        `
-      }
-    </article>
-  `;
-}
+  currentEventCompetitors = details.competitors;
 
   const matchup = `
     <div class="matchup-row">
