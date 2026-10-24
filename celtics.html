@@ -41,13 +41,16 @@ td { font-size: 14px; }
 tr:last-child td { border-bottom: 0; }
 tr.boston { background: #183b2b; font-weight: bold; }
 .position { font-weight: bold; width: 60px; }
-.standings-block { margin-top: 26px; }
-.standings-block h3 { margin-bottom: 8px; }
+.standings-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0; }
+.standings-tabs button { flex: 1 1 150px; }
+.standings-tabs button.active { background: var(--accent); border-color: #38a169; font-weight: bold; }
+.standings-tabs button[aria-pressed="true"] { background: var(--accent); border-color: #38a169; font-weight: bold; }
 section { margin-bottom: 32px; scroll-margin-top: 80px; }
 footer { text-align: center; padding: 25px; color: #94a3b8; font-size: 12px; }
 @media (max-width: 480px) {
   main { padding: 17px 10px; }
   header h1 { font-size: 26px; }
+  .standings-tabs button { flex: 1 1 100%; }
 }
 </style>
 </head>
@@ -82,10 +85,17 @@ footer { text-align: center; padding: 25px; color: #94a3b8; font-size: 12px; }
 
   <section id="leagues">
     <h2>NBA Standings</h2>
-    <p class="summary">Numbered league positions. The Celtics are highlighted in every table.</p>
+    <p class="summary">Choose a table below. The Celtics are highlighted in green.</p>
     <button id="refresh-standings">Refresh standings</button>
     <p id="standings-status" class="summary" aria-live="polite">Loading NBA standings…</p>
-    <div id="standings-list"></div>
+
+    <div class="standings-tabs" role="group" aria-label="Choose standings table">
+      <button type="button" class="active" data-table="overall" aria-pressed="true">NBA Overall</button>
+      <button type="button" data-table="east" aria-pressed="false">Eastern Conference</button>
+      <button type="button" data-table="atlantic" aria-pressed="false">Atlantic Division</button>
+    </div>
+
+    <div id="standings-list"><div class="empty">Loading standings…</div></div>
   </section>
 </main>
 
@@ -101,12 +111,19 @@ const STANDINGS_URL = `https://site.api.espn.com/apis/v2/sports/${SPORT}/${LEAGU
 const $ = id => document.getElementById(id);
 
 const ATLANTIC_TEAMS = ["BOS", "BKN", "NYK", "PHI", "TOR"];
-
 const EAST_TEAMS = [
   "ATL", "BOS", "BKN", "CHA", "CHI",
   "CLE", "DET", "IND", "MIA", "MIL",
   "NYK", "ORL", "PHI", "TOR", "WAS"
 ];
+
+let standingsTables = {
+  overall: [],
+  east: [],
+  atlantic: []
+};
+
+let selectedTable = "overall";
 
 function safeText(value) {
   return String(value ?? "").replace(/[&<>"']/g, char => ({
@@ -331,24 +348,19 @@ function rankTeams(teams) {
 
 function renderTable(title, teams) {
   if (!teams.length) {
-    return `<div class="standings-block"><h3>${safeText(title)}</h3>
-      <div class="empty">No standings are available for this table.</div></div>`;
+    return `<h3>${safeText(title)}</h3>
+      <div class="empty">No standings are available for this table.</div>`;
   }
 
   const ranked = rankTeams(teams);
 
-  return `<div class="standings-block">
-    <h3>${safeText(title)}</h3>
+  return `<h3>${safeText(title)}</h3>
     <div class="table-wrap">
       <table>
         <thead><tr>
           <th class="position">Pos.</th>
-          <th>Team</th>
-          <th>W</th>
-          <th>L</th>
-          <th>PCT</th>
-          <th>GB</th>
-          <th>Streak</th>
+          <th>Team</th><th>W</th><th>L</th>
+          <th>PCT</th><th>GB</th><th>Streak</th>
         </tr></thead>
         <tbody>
           ${ranked.map((team, index) => {
@@ -367,13 +379,32 @@ function renderTable(title, teams) {
           }).join("")}
         </tbody>
       </table>
-    </div>
-  </div>`;
+    </div>`;
+}
+
+function showStandingsTable(tableKey) {
+  selectedTable = tableKey;
+
+  document.querySelectorAll(".standings-tabs button").forEach(button => {
+    const active = button.dataset.table === tableKey;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-pressed", String(active));
+  });
+
+  const titles = {
+    overall: "NBA Overall — All Teams",
+    east: "Eastern Conference",
+    atlantic: "Atlantic Division"
+  };
+
+  $("standings-list").innerHTML = renderTable(
+    titles[tableKey],
+    standingsTables[tableKey] || []
+  );
 }
 
 async function loadStandings() {
   const button = $("refresh-standings");
-  const container = $("standings-list");
   const status = $("standings-status");
 
   button.disabled = true;
@@ -394,17 +425,18 @@ async function loadStandings() {
       throw new Error("ESPN returned incomplete NBA standings");
     }
 
-    const eastern = uniqueTeams.filter(team => EAST_TEAMS.includes(team.abbreviation));
-    const atlantic = uniqueTeams.filter(team => ATLANTIC_TEAMS.includes(team.abbreviation));
+    standingsTables.overall = uniqueTeams;
+    standingsTables.east = uniqueTeams.filter(team =>
+      EAST_TEAMS.includes(team.abbreviation)
+    );
+    standingsTables.atlantic = uniqueTeams.filter(team =>
+      ATLANTIC_TEAMS.includes(team.abbreviation)
+    );
 
-    container.innerHTML =
-      renderTable("NBA Overall — All Teams", uniqueTeams) +
-      renderTable("Eastern Conference", eastern) +
-      renderTable("Atlantic Division", atlantic);
-
+    showStandingsTable(selectedTable);
     status.textContent = `Standings updated at ${timeLabel(new Date().toISOString())}.`;
   } catch (error) {
-    container.innerHTML =
+    $("standings-list").innerHTML =
       '<div class="empty">Could not load NBA standings. Please try refreshing.</div>';
     status.textContent = "Standings could not be updated.";
     console.error(error);
@@ -413,6 +445,10 @@ async function loadStandings() {
     button.textContent = "Refresh standings";
   }
 }
+
+document.querySelectorAll(".standings-tabs button").forEach(button => {
+  button.addEventListener("click", () => showStandingsTable(button.dataset.table));
+});
 
 $("refresh-fixtures").addEventListener("click", loadSchedule);
 $("refresh-standings").addEventListener("click", loadStandings);
