@@ -76,60 +76,41 @@ section { margin-bottom:32px; scroll-margin-top:80px; }
   gap:12px;
   color:var(--muted);
   font-size:.85rem;
-  margin-bottom:14px;
+  margin-bottom:9px;
 }
 .game-date {
   text-align:right;
-  font-weight:bold;
   color:#fff;
-  font-size:.95rem;
-}
-.matchup-row {
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  margin-bottom:16px;
-}
-.team-name {
-  flex:1;
-  min-width:0;
   font-weight:bold;
-  font-size:1.02rem;
-  overflow-wrap:anywhere;
+  flex-shrink:0;
 }
-.team-name:last-child { text-align:right; }
-.versus {
-  flex:0 0 auto;
-  color:var(--accent);
-  font-size:.8rem;
-  font-weight:bold;
-}
-.game-bottom {
+.matchup { font-weight:bold; font-size:1.05rem; }
+.score { color:var(--accent); font-weight:bold; margin-top:5px; }
+.status { color:var(--muted); font-size:.85rem; margin-top:5px; }
+.game-times {
   display:flex;
   justify-content:space-between;
   align-items:flex-end;
   gap:12px;
-  border-top:1px solid var(--border);
+  margin-top:12px;
   padding-top:10px;
+  border-top:1px solid var(--border);
 }
 .game-time { min-width:0; }
 .game-time:last-child { text-align:right; }
-.time-caption {
+.time-label {
   display:block;
   color:var(--muted);
   font-size:.7rem;
   text-transform:uppercase;
-  letter-spacing:.06em;
+  letter-spacing:.04em;
 }
 .time-value {
   display:block;
+  color:#fff;
   font-weight:bold;
   font-size:.95rem;
-  overflow-wrap:anywhere;
 }
-.score { color:var(--accent); font-weight:bold; margin-top:5px; }
-.status { color:var(--muted); font-size:.85rem; margin-top:5px; }
 .message {
   background:var(--panel);
   border:1px solid var(--border);
@@ -196,15 +177,12 @@ footer {
   border-top:1px solid var(--border);
   font-size:.85rem;
 }
-@media(max-width:400px) {
-  .game { padding:11px; }
-  .team-name { font-size:.9rem; }
-  .time-value { font-size:.85rem; }
-}
 @media(max-width:600px) {
   nav { justify-content:flex-start; }
   .standings-tabs { flex-wrap:nowrap; overflow-x:auto; padding-bottom:8px; }
   .standings-tabs button { flex-shrink:0; }
+  .game { padding:12px; }
+  .time-value { font-size:.88rem; }
 }
 </style>
 </head>
@@ -226,7 +204,7 @@ footer {
   <section id="fixtures">
     <div class="section-heading">
       <h2>Upcoming Fixtures</h2>
-      <p>Boston Bruins · American and UK local times</p>
+      <p>Boston Bruins · UK and American local times</p>
     </div>
     <div id="fixtures-list" class="games">
       <div class="message">Loading upcoming fixtures...</div>
@@ -297,7 +275,7 @@ function safeText(value) {
   })[char]);
 }
 
-function formatDate(value) {
+function dateLabel(value) {
   if (!value) return "Date TBC";
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "Date TBC";
@@ -311,7 +289,7 @@ function formatDate(value) {
   }).format(date);
 }
 
-function formatUKTime(value) {
+function timeLabel(value) {
   if (!value) return "Time TBC";
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "Time TBC";
@@ -324,16 +302,16 @@ function formatUKTime(value) {
   }).format(date);
 }
 
-function formatAmericanTime(value) {
+function americanTimeLabel(value, event) {
   if (!value) return "Time TBC";
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "Time TBC";
 
-  // NHL games are played in the home team's time zone.
-  // ESPN supplies the venue time zone when available.
-  const competitors = currentEventCompetitors;
-  const home = competitors.find(team => team.homeAway === "home");
-  const venueTimezone =
+  const home = getCompetitors(event).find(team => team.homeAway === "home");
+
+  // Use the venue's timezone if ESPN provides one; otherwise use Eastern Time.
+  const timezone =
+    home?.venue?.timezone ||
     home?.team?.timeZone ||
     home?.team?.timezone ||
     "America/New_York";
@@ -343,7 +321,7 @@ function formatAmericanTime(value) {
       hour:"numeric",
       minute:"2-digit",
       hour12:true,
-      timeZone:venueTimezone,
+      timeZone:timezone,
       timeZoneName:"short"
     }).format(date);
   } catch {
@@ -366,8 +344,6 @@ function getEvents(data) {
 function getCompetitors(event) {
   return event.competitions?.[0]?.competitors || [];
 }
-
-let currentEventCompetitors = [];
 
 function isCompleted(event) {
   const competition = event.competitions?.[0];
@@ -394,7 +370,6 @@ function gameDetails(event) {
   );
 
   const otherTeam = competitors.find(team => team !== ownTeam);
-
   const isHome = home === ownTeam;
 
   function extractScore(competitor) {
@@ -435,95 +410,49 @@ function gameDetails(event) {
     homeAway:isHome ? "Home" : "Away",
     scoreText,
     outcome,
-    status,
-    competitors
+    status
   };
 }
 
+/* Fixture card: original matchup position retained.
+   Only the date and time positions have changed. */
 function renderGame(event, showResult) {
   const details = gameDetails(event);
-  currentEventCompetitors = details.competitors;
 
-  const matchup = `
-    <div class="matchup-row">
-      <div class="team-name">Boston Bruins</div>
-      <div class="versus">${details.homeAway === "Home" ? "VS" : "AT"}</div>
-      <div class="team-name">${safeText(details.opponent)}</div>
-    </div>
-  `;
-
-  const dateAndTime = showResult
-    ? `
-      <div class="game-top">
-        <span>${safeText(details.status || "Completed")}</span>
-        <span class="game-date">${safeText(formatDate(details.date))}</span>
-      </div>
-    `
-    : `
-      <div class="game-top">
-        <span></span>
-        <span class="game-date">${safeText(formatDate(details.date))}</span>
-      </div>
-    `;
-
-  if (showResult) {
-    return `
-      <article class="game">
-        ${dateAndTime}
-        ${matchup}
-        <div class="score">${safeText(details.scoreText)}
-          ${details.outcome ? " · " + safeText(details.outcome) : ""}
-        </div>
-      </article>
-    `;
-  }
-
-  const competitors = details.competitors;
-  const home = competitors.find(team => team.homeAway === "home");
-  const venueTimezone =
-    home?.team?.timeZone ||
-    home?.team?.timezone ||
-    "America/New_York";
-
-  const americanTime = (() => {
-    const date = new Date(details.date);
-    if (!details.date || Number.isNaN(date.getTime())) return "Time TBC";
-    try {
-      return new Intl.DateTimeFormat("en-US", {
-        hour:"numeric",
-        minute:"2-digit",
-        hour12:true,
-        timeZone:venueTimezone,
-        timeZoneName:"short"
-      }).format(date);
-    } catch {
-      return new Intl.DateTimeFormat("en-US", {
-        hour:"numeric",
-        minute:"2-digit",
-        hour12:true,
-        timeZone:"America/New_York",
-        timeZoneName:"short"
-      }).format(date);
-    }
-  })();
+  const americanTime = americanTimeLabel(details.date, event);
+  const ukTime = timeLabel(details.date);
 
   return `
     <article class="game">
-      ${dateAndTime}
-      ${matchup}
-      <div class="game-bottom">
-        <div class="game-time">
-          <span class="time-caption">American time</span>
-          <span class="time-value">${safeText(americanTime)}</span>
-        </div>
-        <div class="game-time">
-          <span class="time-caption">UK time</span>
-          <span class="time-value">${safeText(formatUKTime(details.date))}</span>
-        </div>
+      <div class="game-top">
+        <span class="matchup">
+          Bruins ${details.homeAway === "Home" ? "vs" : "at"}
+          ${safeText(details.opponent)}
+        </span>
+        <span class="game-date">${safeText(dateLabel(details.date))}</span>
       </div>
-      <div class="status">${safeText(details.homeAway)}
-        ${details.status ? " · " + safeText(details.status) : ""}
-      </div>
+
+      ${showResult
+        ? `<div class="score">
+            ${safeText(details.scoreText)}
+            ${details.outcome ? " · " + safeText(details.outcome) : ""}
+           </div>`
+        : `
+          <div class="game-times">
+            <div class="game-time">
+              <span class="time-label">American time</span>
+              <span class="time-value">${safeText(americanTime)}</span>
+            </div>
+            <div class="game-time">
+              <span class="time-label">UK time</span>
+              <span class="time-value">${safeText(ukTime)}</span>
+            </div>
+          </div>
+          <div class="status">${safeText(details.homeAway)}
+            ${details.status ? " · " + safeText(details.status) : ""}
+          </div>
+        `
+      }
     </article>
   `;
 }
@@ -675,8 +604,15 @@ function renderStandingsTable(tableKey) {
       <table>
         <thead>
           <tr>
-            <th>#</th><th>Team</th><th>GP</th><th>W</th><th>L</th>
-            <th>OTL</th><th>PTS</th><th>PCT</th><th>Streak</th>
+            <th>#</th>
+            <th>Team</th>
+            <th>GP</th>
+            <th>W</th>
+            <th>L</th>
+            <th>OTL</th>
+            <th>PTS</th>
+            <th>PCT</th>
+            <th>Streak</th>
           </tr>
         </thead>
         <tbody>
@@ -753,7 +689,7 @@ async function loadStandings() {
     status.textContent = missing.length
       ? "Standings loaded, but ESPN data could not be matched for: " +
         missing.map(key => tableTitles[key]).join(", ") + "."
-      : `Standings loaded at ${formatUKTime(new Date().toISOString())}.`;
+      : `Standings loaded at ${timeLabel(new Date().toISOString())}.`;
 
     selectStandingsTable(selectedTable);
   } catch(error) {
