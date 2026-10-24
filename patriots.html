@@ -3,171 +3,145 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>New England Patriots | Boston Sports Hub</title>
 <style>
 :root {
-  color-scheme: dark;
-  --bg: #101722;
-  --panel: #1c2838;
-  --muted: #bdc8d6;
   --accent: #c8102e;
-  --blue: #071d38;
+  --bg: #080d18;
+  --panel: #111b2d;
+  --border: #26354c;
+  --text: #f4f7fb;
+  --muted: #aab7ca;
 }
 * { box-sizing: border-box; }
 body {
   margin: 0;
   background: var(--bg);
-  color: white;
-  font-family: Arial, sans-serif;
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
 }
 header {
-  background: var(--blue);
-  text-align: center;
-  padding: 28px 16px;
-  border-bottom: 4px solid var(--accent);
+  padding: 25px 16px;
+  background: #101c31;
+  border-bottom: 3px solid var(--accent);
 }
-header h1 { margin: 0; font-size: 30px; }
-header p { color: var(--muted); margin-bottom: 0; }
-main { max-width: 1100px; margin: auto; padding: 22px 14px; }
-h2 { margin-top: 0; }
+.header-inner, main {
+  width: min(100% - 28px, 950px);
+  margin: auto;
+}
+h1 { margin: 0 0 8px; font-size: 28px; }
+header p { margin: 0; color: var(--muted); }
 nav {
-  position: sticky;
-  top: 0;
-  z-index: 10;
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px;
-  padding: 12px;
-  background: #080d14;
-  border-bottom: 1px solid #354357;
+  gap: 10px;
+  margin-top: 18px;
 }
 nav a {
-  color: white;
+  color: var(--text);
   text-decoration: none;
-  background: #304158;
-  padding: 9px 13px;
+  padding: 9px 12px;
+  background: #1b2a42;
   border-radius: 8px;
   font-size: 14px;
 }
-nav a:hover { background: #405570; }
-.summary {
-  color: var(--muted);
-  font-size: 14px;
-  line-height: 1.5;
-  margin: 10px 0 18px;
+nav a:hover { background: var(--accent); }
+main { padding: 22px 0 40px; }
+section { margin-bottom: 30px; scroll-margin-top: 12px; }
+h2 { font-size: 21px; margin: 0 0 12px; }
+.section-note { color: var(--muted); font-size: 14px; margin: -4px 0 12px; }
+#fixtures, #results, #standings {
+  display: grid;
+  gap: 10px;
 }
-button {
-  background: #304158;
-  color: white;
-  border: 1px solid #52657b;
-  border-radius: 8px;
-  padding: 11px 13px;
-  font-size: 14px;
-  cursor: pointer;
-}
-button:hover { background: #405570; }
-button:disabled { opacity: .6; cursor: wait; }
-.game {
+.game, .table-wrap, .message {
   background: var(--panel);
-  border-radius: 10px;
-  padding: 15px;
-  margin: 10px 0;
-  border-left: 4px solid var(--accent);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  min-width: 0;
 }
+.game { border-left: 4px solid var(--accent); }
 .game-top {
   display: flex;
-  flex-wrap: wrap;
   justify-content: space-between;
-  gap: 8px;
+  align-items: flex-start;
+  gap: 12px;
   color: var(--muted);
   font-size: 13px;
 }
+.game-top span:last-child { text-align: right; }
 .matchup {
-  font-size: 17px;
+  font-size: 18px;
   font-weight: bold;
-  margin: 12px 0 7px;
+  margin: 12px 0;
+  overflow-wrap: anywhere;
 }
-.status { color: var(--muted); font-size: 13px; }
-.empty {
-  background: var(--panel);
-  border-radius: 10px;
-  padding: 16px;
-  color: var(--muted);
-  line-height: 1.5;
+.status {
+  color: var(--text);
+  font-weight: bold;
 }
-.table-wrap {
-  overflow-x: auto;
-  background: var(--panel);
-  border-radius: 10px;
-  border: 1px solid #354357;
-  margin-top: 12px;
-}
-table { width: 100%; border-collapse: collapse; min-width: 500px; }
-th, td {
-  padding: 11px 12px;
-  text-align: left;
-  border-bottom: 1px solid #354357;
+.message { color: var(--muted); line-height: 1.5; }
+.table-wrap { overflow-x: auto; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
   white-space: nowrap;
 }
-th { background: #071d38; color: white; font-size: 13px; }
-td { font-size: 14px; }
+th, td {
+  text-align: left;
+  padding: 11px 9px;
+  border-bottom: 1px solid var(--border);
+}
+th { color: var(--muted); }
 tr:last-child td { border-bottom: 0; }
-tr.boston { background: #40212c; font-weight: bold; }
-section { margin-bottom: 32px; scroll-margin-top: 80px; }
+tr.highlight { background: #30202b; font-weight: bold; }
 footer {
+  color: var(--muted);
   text-align: center;
-  padding: 25px;
-  color: #94a3b8;
+  padding: 20px;
   font-size: 12px;
 }
 @media (max-width: 480px) {
-  main { padding: 17px 10px; }
-  header h1 { font-size: 26px; }
+  h1 { font-size: 24px; }
+  .game-top { font-size: 12px; }
+  .matchup { font-size: 16px; }
+  th, td { padding: 9px 7px; }
 }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>New England Patriots</h1>
-  <p>Boston Sports Hub · National Football League</p>
+  <div class="header-inner">
+    <h1>New England Patriots</h1>
+    <p>Boston Sports Hub · NFL</p>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="#fixtures">Fixtures</a>
+      <a href="#results">Results</a>
+      <a href="#standings">League standings</a>
+    </nav>
+  </div>
 </header>
-
-<nav>
-  <a href="index.html">Home</a>
-  <a href="#fixtures">Fixtures</a>
-  <a href="#results">Results</a>
-  <a href="#leagues">League standings</a>
-</nav>
 
 <main>
   <section id="fixtures">
-    <h2>Upcoming Fixtures</h2>
-    <p class="summary">Patriots fixtures in UK local time, including daylight saving.</p>
-    <button id="refresh-fixtures">Refresh fixtures</button>
-    <p id="fixture-status" class="summary" aria-live="polite">Loading fixtures…</p>
-    <div id="fixtures-list">
-      <div class="empty">Loading upcoming fixtures…</div>
-    </div>
+    <h2>Upcoming fixtures</h2>
+    <p class="section-note">All kick-off times are shown in UK local time.</p>
+    <div class="message">Loading fixtures…</div>
   </section>
 
   <section id="results">
-    <h2>Recent Results</h2>
-    <p class="summary">Completed games and final scores.</p>
-    <div id="results-list">
-      <div class="empty">Loading results…</div>
-    </div>
+    <h2>Recent results</h2>
+    <div class="message">Loading results…</div>
   </section>
 
-  <section id="leagues">
-    <h2>NFL Standings</h2>
-    <p class="summary">League standings, with the Patriots highlighted.</p>
-    <button id="refresh-standings">Refresh standings</button>
-    <div id="standings-list">
-      <div class="empty">Loading NFL standings…</div>
-    </div>
+  <section id="standings">
+    <h2>NFL standings</h2>
+    <div class="message">Loading league standings…</div>
   </section>
 </main>
 
@@ -176,29 +150,24 @@ footer {
 <script>
 const TEAM_ID = "17";
 const TEAM_NAME = "New England Patriots";
-const SPORT = "football";
-const LEAGUE = "nfl";
-
 const SCHEDULE_URL =
-  `https://site.api.espn.com/apis/site/v2/sports/${SPORT}/${LEAGUE}/teams/${TEAM_ID}/schedule`;
+  "https://site.api.espn.com/apis/site/v2/sports/football/nfl/teams/17/schedule";
 const STANDINGS_URL =
-  `https://site.api.espn.com/apis/v2/sports/${SPORT}/${LEAGUE}/standings`;
+  "https://site.api.espn.com/apis/v2/sports/football/nfl/standings";
 
-const $ = id => document.getElementById(id);
-
-function safeText(value) {
-  return String(value ?? "").replace(/[&<>"']/g, char => ({
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, character => ({
     "&": "&amp;",
     "<": "&lt;",
     ">": "&gt;",
     '"': "&quot;",
     "'": "&#39;"
-  })[char]);
+  })[character]);
 }
 
-function dateLabel(value) {
-  const date = new Date(value);
-  if (!value || Number.isNaN(date.getTime())) return "Date TBC";
+function dateLabel(dateString) {
+  const date = new Date(dateString);
+  if (Number.isNaN(date.getTime())) return "Date TBC";
   return new Intl.DateTimeFormat("en-GB", {
     weekday: "short",
     day: "numeric",
@@ -208,9 +177,9 @@ function dateLabel(value) {
   }).format(date);
 }
 
-function timeLabel(value) {
-  const date = new Date(value);
-  if (!value || Number.isNaN(date.getTime())) return "Time TBC";
+function timeLabel(dateString) {
+  const date = new Date(dateString);
+  if (Number.isNaN(date.getTime())) return "Time TBC";
   return new Intl.DateTimeFormat("en-GB", {
     hour: "2-digit",
     minute: "2-digit",
@@ -219,230 +188,272 @@ function timeLabel(value) {
   }).format(date);
 }
 
+function eventStatus(event) {
+  return event.status?.type?.shortDetail
+    || event.status?.type?.description
+    || "Scheduled";
+}
+
 function isCompleted(event) {
-  const status = event.status?.type ||
-    event.competitions?.[0]?.status?.type || {};
-  return status.completed === true ||
-    status.state === "post" ||
-    /final|ended|game over/i.test(
-      `${status.description || ""} ${status.detail || ""}`
-    );
+  return event.status?.type?.completed === true;
+}
+
+function getCompetitors(event) {
+  return event.competitions?.[0]?.competitors || [];
+}
+
+function teamForEvent(event) {
+  const competitors = getCompetitors(event);
+  return competitors.find(c =>
+    String(c.team?.id) === TEAM_ID ||
+    c.team?.displayName === TEAM_NAME ||
+    c.team?.name === "Patriots"
+  );
+}
+
+function scoreNumber(value) {
+  if (value === null || value === undefined) return null;
+
+  if (typeof value === "object") {
+    value = value.displayValue
+      ?? value.value
+      ?? value.score
+      ?? value.text
+      ?? null;
+  }
+
+  if (value === null || value === undefined || value === "") return null;
+
+  const number = Number(value);
+  return Number.isFinite(number) ? number : null;
 }
 
 function parseEvent(event) {
-  const competition = event.competitions?.[0];
-  const competitors = competition?.competitors || [];
+  const competitors = getCompetitors(event);
   const home = competitors.find(c => c.homeAway === "home");
   const away = competitors.find(c => c.homeAway === "away");
-  const ownTeam = competitors.find(c =>
-    String(c.team?.id) === TEAM_ID ||
-    c.team?.displayName === TEAM_NAME
-  );
+  const ownTeam = teamForEvent(event);
   const opponent = competitors.find(c => c !== ownTeam);
 
+  const ownScore = scoreNumber(ownTeam?.score);
+  const opponentScore = scoreNumber(opponent?.score);
   const completed = isCompleted(event);
-  const ownScore = ownTeam?.score;
-  const ownScore = ownTeam?.score?.displayValue
-  ?? ownTeam?.score?.value
-  ?? ownTeam?.score;
-const opponentScore = opponent?.score?.displayValue
-  ?? opponent?.score?.value
-  ?? opponent?.score;
-  const opponentScore = opponent?.score;
-  let outcome = "";
 
-  if (completed && ownScore != null && opponentScore != null) {
-    outcome = Number(ownScore) > Number(opponentScore) ? "Win" :
-      Number(ownScore) < Number(opponentScore) ? "Loss" : "Tie";
+  let outcome = "";
+  if (completed && ownScore !== null && opponentScore !== null) {
+    outcome = ownScore > opponentScore ? "Win"
+      : ownScore < opponentScore ? "Loss"
+      : "Tie";
   }
 
   return {
     id: event.id,
-    date: event.date || competition?.date,
-    home: home?.team?.displayName || "Home team",
-    away: away?.team?.displayName || "Away team",
+    date: event.date,
+    home: home?.team?.displayName || "Home team TBC",
+    away: away?.team?.displayName || "Away team TBC",
+    status: eventStatus(event),
     completed,
-    status: event.status?.type?.shortDetail ||
-      event.status?.type?.description ||
-      competition?.status?.type?.shortDetail ||
-      "Scheduled",
-    link: event.links?.[0]?.href || "",
     ownScore,
     opponentScore,
     outcome
   };
 }
 
-function gameCard(game, resultMode = false) {
-  const content = `
-    <div class="game-top">
-      <span>NFL · ${TEAM_NAME}</span>
-      <span>${dateLabel(game.date)}</span>
-    </div>
-    <div class="matchup">${safeText(game.away)} @ ${safeText(game.home)}</div>
-    <div class="game-top">
-      <span>${resultMode
-        ? `Final · ${safeText(game.ownScore ?? "—")} – ${safeText(game.opponentScore ?? "—")}${game.outcome ? " · " + safeText(game.outcome) : ""}`
-        : timeLabel(game.date)}
-      </span>
-      <span class="status">${safeText(resultMode ? "Completed" : game.status)}</span>
-    </div>
-  `;
-
-  return `<article class="game">
-    ${game.link
-      ? `<a href="${safeText(game.link)}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">${content}</a>`
-      : content}
-  </article>`;
+function fixtureCard(game) {
+  return `
+    <article class="game">
+      <div class="game-top">
+        <span>NFL · ${escapeHTML(TEAM_NAME)}</span>
+        <span>${escapeHTML(dateLabel(game.date))}</span>
+      </div>
+      <div class="matchup">
+        ${escapeHTML(game.away)} @ ${escapeHTML(game.home)}
+      </div>
+      <div class="game-top">
+        <span>${escapeHTML(timeLabel(game.date))}</span>
+        <span class="status">${escapeHTML(game.status)}</span>
+      </div>
+    </article>`;
 }
 
-async function loadSchedule() {
-  const button = $("refresh-fixtures");
-  button.disabled = true;
-  $("fixture-status").textContent = "Loading schedule from ESPN…";
+function resultCard(game) {
+  const score = game.ownScore === null || game.opponentScore === null
+    ? "Score unavailable"
+    : `${game.ownScore} – ${game.opponentScore}`;
 
-  try {
-    const response = await fetch(SCHEDULE_URL);
-    if (!response.ok) throw new Error("Schedule unavailable");
-    const data = await response.json();
+  const resultLine = game.outcome
+    ? `Final · ${score} · ${game.outcome}`
+    : `Final · ${score}`;
 
-    const rawEvents = data.events || data.content?.events || [];
-    const games = rawEvents
-      .map(parseEvent)
-      .filter(game => game.date)
-      .sort((a, b) => new Date(a.date) - new Date(b.date));
-
-    const now = Date.now();
-    const upcoming = games.filter(game =>
-      !game.completed && new Date(game.date).getTime() >= now
-    );
-    const results = games.filter(game => game.completed).reverse().slice(0, 10);
-
-    $("fixtures-list").innerHTML = upcoming.length
-      ? upcoming.map(game => gameCard(game)).join("")
-      : '<div class="empty">No upcoming fixtures are currently listed.</div>';
-
-    $("results-list").innerHTML = results.length
-      ? results.map(game => gameCard(game, true)).join("")
-      : '<div class="empty">No recent results are currently available.</div>';
-
-    $("fixture-status").textContent =
-      `Schedule updated at ${timeLabel(new Date().toISOString())}.`;
-  } catch (error) {
-    $("fixture-status").textContent = "Could not load the schedule. Please try again.";
-    $("fixtures-list").innerHTML =
-      '<div class="empty">Fixtures could not be loaded. Check your connection and refresh.</div>';
-    $("results-list").innerHTML =
-      '<div class="empty">Results could not be loaded. Check your connection and refresh.</div>';
-    console.error(error);
-  } finally {
-    button.disabled = false;
-  }
+  return `
+    <article class="game">
+      <div class="game-top">
+        <span>NFL · ${escapeHTML(TEAM_NAME)}</span>
+        <span>${escapeHTML(dateLabel(game.date))}</span>
+      </div>
+      <div class="matchup">
+        ${escapeHTML(game.away)} @ ${escapeHTML(game.home)}
+      </div>
+      <div class="game-top">
+        <span class="status">${escapeHTML(resultLine)}</span>
+        <span>Completed</span>
+      </div>
+    </article>`;
 }
 
-function getStat(stats, aliases) {
-  for (const alias of aliases) {
-    const stat = stats.find(item =>
-      String(item.name || "").toLowerCase() === alias ||
-      String(item.abbreviation || "").toLowerCase() === alias
+function getStat(stats, names) {
+  for (const name of names) {
+    const item = stats.find(stat =>
+      stat.name === name || stat.abbreviation === name
     );
-    if (stat) return stat.displayValue ?? stat.value ?? "—";
+    if (item && item.displayValue !== undefined) return item.displayValue;
+    if (item && item.value !== undefined) return item.value;
   }
   return "—";
 }
 
-function collectTeams(node, output = []) {
-  if (!node || typeof node !== "object") return output;
+function findTeamInStandings(node) {
+  if (!node || typeof node !== "object") return null;
 
-  if (Array.isArray(node)) {
-    node.forEach(item => collectTeams(item, output));
-    return output;
+  const entries = node.entries || [];
+  for (const entry of entries) {
+    const team = entry.team || {};
+    if (
+      String(team.id) === TEAM_ID ||
+      team.displayName === TEAM_NAME ||
+      team.name === "Patriots"
+    ) {
+      return entry;
+    }
   }
 
-  if (Array.isArray(node.entries)) {
-    node.entries.forEach(entry => {
-      const team = entry.team || {};
-      const stats = entry.stats || [];
-      output.push({
-        id: String(team.id || ""),
-        name: team.displayName || team.name || "Unknown team",
-        abbreviation: team.abbreviation || "",
-        wins: getStat(stats, ["wins", "w"]),
-        losses: getStat(stats, ["losses", "l"]),
-        ties: getStat(stats, ["ties", "t"]),
-        pct: getStat(stats, ["winpercent", "pct", "win percentage"]),
-        pf: getStat(stats, ["pointsfor", "pf"]),
-        pa: getStat(stats, ["pointsagainst", "pa"]),
-        streak: getStat(stats, ["streak", "strk"])
-      });
-    });
+  for (const child of node.children || []) {
+    const found = findTeamInStandings(child);
+    if (found) return found;
   }
 
-  for (const [key, value] of Object.entries(node)) {
-    if (key !== "entries") collectTeams(value, output);
+  return null;
+}
+
+function renderStandings(data) {
+  const container = document.getElementById("standings");
+  const allEntries = [];
+
+  function collect(node) {
+    if (!node || typeof node !== "object") return;
+    for (const entry of node.entries || []) allEntries.push(entry);
+    for (const child of node.children || []) collect(child);
   }
-  return output;
+
+  collect(data);
+
+  if (!allEntries.length) {
+    container.innerHTML = `
+      <h2>NFL standings</h2>
+      <div class="message">Standings are not available right now.</div>`;
+    return;
+  }
+
+  const patriotsEntry = findTeamInStandings(data);
+  const rows = allEntries.map(entry => {
+    const team = entry.team || {};
+    const stats = entry.stats || [];
+    const isPatriots =
+      String(team.id) === TEAM_ID ||
+      team.displayName === TEAM_NAME ||
+      team.name === "Patriots";
+
+    return {
+      isPatriots,
+      html: `<tr class="${isPatriots ? "highlight" : ""}">
+        <td>${escapeHTML(team.displayName || team.name || "Team")}</td>
+        <td>${escapeHTML(getStat(stats, ["wins", "W"]))}</td>
+        <td>${escapeHTML(getStat(stats, ["losses", "L"]))}</td>
+        <td>${escapeHTML(getStat(stats, ["ties", "T"]))}</td>
+        <td>${escapeHTML(getStat(stats, ["winPercent", "PCT"]))}</td>
+        <td>${escapeHTML(getStat(stats, ["pointsFor", "PF"]))}</td>
+        <td>${escapeHTML(getStat(stats, ["pointsAgainst", "PA"]))}</td>
+        <td>${escapeHTML(getStat(stats, ["streak", "STRK"]))}</td>
+      </tr>`
+    };
+  });
+
+  rows.sort((a, b) => Number(b.isPatriots) - Number(a.isPatriots));
+
+  container.innerHTML = `
+    <h2>NFL standings</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Team</th><th>W</th><th>L</th><th>T</th>
+            <th>PCT</th><th>PF</th><th>PA</th><th>Streak</th>
+          </tr>
+        </thead>
+        <tbody>${rows.map(row => row.html).join("")}</tbody>
+      </table>
+    </div>`;
+}
+
+async function loadSchedule() {
+  const fixtureSection = document.getElementById("fixtures");
+  const resultSection = document.getElementById("results");
+
+  try {
+    const response = await fetch(SCHEDULE_URL);
+    if (!response.ok) throw new Error("Schedule request failed");
+
+    const data = await response.json();
+    const events = (data.events || [])
+      .map(parseEvent)
+      .filter(game => game.date)
+      .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    const upcoming = events.filter(game => !game.completed);
+    const completed = events.filter(game => game.completed).reverse();
+
+    fixtureSection.innerHTML = `
+      <h2>Upcoming fixtures</h2>
+      <p class="section-note">All kick-off times are shown in UK local time.</p>
+      ${upcoming.length
+        ? upcoming.map(fixtureCard).join("")
+        : '<div class="message">No upcoming fixtures are currently listed.</div>'}`;
+
+    resultSection.innerHTML = `
+      <h2>Recent results</h2>
+      ${completed.length
+        ? completed.slice(0, 10).map(resultCard).join("")
+        : '<div class="message">No completed results are currently listed.</div>'}`;
+  } catch (error) {
+    fixtureSection.innerHTML = `
+      <h2>Upcoming fixtures</h2>
+      <div class="message">Could not load fixtures. Please refresh the page and try again.</div>`;
+    resultSection.innerHTML = `
+      <h2>Recent results</h2>
+      <div class="message">Could not load results. Please refresh the page and try again.</div>`;
+    console.error("Patriots schedule error:", error);
+  }
 }
 
 async function loadStandings() {
-  const button = $("refresh-standings");
-  const container = $("standings-list");
-  button.disabled = true;
-  button.textContent = "Refreshing…";
+  const container = document.getElementById("standings");
 
   try {
     const response = await fetch(STANDINGS_URL);
-    if (!response.ok) throw new Error("Standings unavailable");
+    if (!response.ok) throw new Error("Standings request failed");
     const data = await response.json();
-    const teams = collectTeams(data.children || data);
-    const uniqueTeams = [...new Map(
-      teams.map(team => [team.id || team.name, team])
-    ).values()];
-
-    if (!uniqueTeams.length) throw new Error("No teams found");
-
-    container.innerHTML = `
-      <div class="table-wrap">
-        <table>
-          <thead><tr>
-            <th>Team</th><th>W</th><th>L</th><th>T</th>
-            <th>PCT</th><th>PF</th><th>PA</th><th>Streak</th>
-          </tr></thead>
-          <tbody>
-            ${uniqueTeams.map(team => {
-              const isBoston = team.id === TEAM_ID ||
-                team.name === TEAM_NAME ||
-                team.abbreviation === "NE";
-              return `<tr class="${isBoston ? "boston" : ""}">
-                <td>${safeText(team.name)}</td>
-                <td>${safeText(team.wins)}</td>
-                <td>${safeText(team.losses)}</td>
-                <td>${safeText(team.ties)}</td>
-                <td>${safeText(team.pct)}</td>
-                <td>${safeText(team.pf)}</td>
-                <td>${safeText(team.pa)}</td>
-                <td>${safeText(team.streak)}</td>
-              </tr>`;
-            }).join("")}
-          </tbody>
-        </table>
-      </div>
-      <p class="summary">Standings supplied by ESPN.</p>
-    `;
+    renderStandings(data);
   } catch (error) {
-    container.innerHTML =
-      '<div class="empty">Could not load NFL standings. Please try refreshing.</div>';
-    console.error(error);
-  } finally {
-    button.disabled = false;
-    button.textContent = "Refresh standings";
+    container.innerHTML = `
+      <h2>NFL standings</h2>
+      <div class="message">Could not load standings. Please refresh the page and try again.</div>`;
+    console.error("NFL standings error:", error);
   }
 }
 
-$("refresh-fixtures").addEventListener("click", loadSchedule);
-$("refresh-standings").addEventListener("click", loadStandings);
 loadSchedule();
 loadStandings();
 </script>
+
 </body>
 </html>
