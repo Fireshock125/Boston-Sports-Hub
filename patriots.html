@@ -350,20 +350,9 @@ async function loadSchedule() {
     const data = await response.json();
 
     const games = (data.events || data.content?.events || [])
-  .map(parseEvent)
-  .filter(game => game.date)
-  .sort((a, b) => new Date(a.date) - new Date(b.date));
-
-const now = Date.now();
-
-const upcoming = games.filter(game =>
-  !game.completed && new Date(game.date).getTime() >= now
-);
-
-const results = games
-  .filter(game => game.completed || new Date(game.date).getTime() < now)
-  .reverse()
-  .slice(0, 10);
+      .map(parseEvent)
+      .filter(game => game.date)
+      .sort((a, b) => new Date(a.date) - new Date(b.date));
 
     const now = Date.now();
 
