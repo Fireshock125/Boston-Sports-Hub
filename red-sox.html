@@ -62,9 +62,7 @@ button:disabled { opacity:.6; cursor:wait; }
 .standings-tabs {
   display:flex; flex-wrap:wrap; gap:8px; margin:16px 0;
 }
-.standings-tabs button {
-  flex:0 0 auto; padding:10px 13px;
-}
+.standings-tabs button { flex:0 0 auto; padding:10px 13px; }
 .standings-tabs button.active {
   background:var(--red); border-color:var(--red); font-weight:bold;
 }
@@ -257,7 +255,7 @@ function getStat(entry,names) {
     (found?.value !== undefined ? found.value : null);
 }
 
-/* Collect standings entries and remember their league/division paths. */
+/* Collect standings entries from ESPN's response. */
 function collectGroups(node,path=[],out=[]) {
   if (!node || typeof node !== "object") return out;
 
@@ -378,6 +376,91 @@ const tableTitles = {
   "nl-west":"National League West"
 };
 
+/*
+  Assign teams using their names and abbreviations, not ESPN's
+  standings-group hierarchy. This makes the division tabs independent
+  of how ESPN nests its response.
+*/
+const divisionDefinitions = {
+  "al-east": {
+    league:"al",
+    teams:["BAL","BOS","NYY","TB","TBR","TOR"]
+  },
+  "al-central": {
+    league:"al",
+    teams:["CWS","CHW","CLE","DET","KC","KCR","MIN"]
+  },
+  "al-west": {
+    league:"al",
+    teams:["HOU","LAA","ATH","OAK","SEA","TEX"]
+  },
+  "nl-east": {
+    league:"nl",
+    teams:["ATL","MIA","NYM","PHI","WSH","WSN"]
+  },
+  "nl-central": {
+    league:"nl",
+    teams:["CHC","CIN","MIL","PIT","STL"]
+  },
+  "nl-west": {
+    league:"nl",
+    teams:["ARI","COL","LAD","SD","SDP","SF","SFG"]
+  }
+};
+
+function getTeamAbbreviation(entry) {
+  return String(entry.team?.abbreviation || entry.team?.shortDisplayName || "")
+    .trim().toUpperCase();
+}
+
+function getTeamIdentity(entry) {
+  return [
+    entry.team?.displayName,
+    entry.team?.name,
+    entry.team?.shortDisplayName,
+    entry.team?.abbreviation
+  ].filter(Boolean).join(" ").toLowerCase();
+}
+
+function belongsToDivision(entry,divisionKey) {
+  const definition = divisionDefinitions[divisionKey];
+  if (!definition) return false;
+
+  const abbreviation = getTeamAbbreviation(entry);
+  if (definition.teams.includes(abbreviation)) return true;
+
+  const name = getTeamIdentity(entry);
+
+  const nameAliases = {
+    "al-east": [
+      "baltimore orioles","boston red sox","new york yankees",
+      "tampa bay rays","toronto blue jays"
+    ],
+    "al-central": [
+      "chicago white sox","cleveland guardians","cleveland indians",
+      "detroit tigers","kansas city royals","minnesota twins"
+    ],
+    "al-west": [
+      "houston astros","los angeles angels","oakland athletics",
+      "athletics","seattle mariners","texas rangers"
+    ],
+    "nl-east": [
+      "atlanta braves","miami marlins","new york mets",
+      "philadelphia phillies","washington nationals"
+    ],
+    "nl-central": [
+      "chicago cubs","cincinnati reds","milwaukee brewers",
+      "pittsburgh pirates","st. louis cardinals","st louis cardinals"
+    ],
+    "nl-west": [
+      "arizona diamondbacks","colorado rockies","los angeles dodgers",
+      "san diego padres","san francisco giants"
+    ]
+  };
+
+  return nameAliases[divisionKey].some(alias => name.includes(alias));
+}
+
 function showStandingsTable(tableKey) {
   selectedTable = tableKey;
   document.querySelectorAll("#standingsTabs button").forEach(button => {
@@ -399,21 +482,6 @@ function uniqueEntries(groups) {
     if (key && !result.has(key)) result.set(key,entry);
   }));
   return [...result.values()];
-}
-
-function identifyGroup(path) {
-  const text = String(path || "").toLowerCase();
-  const league = text.includes("american league") || /\bal\b/.test(text)
-    ? "al"
-    : text.includes("national league") || /\bnl\b/.test(text)
-      ? "nl" : "";
-
-  const division =
-    text.includes("east") ? "east" :
-    text.includes("central") ? "central" :
-    text.includes("west") ? "west" : "";
-
-  return {league,division};
 }
 
 async function loadStandings() {
@@ -442,88 +510,81 @@ async function loadStandings() {
     const allTeams = uniqueEntries(groups);
     if (!allTeams.length) throw new Error("No teams returned");
 
-    standingsTables = {
-      overall:allTeams,
-      al:[],
-      nl:[],
-      "al-east":[],
-      "al-central":[],
-      "al-west":[],
-      "nl-east":[],
-      "nl-central":[],
-      "nl-west":[]
-    };
+    const americanLeague = new Map();
+    const nationalLeague = new Map();
 
     /*
-      Use the ESPN group hierarchy to identify league/division tables.
-      Entries are deduplicated so nested group responses don't duplicate teams.
+      First use the existing ESPN league groups where available.
+      Then use known MLB team identities to fill league and division tabs.
     */
-    const groupTeams = {};
-
     groups.forEach(group => {
-      const info = identifyGroup(group.path + " " + group.name);
-      if (!info.league) return;
+      const path = `${group.path} ${group.name}`.toLowerCase();
+      let league = "";
 
-      const leagueKey = info.league;
-      if (!groupTeams[leagueKey]) groupTeams[leagueKey] = new Map();
+      if (path.includes("american league") || /\bal\b/.test(path)) {
+        league = "al";
+      } else if (path.includes("national league") || /\bnl\b/.test(path)) {
+        league = "nl";
+      }
 
-      group.entries.forEach(entry => {
-        const key = teamKey(entry);
-        if (key) groupTeams[leagueKey].set(key,entry);
-      });
-
-      if (info.division) {
-        const divisionKey = `${info.league}-${info.division}`;
-        if (!groupTeams[divisionKey]) groupTeams[divisionKey] = new Map();
-
+      if (league) {
         group.entries.forEach(entry => {
           const key = teamKey(entry);
-          if (key) groupTeams[divisionKey].set(key,entry);
+          if (key) {
+            (league === "al" ? americanLeague : nationalLeague).set(key,entry);
+          }
         });
       }
     });
 
-    for (const key of ["al","nl","al-east","al-central","al-west","nl-east","nl-central","nl-west"]) {
-      standingsTables[key] = [...(groupTeams[key]?.values() || [])];
-    }
+    const divisionMaps = {};
+    Object.keys(divisionDefinitions).forEach(key => {
+      divisionMaps[key] = new Map();
+    });
 
-    /*
-      If ESPN returns league-level groups but no separate division groups,
-      use team metadata where available to populate the division tabs.
-    */
-    if (!standingsTables.al.length || !standingsTables.nl.length) {
-      const allGroups = groups.map(group => ({
-        info:identifyGroup(group.path + " " + group.name),
-        entries:group.entries
-      }));
+    allTeams.forEach(entry => {
+      const key = teamKey(entry);
+      if (!key) return;
 
-      allTeams.forEach(entry => {
-        const team = entry.team || {};
-        const metadata = [
-          team.groups?.name,
-          team.group?.name,
-          team.league?.name,
-          team.division?.name,
-          team.displayName
-        ].filter(Boolean).join(" ").toLowerCase();
+      let matchedDivision = "";
 
-        const sourceGroup = allGroups.find(group =>
-          group.entries.some(item => teamKey(item) === teamKey(entry)) &&
-          group.info.league
-        );
-
-        const league = sourceGroup?.info.league ||
-          (metadata.includes("american") ? "al" :
-           metadata.includes("national") ? "nl" : "");
-
-        if (league && !standingsTables[league].some(item => teamKey(item) === teamKey(entry))) {
-          standingsTables[league].push(entry);
+      for (const divisionKey of Object.keys(divisionDefinitions)) {
+        if (belongsToDivision(entry,divisionKey)) {
+          matchedDivision = divisionKey;
+          divisionMaps[divisionKey].set(key,entry);
+          break;
         }
-      });
-    }
+      }
 
-    $("standingsStatus").textContent =
-      `Standings loaded at ${timeLabel(new Date().toISOString())}. ★ marks the Red Sox.`;
+      if (matchedDivision) {
+        const league = divisionDefinitions[matchedDivision].league;
+        (league === "al" ? americanLeague : nationalLeague).set(key,entry);
+      }
+    });
+
+    standingsTables = {
+      overall:allTeams,
+      al:[...americanLeague.values()],
+      nl:[...nationalLeague.values()],
+      "al-east":[...divisionMaps["al-east"].values()],
+      "al-central":[...divisionMaps["al-central"].values()],
+      "al-west":[...divisionMaps["al-west"].values()],
+      "nl-east":[...divisionMaps["nl-east"].values()],
+      "nl-central":[...divisionMaps["nl-central"].values()],
+      "nl-west":[...divisionMaps["nl-west"].values()]
+    };
+
+    const emptyDivisions = Object.keys(divisionDefinitions)
+      .filter(key => !standingsTables[key].length);
+
+    if (emptyDivisions.length) {
+      $("standingsStatus").textContent =
+        "Standings loaded, but ESPN did not provide identifiable teams for: " +
+        emptyDivisions.map(key => tableTitles[key]).join(", ") + ".";
+    } else {
+      $("standingsStatus").textContent =
+        `Standings loaded at ${timeLabel(new Date().toISOString())}. ★ marks the Red Sox.`;
+    }
 
     showStandingsTable(selectedTable);
   } catch(error) {
