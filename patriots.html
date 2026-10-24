@@ -131,6 +131,25 @@ tr.patriots {
   font-weight: bold;
 }
 section { margin-bottom: 32px; scroll-margin-top: 80px; }
+.standings-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0;
+}
+.standings-tab.active {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.standings-heading {
+  margin: 24px 0 8px;
+  font-size: 18px;
+}
+.standings-note {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
 footer {
   text-align: center;
   padding: 25px;
@@ -178,8 +197,19 @@ footer {
 
   <section id="leagues">
     <h2>NFL Standings</h2>
-    <p class="summary">League standings, with the Patriots highlighted.</p>
+    <p class="summary">
+      View all 32 teams, the two conferences, or the eight divisions.
+      The Patriots are highlighted in every view.
+    </p>
+
     <button id="refresh-standings">Refresh standings</button>
+
+    <div class="standings-tabs" role="group" aria-label="Standings view">
+      <button class="standings-tab active" data-view="overall" aria-pressed="true">All Teams</button>
+      <button class="standings-tab" data-view="conference" aria-pressed="false">Conferences</button>
+      <button class="standings-tab" data-view="division" aria-pressed="false">Divisions</button>
+    </div>
+
     <div id="standings-list">
       <div class="empty">Loading NFL standings…</div>
     </div>
@@ -392,6 +422,22 @@ async function loadSchedule() {
   }
 }
 
+/* STANDINGS */
+
+const NFL_DIVISIONS = {
+  "AFC East": ["BUF", "MIA", "NE", "NYJ"],
+  "AFC North": ["BAL", "CIN", "CLE", "PIT"],
+  "AFC South": ["HOU", "IND", "JAX", "TEN"],
+  "AFC West": ["DEN", "KC", "LV", "LAC"],
+  "NFC East": ["DAL", "NYG", "PHI", "WAS"],
+  "NFC North": ["CHI", "DET", "GB", "MIN"],
+  "NFC South": ["ATL", "CAR", "NO", "TB"],
+  "NFC West": ["ARI", "LA", "SF", "SEA"]
+};
+
+let standingsData = null;
+let currentStandingsView = "overall";
+
 function getStat(stats, aliases) {
   for (const alias of aliases) {
     const stat = stats.find(item =>
@@ -405,39 +451,139 @@ function getStat(stats, aliases) {
   return "—";
 }
 
-function collectTeams(node, output = []) {
-  if (!node || typeof node !== "object") return output;
+function numericStat(stats, aliases) {
+  const value = getStat(stats, aliases);
+  if (value === "—" || value === "" || value === null) return -1;
 
-  if (Array.isArray(node)) {
-    node.forEach(item => collectTeams(item, output));
-    return output;
+  const number = Number(value);
+  return Number.isFinite(number) ? number : -1;
+}
+
+function normaliseTeam(entry, conferenceName, divisionName) {
+  const team = entry.team || {};
+  const stats = entry.stats || [];
+  const abbreviation = String(team.abbreviation || "").toUpperCase();
+
+  return {
+    id: String(team.id || ""),
+    name: team.displayName || team.name || "Unknown team",
+    abbreviation,
+    conference: conferenceName || "",
+    division: divisionName || "",
+    wins: getStat(stats, ["wins", "w"]),
+    losses: getStat(stats, ["losses", "l"]),
+    ties: getStat(stats, ["ties", "t"]),
+    pct: getStat(stats, ["winPercent", "winpercent", "pct"]),
+    pf: getStat(stats, ["pointsFor", "pointsfor", "pf"]),
+    pa: getStat(stats, ["pointsAgainst", "pointsagainst", "pa"]),
+    streak: getStat(stats, ["streak", "strk"]),
+    sortPct: numericStat(stats, ["winPercent", "winpercent", "pct"]),
+    sortWins: numericStat(stats, ["wins", "w"]),
+    sortLosses: numericStat(stats, ["losses", "l"]),
+    sortTies: numericStat(stats, ["ties", "t"])
+  };
+}
+
+function sortStandings(teams) {
+  return [...teams].sort((a, b) =>
+    b.sortPct - a.sortPct ||
+    b.sortWins - a.sortWins ||
+    a.sortLosses - b.sortLosses ||
+    b.sortTies - a.sortTies ||
+    a.name.localeCompare(b.name)
+  );
+}
+
+function isPatriots(team) {
+  return team.id === TEAM_ID ||
+    team.abbreviation === "NE" ||
+    team.name === TEAM_NAME;
+}
+
+function makeStandingsTable(teams) {
+  const ordered = sortStandings(teams);
+
+  if (!ordered.length) {
+    return '<div class="empty">No teams were found for this table.</div>';
   }
 
-  if (Array.isArray(node.entries)) {
-    node.entries.forEach(entry => {
-      const team = entry.team || {};
-      const stats = entry.stats || [];
+  return `
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Team</th>
+            <th>W</th>
+            <th>L</th>
+            <th>T</th>
+            <th>PCT</th>
+            <th>PF</th>
+            <th>PA</th>
+            <th>Streak</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${ordered.map((team, index) => `
+            <tr class="${isPatriots(team) ? "patriots" : ""}">
+              <td>${index + 1}</td>
+              <td>${safeText(team.name)}</td>
+              <td>${safeText(team.wins)}</td>
+              <td>${safeText(team.losses)}</td>
+              <td>${safeText(team.ties)}</td>
+              <td>${safeText(team.pct)}</td>
+              <td>${safeText(team.pf)}</td>
+              <td>${safeText(team.pa)}</td>
+              <td>${safeText(team.streak)}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>`;
+}
 
-      output.push({
-        id: String(team.id || ""),
-        name: team.displayName || team.name || "Unknown team",
-        abbreviation: team.abbreviation || "",
-        wins: getStat(stats, ["wins", "w"]),
-        losses: getStat(stats, ["losses", "l"]),
-        ties: getStat(stats, ["ties", "t"]),
-        pct: getStat(stats, ["winpercent", "pct", "win percentage"]),
-        pf: getStat(stats, ["pointsfor", "pf"]),
-        pa: getStat(stats, ["pointsagainst", "pa"]),
-        streak: getStat(stats, ["streak", "strk"])
-      });
-    });
+function renderStandings() {
+  const container = $("standings-list");
+  if (!standingsData) return;
+
+  const allTeams = standingsData.allTeams;
+
+  if (currentStandingsView === "overall") {
+    container.innerHTML = `
+      <h3 class="standings-heading">All 32 Teams</h3>
+      <p class="standings-note">
+        Ranked by winning percentage, then wins and losses.
+      </p>
+      ${makeStandingsTable(allTeams)}`;
+  } else if (currentStandingsView === "conference") {
+    container.innerHTML = ["AFC", "NFC"].map(conference => {
+      const teams = allTeams.filter(team =>
+        team.conference.toUpperCase().includes(conference)
+      );
+
+      return `
+        <h3 class="standings-heading">${conference}</h3>
+        ${makeStandingsTable(teams)}`;
+    }).join("");
+  } else {
+    container.innerHTML = Object.entries(NFL_DIVISIONS).map(
+      ([division, abbreviations]) => {
+        const teams = allTeams.filter(team =>
+          abbreviations.includes(team.abbreviation)
+        );
+
+        return `
+          <h3 class="standings-heading">${division}</h3>
+          ${makeStandingsTable(teams)}`;
+      }
+    ).join("");
   }
 
-  for (const [key, value] of Object.entries(node)) {
-    if (key !== "entries") collectTeams(value, output);
-  }
-
-  return output;
+  document.querySelectorAll(".standings-tab").forEach(button => {
+    const active = button.dataset.view === currentStandingsView;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-pressed", String(active));
+  });
 }
 
 async function loadStandings() {
@@ -452,58 +598,81 @@ async function loadStandings() {
     if (!response.ok) throw new Error("Standings unavailable");
 
     const data = await response.json();
-    const teams = collectTeams(data.children || data);
+    const allTeams = [];
+
+    function readGroup(group, conferenceName = "", divisionName = "") {
+      if (!group) return;
+
+      const groupName = String(
+        group.name || group.abbreviation || ""
+      );
+
+      let nextConference = conferenceName;
+      let nextDivision = divisionName;
+
+      if (/^AFC\b|^AFC /i.test(groupName)) {
+        nextConference = "AFC";
+      } else if (/^NFC\b|^NFC /i.test(groupName)) {
+        nextConference = "NFC";
+      }
+
+      if (/^(AFC|NFC)\s+(East|North|South|West)$/i.test(groupName)) {
+        nextDivision = groupName;
+        nextConference = groupName.split(/\s+/)[0].toUpperCase();
+      }
+
+      if (Array.isArray(group.entries)) {
+        group.entries.forEach(entry => {
+          const normalised = normaliseTeam(
+            entry,
+            nextConference,
+            nextDivision
+          );
+
+          if (normalised.id || normalised.abbreviation) {
+            allTeams.push(normalised);
+          }
+        });
+      }
+
+      (group.children || []).forEach(child =>
+        readGroup(child, nextConference, nextDivision)
+      );
+    }
+
+    (data.children || []).forEach(group => readGroup(group));
+
+    // Some ESPN responses place teams directly in the root group.
+    if (!allTeams.length) readGroup(data);
 
     const uniqueTeams = [
-      ...new Map(teams.map(team => [team.id || team.name, team])).values()
+      ...new Map(
+        allTeams.map(team => [
+          team.id || team.abbreviation,
+          team
+        ])
+      ).values()
     ];
 
-    if (!uniqueTeams.length) throw new Error("No teams found");
+    if (uniqueTeams.length < 32) {
+      throw new Error(
+        `Expected 32 NFL teams, received ${uniqueTeams.length}`
+      );
+    }
 
-    uniqueTeams.sort((a, b) => {
-      const aPatriots = a.id === TEAM_ID || a.name === TEAM_NAME;
-      const bPatriots = b.id === TEAM_ID || b.name === TEAM_NAME;
-      return Number(bPatriots) - Number(aPatriots);
-    });
+    // Use the official NFL division mapping to ensure the divisions
+    // remain correct even if ESPN changes its nested group structure.
+    for (const [division, abbreviations] of Object.entries(NFL_DIVISIONS)) {
+      for (const team of uniqueTeams) {
+        if (abbreviations.includes(team.abbreviation)) {
+          team.division = division;
+          team.conference = division.split(" ")[0];
+        }
+      }
+    }
 
-    container.innerHTML = `
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Team</th>
-              <th>W</th>
-              <th>L</th>
-              <th>T</th>
-              <th>PCT</th>
-              <th>PF</th>
-              <th>PA</th>
-              <th>Streak</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${uniqueTeams.map(team => {
-              const isPatriots =
-                team.id === TEAM_ID ||
-                team.name === TEAM_NAME ||
-                team.abbreviation === "NE";
-
-              return `
-                <tr class="${isPatriots ? "patriots" : ""}">
-                  <td>${safeText(team.name)}</td>
-                  <td>${safeText(team.wins)}</td>
-                  <td>${safeText(team.losses)}</td>
-                  <td>${safeText(team.ties)}</td>
-                  <td>${safeText(team.pct)}</td>
-                  <td>${safeText(team.pf)}</td>
-                  <td>${safeText(team.pa)}</td>
-                  <td>${safeText(team.streak)}</td>
-                </tr>`;
-            }).join("")}
-          </tbody>
-        </table>
-      </div>
-      <p class="summary">Standings supplied by ESPN.</p>`;
+    standingsData = { allTeams: uniqueTeams };
+    renderStandings();
 
   } catch (error) {
     container.innerHTML =
@@ -515,6 +684,13 @@ async function loadStandings() {
     button.textContent = "Refresh standings";
   }
 }
+
+document.querySelectorAll(".standings-tab").forEach(button => {
+  button.addEventListener("click", () => {
+    currentStandingsView = button.dataset.view;
+    renderStandings();
+  });
+});
 
 $("refresh-fixtures").addEventListener("click", loadSchedule);
 $("refresh-standings").addEventListener("click", loadStandings);
