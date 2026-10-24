@@ -269,10 +269,23 @@ function gameDetails(event) {
   );
 
   const otherTeam = competitors.find(team => team !== ownTeam) || opponent;
-  const ownScore = ownTeam?.score;
-  const otherScore = otherTeam?.score;
+  
+  function extractScore(competitor) {
+    const score = competitor?.score;
 
-  const hasScore = ownScore !== undefined && otherScore !== undefined;
+    if (score === null || score === undefined) return null;
+
+    if (typeof score === "object") {
+      return score.displayValue ?? score.value ?? score.alternateDisplayValue ?? null;
+    }
+
+    return score;
+  }
+
+  const ownScore = extractScore(ownTeam);
+  const otherScore = extractScore(otherTeam);
+
+  const hasScore = ownScore !== null && otherScore !== null;
   const scoreText = hasScore
     ? `${ownScore} – ${otherScore}`
     : "";
