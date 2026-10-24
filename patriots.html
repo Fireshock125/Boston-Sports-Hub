@@ -195,7 +195,12 @@ function eventStatus(event) {
 }
 
 function isCompleted(event) {
-  return event.status?.type?.completed === true;
+  const status =
+    event.status?.type ??
+    event.competitions?.[0]?.status?.type;
+
+  return status?.completed === true ||
+         status?.state === "post";
 }
 
 function getCompetitors(event) {
