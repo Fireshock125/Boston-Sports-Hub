@@ -98,6 +98,19 @@ function safeText(value) {
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
   })[char]);
 }
+
+/* Convert ESPN scores to readable numbers, even when returned as objects. */
+function scoreValue(score) {
+  if (score === null || score === undefined) return null;
+
+  if (typeof score === "object") {
+    score = score.displayValue ?? score.value ?? score.score ?? null;
+  }
+
+  if (score === null || score === undefined || score === "") return null;
+  return String(score);
+}
+
 function dateLabel(value) {
   const date = new Date(value);
   if (!value || Number.isNaN(date.getTime())) return "Date TBC";
@@ -106,6 +119,7 @@ function dateLabel(value) {
     timeZone: "Europe/London"
   }).format(date);
 }
+
 function timeLabel(value) {
   const date = new Date(value);
   if (!value || Number.isNaN(date.getTime())) return "Time TBC";
@@ -114,36 +128,55 @@ function timeLabel(value) {
     timeZoneName: "short"
   }).format(date);
 }
+
 function isCompleted(event) {
   const status = event.status?.type || event.competitions?.[0]?.status?.type || {};
   return status.completed === true || status.state === "post" ||
     /final|ended|game over/i.test(`${status.description || ""} ${status.detail || ""}`);
 }
+
 function parseEvent(event) {
   const competition = event.competitions?.[0];
   const competitors = competition?.competitors || [];
   const home = competitors.find(c => c.homeAway === "home");
   const away = competitors.find(c => c.homeAway === "away");
-  const ownTeam = competitors.find(c => String(c.team?.id) === TEAM_ID || c.team?.displayName === TEAM_NAME);
+  const ownTeam = competitors.find(c =>
+    String(c.team?.id) === TEAM_ID ||
+    c.team?.displayName === TEAM_NAME
+  );
   const opponent = competitors.find(c => c !== ownTeam);
   const completed = isCompleted(event);
-  const ownScore = ownTeam?.score;
-  const opponentScore = opponent?.score;
+
+  const ownScore = scoreValue(ownTeam?.score);
+  const opponentScore = scoreValue(opponent?.score);
+
   let outcome = "";
-  if (completed && ownScore != null && opponentScore != null) {
-    outcome = Number(ownScore) > Number(opponentScore) ? "Win" :
-      Number(ownScore) < Number(opponentScore) ? "Loss" : "Tie";
+  if (completed && ownScore !== null && opponentScore !== null) {
+    const ownNumber = Number(ownScore);
+    const opponentNumber = Number(opponentScore);
+
+    if (Number.isFinite(ownNumber) && Number.isFinite(opponentNumber)) {
+      outcome = ownNumber > opponentNumber ? "Win" :
+        ownNumber < opponentNumber ? "Loss" : "Tie";
+    }
   }
+
   return {
-    id: event.id, date: event.date || competition?.date,
+    id: event.id,
+    date: event.date || competition?.date,
     home: home?.team?.displayName || "Home team",
     away: away?.team?.displayName || "Away team",
     completed,
-    status: event.status?.type?.shortDetail || event.status?.type?.description ||
+    status: event.status?.type?.shortDetail ||
+      event.status?.type?.description ||
       competition?.status?.type?.shortDetail || "Scheduled",
-    link: event.links?.[0]?.href || "", ownScore, opponentScore, outcome
+    link: event.links?.[0]?.href || "",
+    ownScore,
+    opponentScore,
+    outcome
   };
 }
+
 function gameCard(game, resultMode = false) {
   const content = `
     <div class="game-top">
@@ -157,38 +190,56 @@ function gameCard(game, resultMode = false) {
         : timeLabel(game.date)}</span>
       <span class="status">${safeText(resultMode ? "Completed" : game.status)}</span>
     </div>`;
+
   return `<article class="game">${game.link
     ? `<a href="${safeText(game.link)}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">${content}</a>`
     : content}</article>`;
 }
+
 async function loadSchedule() {
   const button = $("refresh-fixtures");
   button.disabled = true;
   $("fixture-status").textContent = "Loading schedule from ESPN…";
+
   try {
     const response = await fetch(SCHEDULE_URL);
     if (!response.ok) throw new Error("Schedule unavailable");
+
     const data = await response.json();
     const games = (data.events || data.content?.events || [])
-      .map(parseEvent).filter(game => game.date)
+      .map(parseEvent)
+      .filter(game => game.date)
       .sort((a, b) => new Date(a.date) - new Date(b.date));
+
     const now = Date.now();
-    const upcoming = games.filter(game => !game.completed && new Date(game.date).getTime() >= now);
+    const upcoming = games.filter(game =>
+      !game.completed && new Date(game.date).getTime() >= now
+    );
     const results = games.filter(game => game.completed).reverse().slice(0, 10);
+
     $("fixtures-list").innerHTML = upcoming.length
       ? upcoming.map(game => gameCard(game)).join("")
       : '<div class="empty">No upcoming fixtures are currently listed.</div>';
+
     $("results-list").innerHTML = results.length
       ? results.map(game => gameCard(game, true)).join("")
       : '<div class="empty">No recent results are currently available.</div>';
-    $("fixture-status").textContent = `Schedule updated at ${timeLabel(new Date().toISOString())}.`;
+
+    $("fixture-status").textContent =
+      `Schedule updated at ${timeLabel(new Date().toISOString())}.`;
   } catch (error) {
-    $("fixture-status").textContent = "Could not load the schedule. Please try again.";
-    $("fixtures-list").innerHTML = '<div class="empty">Fixtures could not be loaded. Check your connection and refresh.</div>';
-    $("results-list").innerHTML = '<div class="empty">Results could not be loaded. Check your connection and refresh.</div>';
+    $("fixture-status").textContent =
+      "Could not load the schedule. Please try again.";
+    $("fixtures-list").innerHTML =
+      '<div class="empty">Fixtures could not be loaded. Check your connection and refresh.</div>';
+    $("results-list").innerHTML =
+      '<div class="empty">Results could not be loaded. Check your connection and refresh.</div>';
     console.error(error);
-  } finally { button.disabled = false; }
+  } finally {
+    button.disabled = false;
+  }
 }
+
 function getStat(stats, aliases) {
   for (const alias of aliases) {
     const stat = stats.find(item =>
@@ -199,16 +250,20 @@ function getStat(stats, aliases) {
   }
   return "—";
 }
+
 function collectTeams(node, output = []) {
   if (!node || typeof node !== "object") return output;
+
   if (Array.isArray(node)) {
     node.forEach(item => collectTeams(item, output));
     return output;
   }
+
   if (Array.isArray(node.entries)) {
     node.entries.forEach(entry => {
       const team = entry.team || {};
       const stats = entry.stats || [];
+
       output.push({
         id: String(team.id || ""),
         name: team.displayName || team.name || "Unknown team",
@@ -221,45 +276,64 @@ function collectTeams(node, output = []) {
       });
     });
   }
+
   for (const [key, value] of Object.entries(node)) {
     if (key !== "entries") collectTeams(value, output);
   }
+
   return output;
 }
+
 async function loadStandings() {
   const button = $("refresh-standings");
   const container = $("standings-list");
   button.disabled = true;
   button.textContent = "Refreshing…";
+
   try {
     const response = await fetch(STANDINGS_URL);
     if (!response.ok) throw new Error("Standings unavailable");
+
     const data = await response.json();
     const teams = collectTeams(data.children || data);
-    const uniqueTeams = [...new Map(teams.map(team => [team.id || team.name, team])).values()];
+    const uniqueTeams = [
+      ...new Map(teams.map(team => [team.id || team.name, team])).values()
+    ];
+
     if (!uniqueTeams.length) throw new Error("No teams found");
+
     container.innerHTML = `
       <div class="table-wrap"><table>
         <thead><tr><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>GB</th><th>Streak</th></tr></thead>
         <tbody>${uniqueTeams.map(team => {
-          const isBoston = team.id === TEAM_ID || team.name === TEAM_NAME || team.abbreviation === "BOS";
+          const isBoston = team.id === TEAM_ID ||
+            team.name === TEAM_NAME ||
+            team.abbreviation === "BOS";
+
           return `<tr class="${isBoston ? "boston" : ""}">
-            <td>${safeText(team.name)}</td><td>${safeText(team.wins)}</td>
-            <td>${safeText(team.losses)}</td><td>${safeText(team.pct)}</td>
-            <td>${safeText(team.gb)}</td><td>${safeText(team.streak)}</td>
+            <td>${safeText(team.name)}</td>
+            <td>${safeText(team.wins)}</td>
+            <td>${safeText(team.losses)}</td>
+            <td>${safeText(team.pct)}</td>
+            <td>${safeText(team.gb)}</td>
+            <td>${safeText(team.streak)}</td>
           </tr>`;
         }).join("")}</tbody>
-      </table></div><p class="summary">Standings supplied by ESPN.</p>`;
+      </table></div>
+      <p class="summary">Standings supplied by ESPN.</p>`;
   } catch (error) {
-    container.innerHTML = '<div class="empty">Could not load NBA standings. Please try refreshing.</div>';
+    container.innerHTML =
+      '<div class="empty">Could not load NBA standings. Please try refreshing.</div>';
     console.error(error);
   } finally {
     button.disabled = false;
     button.textContent = "Refresh standings";
   }
 }
+
 $("refresh-fixtures").addEventListener("click", loadSchedule);
 $("refresh-standings").addEventListener("click", loadStandings);
+
 loadSchedule();
 loadStandings();
 </script>
