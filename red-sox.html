@@ -7,7 +7,7 @@
 <title>Boston Red Sox | Boston Sports Hub</title>
 <style>
 :root {
-  color-scheme: dark;
+  color-scheme:dark;
   --bg:#101722;
   --panel:#1c2838;
   --muted:#bdc8d6;
@@ -17,9 +17,7 @@
 * { box-sizing:border-box; scroll-behavior:smooth; }
 body { margin:0; background:var(--bg); color:white; font-family:Arial,sans-serif; }
 header {
-  background:var(--blue);
-  text-align:center;
-  padding:26px 16px;
+  background:var(--blue); text-align:center; padding:26px 16px;
   border-bottom:4px solid var(--red);
 }
 header h1 { margin:0; font-size:28px; }
@@ -29,25 +27,13 @@ a { color:#9ec5ff; text-decoration:none; }
 a:hover { text-decoration:underline; }
 .back { display:inline-block; margin-bottom:18px; }
 nav {
-  position:sticky;
-  top:0;
-  z-index:10;
-  display:flex;
-  gap:8px;
-  overflow-x:auto;
-  padding:10px;
-  margin:0 -14px 22px;
-  background:#111d2d;
-  border-bottom:1px solid #354357;
+  position:sticky; top:0; z-index:10; display:flex; gap:8px;
+  overflow-x:auto; padding:10px; margin:0 -14px 22px;
+  background:#111d2d; border-bottom:1px solid #354357;
 }
 nav a {
-  flex:0 0 auto;
-  color:white;
-  background:#304158;
-  border-radius:8px;
-  padding:11px 15px;
-  font-size:14px;
-  font-weight:bold;
+  flex:0 0 auto; color:white; background:#304158; border-radius:8px;
+  padding:11px 15px; font-size:14px; font-weight:bold;
 }
 nav a:hover { background:#405570; text-decoration:none; }
 nav a.league-link { background:var(--red); }
@@ -73,6 +59,15 @@ button {
   border-radius:8px; padding:11px 13px; font-size:14px; cursor:pointer;
 }
 button:disabled { opacity:.6; cursor:wait; }
+.standings-tabs {
+  display:flex; flex-wrap:wrap; gap:8px; margin:16px 0;
+}
+.standings-tabs button {
+  flex:0 0 auto; padding:10px 13px;
+}
+.standings-tabs button.active {
+  background:var(--red); border-color:var(--red); font-weight:bold;
+}
 .table-wrap { overflow-x:auto; border-radius:8px; }
 table { width:100%; min-width:430px; border-collapse:collapse; font-size:13px; }
 th,td {
@@ -119,9 +114,22 @@ footer { text-align:center; padding:25px; color:#94a3b8; font-size:12px; }
 
   <section class="section" id="leagues">
     <h2>MLB league standings</h2>
-    <p class="summary">The Red Sox are highlighted in the tables where they appear.</p>
+    <p class="summary">Choose a table below. The Red Sox are highlighted wherever they appear.</p>
     <button id="refreshStandings">Refresh standings</button>
     <p id="standingsStatus" class="summary" aria-live="polite">Loading MLB standings…</p>
+
+    <div class="standings-tabs" id="standingsTabs" role="group" aria-label="Standings table">
+      <button type="button" data-table="overall" class="active" aria-pressed="true">Overall MLB</button>
+      <button type="button" data-table="al" aria-pressed="false">American League</button>
+      <button type="button" data-table="nl" aria-pressed="false">National League</button>
+      <button type="button" data-table="al-east" aria-pressed="false">AL East</button>
+      <button type="button" data-table="al-central" aria-pressed="false">AL Central</button>
+      <button type="button" data-table="al-west" aria-pressed="false">AL West</button>
+      <button type="button" data-table="nl-east" aria-pressed="false">NL East</button>
+      <button type="button" data-table="nl-central" aria-pressed="false">NL Central</button>
+      <button type="button" data-table="nl-west" aria-pressed="false">NL West</button>
+    </div>
+
     <div id="standings"><div class="empty">Loading standings…</div></div>
   </section>
 </main>
@@ -249,18 +257,26 @@ function getStat(entry,names) {
     (found?.value !== undefined ? found.value : null);
 }
 
+/* Collect standings entries and remember their league/division paths. */
 function collectGroups(node,path=[],out=[]) {
   if (!node || typeof node !== "object") return out;
+
   if (Array.isArray(node)) {
     node.forEach(child => collectGroups(child,path,out));
     return out;
   }
+
   const name = node.name || node.abbreviation || "";
   const next = name ? [...path,name] : path;
 
   if (Array.isArray(node.standings?.entries)) {
-    out.push({name:next.join(" · ") || "MLB standings",entries:node.standings.entries});
+    out.push({
+      name:next.join(" · ") || "MLB standings",
+      path:next.join(" ").toLowerCase(),
+      entries:node.standings.entries
+    });
   }
+
   for (const [key,value] of Object.entries(node)) {
     if (key !== "standings" && value && typeof value === "object") {
       collectGroups(value,next,out);
@@ -269,44 +285,135 @@ function collectGroups(node,path=[],out=[]) {
   return out;
 }
 
-function renderGroup(group) {
+function teamKey(entry) {
+  const team = entry.team || {};
+  return String(team.id || team.abbreviation || team.displayName || team.name || "");
+}
+
+function teamName(entry) {
+  return entry.team?.displayName || entry.team?.name || "Unknown team";
+}
+
+function isRedSox(entry) {
+  const team = entry.team || {};
+  return String(team.abbreviation || "").toUpperCase() === "BOS" ||
+    String(team.displayName || "").toLowerCase() === "boston red sox";
+}
+
+function numericStat(entry,names) {
+  const raw = getStat(entry,names);
+  if (raw === null || raw === undefined) return 0;
+  const number = Number(String(raw).replace("%",""));
+  return Number.isFinite(number) ? number : 0;
+}
+
+function sortTeams(entries) {
+  return [...entries].sort((a,b) => {
+    const pctA = numericStat(a,["winpercent","pct","win_pct"]);
+    const pctB = numericStat(b,["winpercent","pct","win_pct"]);
+    if (pctA !== pctB) return pctB - pctA;
+
+    const winsA = numericStat(a,["wins","w"]);
+    const winsB = numericStat(b,["wins","w"]);
+    if (winsA !== winsB) return winsB - winsA;
+
+    const lossesA = numericStat(a,["losses","l"]);
+    const lossesB = numericStat(b,["losses","l"]);
+    if (lossesA !== lossesB) return lossesA - lossesB;
+
+    return teamName(a).localeCompare(teamName(b));
+  });
+}
+
+function renderTable(title,entries) {
+  if (!entries.length) {
+    return `<div class="empty">No standings data was returned for ${safeText(title)}.</div>`;
+  }
+
   const columns = [
-    ["W",["wins","w"]],["L",["losses","l"]],
-    ["PCT",["winpercent","pct"]],["GB",["gamesbehind","gb"]],
+    ["W",["wins","w"]],
+    ["L",["losses","l"]],
+    ["PCT",["winpercent","pct","win_pct"]],
+    ["GB",["gamesbehind","gb"]],
     ["STRK",["streak","strk"]]
   ];
 
-  const entries = [...group.entries].sort((a,b) =>
-    Number(getStat(b,["wins","w"]) || 0) -
-    Number(getStat(a,["wins","w"]) || 0)
-  );
-
-  const rows = entries.map((entry,index) => {
-    const team = entry.team || {};
-    const isRedSox =
-      String(team.displayName || "").toLowerCase() === "boston red sox" ||
-      String(team.abbreviation || "").toLowerCase() === "bos";
-
+  const rows = sortTeams(entries).map((entry,index) => {
     const cells = columns.map(([,keys]) => {
       const value = getStat(entry,keys);
       return `<td>${safeText(value === null ? "—" : value)}</td>`;
     }).join("");
 
-    return `<tr class="${isRedSox ? "boston-row" : ""}">
-      <td>${index+1}. ${safeText(team.displayName || team.name || "Unknown team")}${isRedSox ? " ★" : ""}</td>
+    return `<tr class="${isRedSox(entry) ? "boston-row" : ""}">
+      <td>${index+1}. ${safeText(teamName(entry))}${isRedSox(entry) ? " ★" : ""}</td>
       ${cells}
     </tr>`;
   }).join("");
 
-  return `<section class="section">
-    <h3>${safeText(group.name)}</h3>
+  return `
+    <h3>${safeText(title)}</h3>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>Team</th>${columns.map(([label]) => `<th>${label}</th>`).join("")}</tr></thead>
+        <thead><tr>
+          <th>Team</th>
+          ${columns.map(([label]) => `<th>${label}</th>`).join("")}
+        </tr></thead>
         <tbody>${rows}</tbody>
       </table>
-    </div>
-  </section>`;
+    </div>`;
+}
+
+let standingsTables = {};
+let selectedTable = "overall";
+
+const tableTitles = {
+  overall:"Overall MLB",
+  al:"American League",
+  nl:"National League",
+  "al-east":"American League East",
+  "al-central":"American League Central",
+  "al-west":"American League West",
+  "nl-east":"National League East",
+  "nl-central":"National League Central",
+  "nl-west":"National League West"
+};
+
+function showStandingsTable(tableKey) {
+  selectedTable = tableKey;
+  document.querySelectorAll("#standingsTabs button").forEach(button => {
+    const active = button.dataset.table === tableKey;
+    button.classList.toggle("active",active);
+    button.setAttribute("aria-pressed",String(active));
+  });
+
+  $("standings").innerHTML = renderTable(
+    tableTitles[tableKey],
+    standingsTables[tableKey] || []
+  );
+}
+
+function uniqueEntries(groups) {
+  const result = new Map();
+  groups.forEach(group => group.entries.forEach(entry => {
+    const key = teamKey(entry);
+    if (key && !result.has(key)) result.set(key,entry);
+  }));
+  return [...result.values()];
+}
+
+function identifyGroup(path) {
+  const text = String(path || "").toLowerCase();
+  const league = text.includes("american league") || /\bal\b/.test(text)
+    ? "al"
+    : text.includes("national league") || /\bnl\b/.test(text)
+      ? "nl" : "";
+
+  const division =
+    text.includes("east") ? "east" :
+    text.includes("central") ? "central" :
+    text.includes("west") ? "west" : "";
+
+  return {league,division};
 }
 
 async function loadStandings() {
@@ -318,37 +425,123 @@ async function loadStandings() {
       "https://site.api.espn.com/apis/v2/sports/baseball/mlb/standings"
     );
     if (!response.ok) throw new Error("Standings unavailable");
+
     const data = await response.json();
-    let groups = collectGroups(data);
+    const groups = collectGroups(data);
 
     if (!groups.length && Array.isArray(data.standings?.entries)) {
-      groups = [{name:"MLB standings",entries:data.standings.entries}];
+      groups.push({
+        name:"MLB standings",
+        path:"",
+        entries:data.standings.entries
+      });
     }
 
-    const seen = new Set();
-    groups = groups.filter(group => {
-      const key = group.entries.map(entry =>
-        String(entry.team?.id || entry.team?.abbreviation || entry.team?.displayName)
-      ).join("|");
-      if (!key || seen.has(key)) return false;
-      seen.add(key);
-      return true;
+    if (!groups.length) throw new Error("No standings entries returned");
+
+    const allTeams = uniqueEntries(groups);
+    if (!allTeams.length) throw new Error("No teams returned");
+
+    standingsTables = {
+      overall:allTeams,
+      al:[],
+      nl:[],
+      "al-east":[],
+      "al-central":[],
+      "al-west":[],
+      "nl-east":[],
+      "nl-central":[],
+      "nl-west":[]
+    };
+
+    /*
+      Use the ESPN group hierarchy to identify league/division tables.
+      Entries are deduplicated so nested group responses don't duplicate teams.
+    */
+    const groupTeams = {};
+
+    groups.forEach(group => {
+      const info = identifyGroup(group.path + " " + group.name);
+      if (!info.league) return;
+
+      const leagueKey = info.league;
+      if (!groupTeams[leagueKey]) groupTeams[leagueKey] = new Map();
+
+      group.entries.forEach(entry => {
+        const key = teamKey(entry);
+        if (key) groupTeams[leagueKey].set(key,entry);
+      });
+
+      if (info.division) {
+        const divisionKey = `${info.league}-${info.division}`;
+        if (!groupTeams[divisionKey]) groupTeams[divisionKey] = new Map();
+
+        group.entries.forEach(entry => {
+          const key = teamKey(entry);
+          if (key) groupTeams[divisionKey].set(key,entry);
+        });
+      }
     });
 
-    if (!groups.length) throw new Error("No tables returned");
+    for (const key of ["al","nl","al-east","al-central","al-west","nl-east","nl-central","nl-west"]) {
+      standingsTables[key] = [...(groupTeams[key]?.values() || [])];
+    }
 
-    $("standings").innerHTML = groups.map(renderGroup).join("");
+    /*
+      If ESPN returns league-level groups but no separate division groups,
+      use team metadata where available to populate the division tabs.
+    */
+    if (!standingsTables.al.length || !standingsTables.nl.length) {
+      const allGroups = groups.map(group => ({
+        info:identifyGroup(group.path + " " + group.name),
+        entries:group.entries
+      }));
+
+      allTeams.forEach(entry => {
+        const team = entry.team || {};
+        const metadata = [
+          team.groups?.name,
+          team.group?.name,
+          team.league?.name,
+          team.division?.name,
+          team.displayName
+        ].filter(Boolean).join(" ").toLowerCase();
+
+        const sourceGroup = allGroups.find(group =>
+          group.entries.some(item => teamKey(item) === teamKey(entry)) &&
+          group.info.league
+        );
+
+        const league = sourceGroup?.info.league ||
+          (metadata.includes("american") ? "al" :
+           metadata.includes("national") ? "nl" : "");
+
+        if (league && !standingsTables[league].some(item => teamKey(item) === teamKey(entry))) {
+          standingsTables[league].push(entry);
+        }
+      });
+    }
+
     $("standingsStatus").textContent =
-      `MLB standings loaded at ${timeLabel(new Date().toISOString())}. ★ marks the Red Sox.`;
+      `Standings loaded at ${timeLabel(new Date().toISOString())}. ★ marks the Red Sox.`;
+
+    showStandingsTable(selectedTable);
   } catch(error) {
-    $("standingsStatus").textContent = "Could not load MLB standings. Try refreshing later.";
-    $("standings").innerHTML = '<div class="empty">Standings are temporarily unavailable.</div>';
+    $("standingsStatus").textContent =
+      "Could not load MLB standings. Try refreshing later.";
+    $("standings").innerHTML =
+      '<div class="empty">Standings are temporarily unavailable.</div>';
   } finally {
     $("refreshStandings").disabled = false;
   }
 }
 
+document.querySelectorAll("#standingsTabs button").forEach(button => {
+  button.addEventListener("click",() => showStandingsTable(button.dataset.table));
+});
+
 $("refreshStandings").addEventListener("click",loadStandings);
+
 loadGames();
 loadStandings();
 </script>
