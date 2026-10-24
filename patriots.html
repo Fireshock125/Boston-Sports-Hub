@@ -182,17 +182,13 @@ footer {
     <p class="summary">Patriots fixtures in UK local time, including daylight saving.</p>
     <button id="refresh-fixtures">Refresh fixtures</button>
     <p id="fixture-status" class="summary" aria-live="polite">Loading fixtures…</p>
-    <div id="fixtures-list">
-      <div class="empty">Loading upcoming fixtures…</div>
-    </div>
+    <div id="fixtures-list"><div class="empty">Loading upcoming fixtures…</div></div>
   </section>
 
   <section id="results">
     <h2>Recent Results</h2>
     <p class="summary">Completed games and final scores.</p>
-    <div id="results-list">
-      <div class="empty">Loading results…</div>
-    </div>
+    <div id="results-list"><div class="empty">Loading results…</div></div>
   </section>
 
   <section id="leagues">
@@ -201,7 +197,6 @@ footer {
       View all 32 teams, the two conferences, or the eight divisions.
       The Patriots are highlighted in every view.
     </p>
-
     <button id="refresh-standings">Refresh standings</button>
 
     <div class="standings-tabs" role="group" aria-label="Standings view">
@@ -219,6 +214,8 @@ footer {
 <footer>Boston Sports Hub · Data provided by ESPN</footer>
 
 <script>
+"use strict";
+
 const TEAM_ID = "17";
 const TEAM_NAME = "New England Patriots";
 const SPORT = "football";
@@ -228,7 +225,7 @@ const SCHEDULE_URL =
   `https://site.api.espn.com/apis/site/v2/sports/${SPORT}/${LEAGUE}/teams/${TEAM_ID}/schedule`;
 
 const STANDINGS_URL =
-  `https://site.api.espn.com/apis/v2/sports/${SPORT}/${LEAGUE}/standings`;
+  `https://site.api.espn.com/apis/v2/sports/${SPORT}/${LEAGUE}/standings?region=us&lang=en&season=2026&type=2&limit=100`;
 
 const $ = id => document.getElementById(id);
 
@@ -284,11 +281,7 @@ function scoreNumber(value) {
   if (value === null || value === undefined) return null;
 
   if (typeof value === "object") {
-    value = value.displayValue ??
-      value.value ??
-      value.score ??
-      value.text ??
-      null;
+    value = value.displayValue ?? value.value ?? value.score ?? value.text ?? null;
   }
 
   if (value === null || value === undefined || value === "") return null;
@@ -312,7 +305,6 @@ function parseEvent(event) {
 
   const opponent = competitors.find(c => c !== ownTeam);
   const completed = isCompleted(event);
-
   const ownScore = scoreNumber(ownTeam?.score);
   const opponentScore = scoreNumber(opponent?.score);
 
@@ -368,138 +360,57 @@ function gameCard(game, resultMode = false) {
   }</article>`;
 }
 
-async function loadStandings() {
-  const button = $("refresh-standings");
-  const container = $("standings-list");
-
+async function loadSchedule() {
+  const button = $("refresh-fixtures");
   button.disabled = true;
-  button.textContent = "Refreshing…";
-  container.innerHTML =
-    '<div class="empty">Loading NFL standings…</div>';
+  $("fixture-status").textContent = "Loading schedule from ESPN…";
 
   try {
-    const response = await fetch(
-      STANDINGS_URL + "?region=us&lang=en&season=2026&type=2&limit=100"
-    );
-
-    if (!response.ok) {
-      throw new Error("Standings request failed: " + response.status);
-    }
+    const response = await fetch(SCHEDULE_URL);
+    if (!response.ok) throw new Error("Schedule unavailable: " + response.status);
 
     const data = await response.json();
-    const allTeams = [];
 
-    function readEntries(entries, conferenceName = "") {
-      if (!Array.isArray(entries)) return;
+    const games = (data.events || data.content?.events || [])
+      .map(parseEvent)
+      .filter(game => game.date)
+      .sort((a, b) => new Date(a.date) - new Date(b.date));
 
-      entries.forEach(entry => {
-        const team = entry.team || {};
-        const abbreviation = String(
-          team.abbreviation || ""
-        ).toUpperCase();
+    const now = Date.now();
+    const upcoming = games.filter(game =>
+      !game.completed && new Date(game.date).getTime() >= now
+    );
 
-        if (!abbreviation) return;
+    const results = games.filter(game => game.completed).reverse().slice(0, 10);
 
-        const stats = Array.isArray(entry.stats)
-          ? entry.stats
-          : Object.entries(entry.stats || {}).map(([name, value]) => ({
-              name,
-              value,
-              displayValue: String(value)
-            }));
+    $("fixtures-list").innerHTML = upcoming.length
+      ? upcoming.map(game => gameCard(game)).join("")
+      : '<div class="empty">No upcoming fixtures are currently listed.</div>';
 
-        const normalised = normaliseTeam(
-          { ...entry, team, stats },
-          conferenceName,
-          ""
-        );
+    $("results-list").innerHTML = results.length
+      ? results.map(game => gameCard(game, true)).join("")
+      : '<div class="empty">No recent results are currently available.</div>';
 
-        allTeams.push(normalised);
-      });
-    }
-
-    function readGroup(group, inheritedConference = "") {
-      if (!group || typeof group !== "object") return;
-
-      const name = String(
-        group.abbreviation || group.name || group.displayName || ""
-      ).toUpperCase();
-
-      let conference = inheritedConference;
-
-      if (name.includes("AFC") ||
-          name.includes("AMERICAN FOOTBALL CONFERENCE")) {
-        conference = "AFC";
-      } else if (name.includes("NFC") ||
-                 name.includes("NATIONAL FOOTBALL CONFERENCE")) {
-        conference = "NFC";
-      }
-
-      // ESPN commonly stores the teams here.
-      readEntries(group.standings?.entries, conference);
-
-      // Also support responses where entries are directly on a group.
-      readEntries(group.entries, conference);
-
-      if (group.standings?.children) {
-        group.standings.children.forEach(child =>
-          readGroup(child, conference)
-        );
-      }
-
-      if (group.children) {
-        group.children.forEach(child =>
-          readGroup(child, conference)
-        );
-      }
-    }
-
-    readGroup(data);
-
-    // Remove duplicate teams if ESPN exposes the same entries in
-    // more than one part of the response.
-    const uniqueTeams = [
-      ...new Map(
-        allTeams.map(team => [
-          team.abbreviation,
-          team
-        ])
-      ).values()
-    ];
-
-    if (uniqueTeams.length !== 32) {
-      throw new Error(
-        "Expected 32 NFL teams but found " + uniqueTeams.length
-      );
-    }
-
-    // Assign the official divisions regardless of ESPN's grouping.
-    for (const [division, abbreviations] of Object.entries(NFL_DIVISIONS)) {
-      for (const team of uniqueTeams) {
-        if (abbreviations.includes(team.abbreviation)) {
-          team.division = division;
-          team.conference = division.split(" ")[0];
-        }
-      }
-    }
-
-    standingsData = { allTeams: uniqueTeams };
-    renderStandings();
+    $("fixture-status").textContent =
+      `Schedule updated at ${timeLabel(new Date().toISOString())}.`;
 
   } catch (error) {
-    container.innerHTML =
-      '<div class="empty">Could not load NFL standings. Please try refreshing.</div>';
+    $("fixture-status").textContent =
+      "Could not load the schedule. Please try again.";
 
-    console.error("NFL standings error:", error);
+    $("fixtures-list").innerHTML =
+      '<div class="empty">Fixtures could not be loaded. Check your connection and refresh.</div>';
+
+    $("results-list").innerHTML =
+      '<div class="empty">Results could not be loaded. Check your connection and refresh.</div>';
+
+    console.error("Patriots schedule error:", error);
   } finally {
     button.disabled = false;
-    button.textContent = "Refresh standings";
   }
 }
 
-}
-
-/* STANDINGS */
+/* NFL STANDINGS */
 
 const NFL_DIVISIONS = {
   "AFC East": ["BUF", "MIA", "NE", "NYJ"],
@@ -512,52 +423,72 @@ const NFL_DIVISIONS = {
   "NFC West": ["ARI", "LA", "SF", "SEA"]
 };
 
-let standingsData = null;
+let standingsData = [];
 let currentStandingsView = "overall";
 
-function getStat(stats, aliases) {
-  for (const alias of aliases) {
-    const stat = stats.find(item =>
-      String(item.name || "").toLowerCase() === alias.toLowerCase() ||
-      String(item.abbreviation || "").toLowerCase() === alias.toLowerCase()
-    );
+function getStatsArray(entry) {
+  if (Array.isArray(entry.stats)) return entry.stats;
 
-    if (stat) return stat.displayValue ?? stat.value ?? "—";
+  if (entry.stats && typeof entry.stats === "object") {
+    return Object.entries(entry.stats).map(([name, value]) => ({
+      name,
+      value: typeof value === "object" ? value.value : value,
+      displayValue: typeof value === "object"
+        ? value.displayValue
+        : String(value)
+    }));
   }
 
+  return [];
+}
+
+function statValue(stats, aliases) {
+  for (const alias of aliases) {
+    const found = stats.find(stat =>
+      String(stat.name || "").toLowerCase() === alias.toLowerCase() ||
+      String(stat.abbreviation || "").toLowerCase() === alias.toLowerCase()
+    );
+
+    if (found) return found.displayValue ?? found.value ?? "—";
+  }
   return "—";
 }
 
-function numericStat(stats, aliases) {
-  const value = getStat(stats, aliases);
-  if (value === "—" || value === "" || value === null) return -1;
+function statNumber(stats, aliases) {
+  for (const alias of aliases) {
+    const found = stats.find(stat =>
+      String(stat.name || "").toLowerCase() === alias.toLowerCase() ||
+      String(stat.abbreviation || "").toLowerCase() === alias.toLowerCase()
+    );
 
-  const number = Number(value);
-  return Number.isFinite(number) ? number : -1;
+    if (found) {
+      const number = Number(found.value ?? found.displayValue);
+      if (Number.isFinite(number)) return number;
+    }
+  }
+  return -1;
 }
 
-function normaliseTeam(entry, conferenceName, divisionName) {
+function normaliseTeam(entry) {
   const team = entry.team || {};
-  const stats = entry.stats || [];
+  const stats = getStatsArray(entry);
   const abbreviation = String(team.abbreviation || "").toUpperCase();
 
   return {
     id: String(team.id || ""),
     name: team.displayName || team.name || "Unknown team",
     abbreviation,
-    conference: conferenceName || "",
-    division: divisionName || "",
-    wins: getStat(stats, ["wins", "w"]),
-    losses: getStat(stats, ["losses", "l"]),
-    ties: getStat(stats, ["ties", "t"]),
-    pct: getStat(stats, ["winPercent", "winpercent", "pct"]),
-    pf: getStat(stats, ["pointsFor", "pointsfor", "pf"]),
-    pa: getStat(stats, ["pointsAgainst", "pointsagainst", "pa"]),
-    streak: getStat(stats, ["streak", "strk"]),
-    sortPct: numericStat(stats, ["winPercent", "winpercent", "pct"]),
-    sortWins: numericStat(stats, ["wins", "w"]),
-    sortLosses: numericStat(stats, ["losses", "l"]),
-    sortTies: numericStat(stats, ["ties", "t"])
+    wins: statValue(stats, ["wins", "w"]),
+    losses: statValue(stats, ["losses", "l"]),
+    ties: statValue(stats, ["ties", "t"]),
+    pct: statValue(stats, ["winPercent", "winpercent", "pct"]),
+    pf: statValue(stats, ["pointsFor", "pointsfor", "pf"]),
+    pa: statValue(stats, ["pointsAgainst", "pointsagainst", "pa"]),
+    streak: statValue(stats, ["streak", "strk"]),
+    sortPct: statNumber(stats, ["winPercent", "winpercent", "pct"]),
+    sortWins: statNumber(stats, ["wins", "w"]),
+    sortLosses: statNumber(stats, ["losses", "l"]),
+    sortTies: statNumber(stats, ["ties", "t"])
   };
 }
 
@@ -589,15 +520,8 @@ function makeStandingsTable(teams) {
       <table>
         <thead>
           <tr>
-            <th>#</th>
-            <th>Team</th>
-            <th>W</th>
-            <th>L</th>
-            <th>T</th>
-            <th>PCT</th>
-            <th>PF</th>
-            <th>PA</th>
-            <th>Streak</th>
+            <th>#</th><th>Team</th><th>W</th><th>L</th>
+            <th>T</th><th>PCT</th><th>PF</th><th>PA</th><th>Streak</th>
           </tr>
         </thead>
         <tbody>
@@ -621,39 +545,25 @@ function makeStandingsTable(teams) {
 
 function renderStandings() {
   const container = $("standings-list");
-  if (!standingsData) return;
-
-  const allTeams = standingsData.allTeams;
+  if (!standingsData.length) return;
 
   if (currentStandingsView === "overall") {
     container.innerHTML = `
       <h3 class="standings-heading">All 32 Teams</h3>
-      <p class="standings-note">
-        Ranked by winning percentage, then wins and losses.
-      </p>
-      ${makeStandingsTable(allTeams)}`;
+      <p class="standings-note">Ranked by winning percentage, then wins and losses.</p>
+      ${makeStandingsTable(standingsData)}`;
   } else if (currentStandingsView === "conference") {
     container.innerHTML = ["AFC", "NFC"].map(conference => {
-      const teams = allTeams.filter(team =>
-        team.conference.toUpperCase().includes(conference)
-      );
-
-      return `
-        <h3 class="standings-heading">${conference}</h3>
-        ${makeStandingsTable(teams)}`;
+      const teams = standingsData.filter(team => team.conference === conference);
+      return `<h3 class="standings-heading">${conference}</h3>${makeStandingsTable(teams)}`;
     }).join("");
   } else {
-    container.innerHTML = Object.entries(NFL_DIVISIONS).map(
-      ([division, abbreviations]) => {
-        const teams = allTeams.filter(team =>
-          abbreviations.includes(team.abbreviation)
-        );
-
-        return `
-          <h3 class="standings-heading">${division}</h3>
-          ${makeStandingsTable(teams)}`;
-      }
-    ).join("");
+    container.innerHTML = Object.entries(NFL_DIVISIONS).map(([division, abbreviations]) => {
+      const teams = standingsData.filter(team =>
+        abbreviations.includes(team.abbreviation)
+      );
+      return `<h3 class="standings-heading">${division}</h3>${makeStandingsTable(teams)}`;
+    }).join("");
   }
 
   document.querySelectorAll(".standings-tab").forEach(button => {
@@ -669,92 +579,69 @@ async function loadStandings() {
 
   button.disabled = true;
   button.textContent = "Refreshing…";
+  container.innerHTML = '<div class="empty">Loading NFL standings…</div>';
 
   try {
     const response = await fetch(STANDINGS_URL);
-    if (!response.ok) throw new Error("Standings unavailable");
+    if (!response.ok) throw new Error("Standings request failed: " + response.status);
 
     const data = await response.json();
-    const allTeams = [];
+    const found = [];
 
-    function readGroup(group, conferenceName = "", divisionName = "") {
-      if (!group) return;
+    // ESPN may place entries directly on a group or inside standings.entries.
+    function collect(group) {
+      if (!group || typeof group !== "object") return;
 
-      const groupName = String(
-        group.name || group.abbreviation || ""
-      );
+      const groupsToRead = [
+        group.standings?.entries,
+        group.entries
+      ];
 
-      let nextConference = conferenceName;
-      let nextDivision = divisionName;
+      for (const entries of groupsToRead) {
+        if (!Array.isArray(entries)) continue;
 
-      if (/^AFC\b|^AFC /i.test(groupName)) {
-        nextConference = "AFC";
-      } else if (/^NFC\b|^NFC /i.test(groupName)) {
-        nextConference = "NFC";
+        for (const entry of entries) {
+          if (entry.team?.abbreviation) found.push(normaliseTeam(entry));
+        }
       }
 
-      if (/^(AFC|NFC)\s+(East|North|South|West)$/i.test(groupName)) {
-        nextDivision = groupName;
-        nextConference = groupName.split(/\s+/)[0].toUpperCase();
+      if (Array.isArray(group.children)) {
+        group.children.forEach(collect);
       }
-
-      if (Array.isArray(group.entries)) {
-        group.entries.forEach(entry => {
-          const normalised = normaliseTeam(
-            entry,
-            nextConference,
-            nextDivision
-          );
-
-          if (normalised.id || normalised.abbreviation) {
-            allTeams.push(normalised);
-          }
-        });
+      if (Array.isArray(group.standings?.children)) {
+        group.standings.children.forEach(collect);
       }
-
-      (group.children || []).forEach(child =>
-        readGroup(child, nextConference, nextDivision)
-      );
     }
 
-    (data.children || []).forEach(group => readGroup(group));
+    collect(data);
 
-    // Some ESPN responses place teams directly in the root group.
-    if (!allTeams.length) readGroup(data);
+    const unique = new Map();
+    found.forEach(team => {
+      if (team.abbreviation) unique.set(team.abbreviation, team);
+    });
 
-    const uniqueTeams = [
-      ...new Map(
-        allTeams.map(team => [
-          team.id || team.abbreviation,
-          team
-        ])
-      ).values()
-    ];
+    const teams = [...unique.values()];
 
-    if (uniqueTeams.length < 32) {
-      throw new Error(
-        `Expected 32 NFL teams, received ${uniqueTeams.length}`
-      );
+    if (teams.length !== 32) {
+      throw new Error(`Expected 32 teams; found ${teams.length}`);
     }
 
-    // Use the official NFL division mapping to ensure the divisions
-    // remain correct even if ESPN changes its nested group structure.
     for (const [division, abbreviations] of Object.entries(NFL_DIVISIONS)) {
-      for (const team of uniqueTeams) {
-        if (abbreviations.includes(team.abbreviation)) {
+      abbreviations.forEach(abbreviation => {
+        const team = teams.find(item => item.abbreviation === abbreviation);
+        if (team) {
           team.division = division;
           team.conference = division.split(" ")[0];
         }
-      }
+      });
     }
 
-    standingsData = { allTeams: uniqueTeams };
+    standingsData = teams;
     renderStandings();
 
   } catch (error) {
     container.innerHTML =
       '<div class="empty">Could not load NFL standings. Please try refreshing.</div>';
-
     console.error("NFL standings error:", error);
   } finally {
     button.disabled = false;
