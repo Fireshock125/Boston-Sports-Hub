@@ -1,4 +1,4 @@
-```html
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -29,7 +29,11 @@ header {
 }
 header h1 { margin: 0; font-size: 30px; }
 header p { color: var(--muted); margin-bottom: 0; }
-main { max-width: 1100px; margin: auto; padding: 22px 14px; }
+main {
+  max-width: 1100px;
+  margin: auto;
+  padding: 22px 14px;
+}
 h2 { margin-top: 0; }
 .teams {
   display: grid;
@@ -50,7 +54,6 @@ h2 { margin-top: 0; }
 }
 .team:hover {
   background: #29394d;
-  text-decoration: none;
   transform: translateY(-2px);
 }
 .team h3 { margin: 0 0 8px; font-size: 18px; }
@@ -64,7 +67,11 @@ h2 { margin-top: 0; }
   font-size: 12px;
   margin-bottom: 12px;
 }
-.arrow { float: right; color: #bdc8d6; font-size: 22px; }
+.arrow {
+  float: right;
+  color: #bdc8d6;
+  font-size: 22px;
+}
 .summary {
   color: var(--muted);
   font-size: 14px;
@@ -82,7 +89,6 @@ button {
 }
 button:hover { background: #405570; }
 button:disabled { opacity: .6; cursor: wait; }
-
 .game {
   background: var(--panel);
   border-radius: 10px;
@@ -117,14 +123,9 @@ button:disabled { opacity: .6; cursor: wait; }
   color: var(--muted);
   font-size: 13px;
 }
-.game-bottom span:last-child { text-align: right; }
-.score {
-  color: var(--team-colour, white);
-  font-size: 14px;
-  font-weight: bold;
+.game-bottom span:last-child {
+  text-align: right;
 }
-.status { color: var(--muted); font-size: 13px; }
-
 .empty {
   background: var(--panel);
   border-radius: 10px;
@@ -132,7 +133,9 @@ button:disabled { opacity: .6; cursor: wait; }
   color: var(--muted);
   line-height: 1.5;
 }
-section { margin-bottom: 32px; scroll-margin-top: 20px; }
+section {
+  margin-bottom: 32px;
+}
 footer {
   text-align: center;
   padding: 25px;
@@ -156,9 +159,11 @@ footer {
 </header>
 
 <main>
-  <section id="teams-section">
+  <section>
     <h2>Your Boston teams</h2>
-    <p class="summary">Choose a team to view its fixtures, results and league standings.</p>
+    <p class="summary">
+      Choose a team to view its fixtures, results and league standings.
+    </p>
 
     <div class="teams">
       <a class="team" href="patriots.html" style="--team-colour:#c8102e">
@@ -195,27 +200,19 @@ footer {
     <h2>Upcoming fixtures</h2>
     <p class="summary">
       All four teams in date order. American local time is shown on the left
-      and UK local time on the right.
+      and UK local time on the right, including daylight saving.
     </p>
-    <button id="refresh">Refresh fixtures and results</button>
-    <p id="status" class="summary" aria-live="polite">Loading schedules…</p>
+    <button id="refresh">Refresh fixtures</button>
+    <p id="status" class="summary" aria-live="polite">
+      Loading schedules…
+    </p>
     <div id="upcoming">
       <div class="empty">Loading upcoming fixtures…</div>
     </div>
   </section>
-
-  <section id="results">
-    <h2>Recent results</h2>
-    <p class="summary">
-      The latest completed games across all four teams, with scores and results.
-    </p>
-    <div id="results-list">
-      <div class="empty">Loading recent results…</div>
-    </div>
-  </section>
 </main>
 
-<footer>Boston Sports Hub · Data provided by ESPN</footer>
+<footer>Boston Sports Hub · Made for a Boston sports fan in the UK</footer>
 
 <script>
 "use strict";
@@ -253,7 +250,6 @@ const feeds = [
 
 const statusEl = document.getElementById("status");
 const upcomingEl = document.getElementById("upcoming");
-const resultsEl = document.getElementById("results-list");
 const refreshEl = document.getElementById("refresh");
 
 function safeText(value) {
@@ -266,9 +262,9 @@ function safeText(value) {
   })[char]);
 }
 
-function dateLabel(dateString) {
-  const date = new Date(dateString);
-  if (!dateString || Number.isNaN(date.getTime())) return "Date TBC";
+function dateLabel(value) {
+  const date = new Date(value);
+  if (!value || Number.isNaN(date.getTime())) return "Date TBC";
 
   return new Intl.DateTimeFormat("en-GB", {
     weekday: "short",
@@ -279,9 +275,9 @@ function dateLabel(dateString) {
   }).format(date);
 }
 
-function timeLabel(dateString) {
-  const date = new Date(dateString);
-  if (!dateString || Number.isNaN(date.getTime())) return "Time TBC";
+function timeLabel(value) {
+  const date = new Date(value);
+  if (!value || Number.isNaN(date.getTime())) return "Time TBC";
 
   return new Intl.DateTimeFormat("en-GB", {
     hour: "2-digit",
@@ -291,11 +287,12 @@ function timeLabel(dateString) {
   }).format(date);
 }
 
-function americanTimeLabel(dateString, event) {
-  const date = new Date(dateString);
-  if (!dateString || Number.isNaN(date.getTime())) return "US time TBC";
+function americanTimeLabel(value, event) {
+  const date = new Date(value);
+  if (!value || Number.isNaN(date.getTime())) return "US time TBC";
 
   const competition = event?.competitions?.[0];
+
   const venueTimeZone =
     competition?.venue?.timeZone ||
     event?.venue?.timeZone;
@@ -330,47 +327,12 @@ function isCompleted(event) {
     );
 }
 
-function scoreNumber(value) {
-  if (value === null || value === undefined) return null;
-
-  if (typeof value === "object") {
-    value = value.displayValue ??
-      value.value ??
-      value.score ??
-      value.text ??
-      null;
-  }
-
-  if (value === null || value === undefined || value === "") return null;
-
-  const number = Number(value);
-  return Number.isFinite(number) ? number : null;
-}
-
 function parseEvent(event, feed) {
   const competition = event.competitions?.[0];
   const competitors = competition?.competitors || [];
 
   const home = competitors.find(c => c.homeAway === "home");
   const away = competitors.find(c => c.homeAway === "away");
-
-  const ownTeam = competitors.find(c =>
-    String(c.team?.id) === feed.id
-  );
-
-  const opponent = competitors.find(c => c !== ownTeam);
-  const completed = isCompleted(event);
-
-  const homeScore = scoreNumber(home?.score);
-  const awayScore = scoreNumber(away?.score);
-  const ownScore = scoreNumber(ownTeam?.score);
-  const opponentScore = scoreNumber(opponent?.score);
-
-  let outcome = "";
-  if (completed && ownScore !== null && opponentScore !== null) {
-    outcome = ownScore > opponentScore ? "Win" :
-      ownScore < opponentScore ? "Loss" : "Tie";
-  }
 
   return {
     id: `${feed.league}-${event.id || event.date + event.name}`,
@@ -380,15 +342,8 @@ function parseEvent(event, feed) {
     event,
     home: home?.team?.displayName || "Home team",
     away: away?.team?.displayName || "Away team",
-    completed,
-    status: event.status?.type?.shortDetail ||
-      event.status?.type?.description ||
-      competition?.status?.type?.shortDetail ||
-      "Scheduled",
-    link: event.links?.[0]?.href || "",
-    homeScore,
-    awayScore,
-    outcome
+    completed: isCompleted(event),
+    link: event.links?.[0]?.href || ""
   };
 }
 
@@ -407,27 +362,7 @@ async function loadFeed(feed) {
     .filter(game => game.date);
 }
 
-function gameCard(game, resultMode = false) {
-  const score = game.homeScore === null || game.awayScore === null
-    ? "Score unavailable"
-    : `${game.awayScore} – ${game.homeScore}`;
-
-  const resultText = game.outcome
-    ? `Final · ${score} · ${game.outcome}`
-    : `Final · ${score}`;
-
-  const bottomRow = resultMode
-    ? `
-      <div class="game-bottom">
-        <span class="score">${safeText(resultText)}</span>
-        <span class="status">Completed</span>
-      </div>`
-    : `
-      <div class="game-bottom">
-        <span>${safeText(americanTimeLabel(game.date, game.event))}</span>
-        <span>UK: ${safeText(timeLabel(game.date))}</span>
-      </div>`;
-
+function gameCard(game) {
   const content = `
     <div class="game-top">
       <span>${safeText(game.league)} · ${safeText(game.team)}</span>
@@ -436,15 +371,22 @@ function gameCard(game, resultMode = false) {
     <div class="matchup">
       ${safeText(game.away)} @ ${safeText(game.home)}
     </div>
-    ${bottomRow}`;
+    <div class="game-bottom">
+      <span>${safeText(americanTimeLabel(game.date, game.event))}</span>
+      <span>UK: ${safeText(timeLabel(game.date))}</span>
+    </div>`;
 
   const link = game.link
-    ? `<a href="${safeText(game.link)}" target="_blank"
+    ? `<a href="${safeText(game.link)}"
+         target="_blank"
          rel="noopener noreferrer"
          style="color:inherit;text-decoration:none">${content}</a>`
     : content;
 
-  return `<article class="game ${game.league.toLowerCase()}">${link}</article>`;
+  return `
+    <article class="game ${game.league.toLowerCase()}">
+      ${link}
+    </article>`;
 }
 
 async function loadAll() {
@@ -453,6 +395,7 @@ async function loadAll() {
 
   try {
     const outcomes = await Promise.allSettled(feeds.map(loadFeed));
+
     let games = [];
     const errors = [];
 
@@ -461,11 +404,16 @@ async function loadAll() {
         games.push(...result.value);
       } else {
         errors.push(feeds[index].league);
-        console.error(`${feeds[index].league} schedule error:`, result.reason);
+        console.error(
+          `${feeds[index].league} schedule error:`,
+          result.reason
+        );
       }
     });
 
-    games = [...new Map(games.map(game => [game.id, game])).values()];
+    games = [
+      ...new Map(games.map(game => [game.id, game])).values()
+    ];
 
     const now = Date.now();
 
@@ -476,23 +424,14 @@ async function loadAll() {
       )
       .sort((a, b) => new Date(a.date) - new Date(b.date));
 
-    const results = games
-      .filter(game => game.completed)
-      .sort((a, b) => new Date(b.date) - new Date(a.date))
-      .slice(0, 10);
-
     upcomingEl.innerHTML = upcoming.length
-      ? upcoming.map(game => gameCard(game)).join("")
+      ? upcoming.map(gameCard).join("")
       : '<div class="empty">No upcoming fixtures are currently listed. Try refreshing later.</div>';
 
-    resultsEl.innerHTML = results.length
-      ? results.map(game => gameCard(game, true)).join("")
-      : '<div class="empty">No recent results are currently available.</div>';
-
-    const loaded = 4 - errors.length;
+    const loaded = feeds.length - errors.length;
     const updated = timeLabel(new Date().toISOString());
 
-    if (loaded === 4) {
+    if (loaded === feeds.length) {
       statusEl.textContent =
         `All four league feeds loaded at ${updated}.`;
     } else if (loaded > 0) {
@@ -510,9 +449,6 @@ async function loadAll() {
     upcomingEl.innerHTML =
       '<div class="empty">Fixtures could not be loaded. Check your connection and refresh.</div>';
 
-    resultsEl.innerHTML =
-      '<div class="empty">Results could not be loaded. Check your connection and refresh.</div>';
-
     console.error("Boston Sports Hub schedule error:", error);
   } finally {
     refreshEl.disabled = false;
@@ -525,4 +461,3 @@ loadAll();
 
 </body>
 </html>
-```
