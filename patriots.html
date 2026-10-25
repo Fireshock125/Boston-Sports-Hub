@@ -1,4 +1,4 @@
-
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -92,6 +92,22 @@ button:disabled { opacity: .6; cursor: wait; }
   font-size: 17px;
   font-weight: bold;
   margin: 12px 0 7px;
+  overflow-wrap: anywhere;
+}
+.game-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.game-bottom span:last-child { text-align: right; }
+.score {
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: bold;
 }
 .status { color: var(--muted); font-size: 13px; }
 .empty {
@@ -179,7 +195,7 @@ footer {
 <main>
   <section id="fixtures">
     <h2>Upcoming Fixtures</h2>
-    <p class="summary">Patriots fixtures in UK local time, including daylight saving.</p>
+    <p class="summary">Patriots fixtures showing American local time and UK local time, including daylight saving.</p>
     <button id="refresh-fixtures">Refresh fixtures</button>
     <p id="fixture-status" class="summary" aria-live="polite">Loading fixtures…</p>
     <div id="fixtures-list"><div class="empty">Loading upcoming fixtures…</div></div>
@@ -264,6 +280,42 @@ function timeLabel(value) {
   }).format(date);
 }
 
+function americanTimeLabel(value, event) {
+  const date = new Date(value);
+  if (!value || Number.isNaN(date.getTime())) return "US time TBC";
+
+  const competition = event?.competitions?.[0];
+  const venueTimeZone =
+    competition?.venue?.timeZone ||
+    event?.venue?.timeZone ||
+    event?.competitions?.[0]?.competitors?.find(
+      competitor => competitor.homeAway === "home"
+    )?.team?.location?.timeZone;
+
+  try {
+    const options = {
+      hour: "numeric",
+      minute: "2-digit",
+      timeZoneName: "short"
+    };
+
+    if (venueTimeZone) {
+      options.timeZone = venueTimeZone;
+    } else {
+      options.timeZone = "America/New_York";
+    }
+
+    return new Intl.DateTimeFormat("en-US", options).format(date);
+  } catch {
+    return new Intl.DateTimeFormat("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      timeZone: "America/New_York",
+      timeZoneName: "short"
+    }).format(date);
+  }
+}
+
 function isCompleted(event) {
   const status =
     event.status?.type ||
@@ -317,6 +369,7 @@ function parseEvent(event) {
   return {
     id: event.id,
     date: event.date || competition?.date,
+    event,
     home: home?.team?.displayName || "Home team",
     away: away?.team?.displayName || "Away team",
     completed,
@@ -340,6 +393,18 @@ function gameCard(game, resultMode = false) {
     ? `Final · ${score} · ${game.outcome}`
     : `Final · ${score}`;
 
+  const bottomRow = resultMode
+    ? `
+      <div class="game-bottom">
+        <span class="score">${safeText(resultText)}</span>
+        <span class="status">Completed</span>
+      </div>`
+    : `
+      <div class="game-bottom">
+        <span>${safeText(americanTimeLabel(game.date, game.event))}</span>
+        <span>UK: ${safeText(timeLabel(game.date))}</span>
+      </div>`;
+
   const content = `
     <div class="game-top">
       <span>NFL · ${TEAM_NAME}</span>
@@ -348,10 +413,7 @@ function gameCard(game, resultMode = false) {
     <div class="matchup">
       ${safeText(game.away)} @ ${safeText(game.home)}
     </div>
-    <div class="game-top">
-      <span>${resultMode ? safeText(resultText) : timeLabel(game.date)}</span>
-      <span class="status">${safeText(resultMode ? "Completed" : game.status)}</span>
-    </div>`;
+    ${bottomRow}`;
 
   return `<article class="game">${
     game.link
@@ -410,7 +472,7 @@ async function loadSchedule() {
   }
 }
 
-/* NFL STANDINGS */
+/* NFL STANDINGS — PRESERVED */
 
 const NFL_DIVISIONS = {
   "AFC East": ["BUF", "MIA", "NE", "NYJ"],
@@ -588,7 +650,6 @@ async function loadStandings() {
     const data = await response.json();
     const found = [];
 
-    // ESPN may place entries directly on a group or inside standings.entries.
     function collect(group) {
       if (!group || typeof group !== "object") return;
 
@@ -665,3 +726,4 @@ loadStandings();
 
 </body>
 </html>
+```
