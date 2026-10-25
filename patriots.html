@@ -1,4 +1,4 @@
-```html
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -195,16 +195,25 @@ footer {
 <main>
   <section id="fixtures">
     <h2>Upcoming Fixtures</h2>
-    <p class="summary">Patriots fixtures showing American local time and UK local time, including daylight saving.</p>
+    <p class="summary">
+      Patriots fixtures showing American local time and UK local time,
+      including daylight saving.
+    </p>
     <button id="refresh-fixtures">Refresh fixtures</button>
-    <p id="fixture-status" class="summary" aria-live="polite">Loading fixtures…</p>
-    <div id="fixtures-list"><div class="empty">Loading upcoming fixtures…</div></div>
+    <p id="fixture-status" class="summary" aria-live="polite">
+      Loading fixtures…
+    </p>
+    <div id="fixtures-list">
+      <div class="empty">Loading upcoming fixtures…</div>
+    </div>
   </section>
 
   <section id="results">
     <h2>Recent Results</h2>
-    <p class="summary">Completed games and final scores.</p>
-    <div id="results-list"><div class="empty">Loading results…</div></div>
+    <p class="summary">The latest 10 completed games and final scores.</p>
+    <div id="results-list">
+      <div class="empty">Loading results…</div>
+    </div>
   </section>
 
   <section id="leagues">
@@ -216,9 +225,15 @@ footer {
     <button id="refresh-standings">Refresh standings</button>
 
     <div class="standings-tabs" role="group" aria-label="Standings view">
-      <button class="standings-tab active" data-view="overall" aria-pressed="true">All Teams</button>
-      <button class="standings-tab" data-view="conference" aria-pressed="false">Conferences</button>
-      <button class="standings-tab" data-view="division" aria-pressed="false">Divisions</button>
+      <button class="standings-tab active" data-view="overall" aria-pressed="true">
+        All Teams
+      </button>
+      <button class="standings-tab" data-view="conference" aria-pressed="false">
+        Conferences
+      </button>
+      <button class="standings-tab" data-view="division" aria-pressed="false">
+        Divisions
+      </button>
     </div>
 
     <div id="standings-list">
@@ -237,13 +252,40 @@ const TEAM_NAME = "New England Patriots";
 const SPORT = "football";
 const LEAGUE = "nfl";
 
-const SCHEDULE_URL =
+const SCHEDULE_BASE =
   `https://site.api.espn.com/apis/site/v2/sports/${SPORT}/${LEAGUE}/teams/${TEAM_ID}/schedule`;
 
-const STANDINGS_URL =
-  `https://site.api.espn.com/apis/v2/sports/${SPORT}/${LEAGUE}/standings?region=us&lang=en&season=2026&type=2&limit=100`;
+const STANDINGS_BASE =
+  `https://site.api.espn.com/apis/v2/sports/${SPORT}/${LEAGUE}/standings`;
 
 const $ = id => document.getElementById(id);
+
+/*
+  NFL seasons start in one calendar year and finish
+  in the following January or February.
+
+  Before March, use the previous year's season.
+  From March onwards, use the current year's season.
+*/
+function nflSeasonYear() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+
+  return month < 2 ? year - 1 : year;
+}
+
+function scheduleRequests() {
+  const season = nflSeasonYear();
+  const previous = season - 1;
+
+  return [
+    { year: season, type: 2 },
+    { year: season, type: 3 },
+    { year: previous, type: 2 },
+    { year: previous, type: 3 }
+  ];
+}
 
 function safeText(value) {
   return String(value ?? "").replace(/[&<>"']/g, char => ({
@@ -285,27 +327,21 @@ function americanTimeLabel(value, event) {
   if (!value || Number.isNaN(date.getTime())) return "US time TBC";
 
   const competition = event?.competitions?.[0];
+
   const venueTimeZone =
     competition?.venue?.timeZone ||
     event?.venue?.timeZone ||
-    event?.competitions?.[0]?.competitors?.find(
+    competition?.competitors?.find(
       competitor => competitor.homeAway === "home"
     )?.team?.location?.timeZone;
 
   try {
-    const options = {
+    return new Intl.DateTimeFormat("en-US", {
       hour: "numeric",
       minute: "2-digit",
+      timeZone: venueTimeZone || "America/New_York",
       timeZoneName: "short"
-    };
-
-    if (venueTimeZone) {
-      options.timeZone = venueTimeZone;
-    } else {
-      options.timeZone = "America/New_York";
-    }
-
-    return new Intl.DateTimeFormat("en-US", options).format(date);
+    }).format(date);
   } catch {
     return new Intl.DateTimeFormat("en-US", {
       hour: "numeric",
@@ -333,7 +369,11 @@ function scoreNumber(value) {
   if (value === null || value === undefined) return null;
 
   if (typeof value === "object") {
-    value = value.displayValue ?? value.value ?? value.score ?? value.text ?? null;
+    value = value.displayValue ??
+      value.value ??
+      value.score ??
+      value.text ??
+      null;
   }
 
   if (value === null || value === undefined || value === "") return null;
@@ -357,26 +397,24 @@ function parseEvent(event) {
 
   const opponent = competitors.find(c => c !== ownTeam);
   const completed = isCompleted(event);
+
   const ownScore = scoreNumber(ownTeam?.score);
   const opponentScore = scoreNumber(opponent?.score);
 
   let outcome = "";
+
   if (completed && ownScore !== null && opponentScore !== null) {
     outcome = ownScore > opponentScore ? "Win" :
       ownScore < opponentScore ? "Loss" : "Tie";
   }
 
   return {
-    id: event.id,
+    id: String(event.id || `${event.date}-${event.name}`),
     date: event.date || competition?.date,
     event,
     home: home?.team?.displayName || "Home team",
     away: away?.team?.displayName || "Away team",
     completed,
-    status: event.status?.type?.shortDetail ||
-      event.status?.type?.description ||
-      competition?.status?.type?.shortDetail ||
-      "Scheduled",
     link: event.links?.[0]?.href || "",
     ownScore,
     opponentScore,
@@ -407,8 +445,8 @@ function gameCard(game, resultMode = false) {
 
   const content = `
     <div class="game-top">
-      <span>NFL · ${TEAM_NAME}</span>
-      <span>${dateLabel(game.date)}</span>
+      <span>NFL · ${safeText(TEAM_NAME)}</span>
+      <span>${safeText(dateLabel(game.date))}</span>
     </div>
     <div class="matchup">
       ${safeText(game.away)} @ ${safeText(game.home)}
@@ -417,33 +455,92 @@ function gameCard(game, resultMode = false) {
 
   return `<article class="game">${
     game.link
-      ? `<a href="${safeText(game.link)}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">${content}</a>`
+      ? `<a href="${safeText(game.link)}"
+           target="_blank"
+           rel="noopener noreferrer"
+           style="color:inherit;text-decoration:none">${content}</a>`
       : content
   }</article>`;
+}
+
+async function fetchSchedule(request) {
+  const url =
+    `${SCHEDULE_BASE}?season=${request.year}&seasontype=${request.type}`;
+
+  const response = await fetch(url, { cache: "no-store" });
+
+  if (!response.ok) {
+    throw new Error(
+      `Schedule ${request.year}/${request.type}: HTTP ${response.status}`
+    );
+  }
+
+  const data = await response.json();
+  const events = data.events || data.content?.events || [];
+
+  if (!Array.isArray(events)) {
+    throw new Error("Unexpected schedule response");
+  }
+
+  return events.map(parseEvent).filter(game =>
+    game.date &&
+    Number.isFinite(new Date(game.date).getTime())
+  );
 }
 
 async function loadSchedule() {
   const button = $("refresh-fixtures");
   button.disabled = true;
-  $("fixture-status").textContent = "Loading schedule from ESPN…";
+  $("fixture-status").textContent = "Loading schedules from ESPN…";
 
   try {
-    const response = await fetch(SCHEDULE_URL);
-    if (!response.ok) throw new Error("Schedule unavailable: " + response.status);
+    const requests = scheduleRequests();
+    const responses = await Promise.allSettled(
+      requests.map(fetchSchedule)
+    );
 
-    const data = await response.json();
+    const gamesById = new Map();
+    let successful = 0;
 
-    const games = (data.events || data.content?.events || [])
-      .map(parseEvent)
-      .filter(game => game.date)
+    responses.forEach((result, index) => {
+      if (result.status === "fulfilled") {
+        successful++;
+
+        result.value.forEach(game => {
+          const previous = gamesById.get(game.id);
+
+          if (!previous ||
+              (game.completed && !previous.completed)) {
+            gamesById.set(game.id, game);
+          }
+        });
+      } else {
+        console.warn(
+          "Schedule request failed:",
+          requests[index],
+          result.reason
+        );
+      }
+    });
+
+    if (successful === 0) {
+      throw new Error("All schedule requests failed");
+    }
+
+    const games = [...gamesById.values()]
       .sort((a, b) => new Date(a.date) - new Date(b.date));
 
     const now = Date.now();
+
     const upcoming = games.filter(game =>
-      !game.completed && new Date(game.date).getTime() >= now
+      !game.completed &&
+      new Date(game.date).getTime() >= now
     );
 
-    const results = games.filter(game => game.completed).reverse().slice(0, 10);
+    const results = games
+      .filter(game => game.completed)
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .slice(0, 10);
 
     $("fixtures-list").innerHTML = upcoming.length
       ? upcoming.map(game => gameCard(game)).join("")
@@ -453,8 +550,12 @@ async function loadSchedule() {
       ? results.map(game => gameCard(game, true)).join("")
       : '<div class="empty">No recent results are currently available.</div>';
 
+    const updated = timeLabel(new Date().toISOString());
+
     $("fixture-status").textContent =
-      `Schedule updated at ${timeLabel(new Date().toISOString())}.`;
+      successful === requests.length
+        ? `Schedule updated at ${updated}.`
+        : `Schedule partially updated at ${updated}. Some ESPN feeds were unavailable.`;
 
   } catch (error) {
     $("fixture-status").textContent =
@@ -472,7 +573,7 @@ async function loadSchedule() {
   }
 }
 
-/* NFL STANDINGS — PRESERVED */
+/* NFL STANDINGS */
 
 const NFL_DIVISIONS = {
   "AFC East": ["BUF", "MIA", "NE", "NYJ"],
@@ -612,20 +713,33 @@ function renderStandings() {
   if (currentStandingsView === "overall") {
     container.innerHTML = `
       <h3 class="standings-heading">All 32 Teams</h3>
-      <p class="standings-note">Ranked by winning percentage, then wins and losses.</p>
+      <p class="standings-note">
+        Ranked by winning percentage, then wins and losses.
+      </p>
       ${makeStandingsTable(standingsData)}`;
+
   } else if (currentStandingsView === "conference") {
     container.innerHTML = ["AFC", "NFC"].map(conference => {
-      const teams = standingsData.filter(team => team.conference === conference);
-      return `<h3 class="standings-heading">${conference}</h3>${makeStandingsTable(teams)}`;
-    }).join("");
-  } else {
-    container.innerHTML = Object.entries(NFL_DIVISIONS).map(([division, abbreviations]) => {
-      const teams = standingsData.filter(team =>
-        abbreviations.includes(team.abbreviation)
+      const teams = standingsData.filter(
+        team => team.conference === conference
       );
-      return `<h3 class="standings-heading">${division}</h3>${makeStandingsTable(teams)}`;
+
+      return `
+        <h3 class="standings-heading">${conference}</h3>
+        ${makeStandingsTable(teams)}`;
     }).join("");
+
+  } else {
+    container.innerHTML =
+      Object.entries(NFL_DIVISIONS).map(([division, abbreviations]) => {
+        const teams = standingsData.filter(team =>
+          abbreviations.includes(team.abbreviation)
+        );
+
+        return `
+          <h3 class="standings-heading">${division}</h3>
+          ${makeStandingsTable(teams)}`;
+      }).join("");
   }
 
   document.querySelectorAll(".standings-tab").forEach(button => {
@@ -641,11 +755,23 @@ async function loadStandings() {
 
   button.disabled = true;
   button.textContent = "Refreshing…";
-  container.innerHTML = '<div class="empty">Loading NFL standings…</div>';
+
+  if (!standingsData.length) {
+    container.innerHTML =
+      '<div class="empty">Loading NFL standings…</div>';
+  }
 
   try {
-    const response = await fetch(STANDINGS_URL);
-    if (!response.ok) throw new Error("Standings request failed: " + response.status);
+    const season = nflSeasonYear();
+
+    const url =
+      `${STANDINGS_BASE}?region=us&lang=en&season=${season}&type=2&limit=100`;
+
+    const response = await fetch(url, { cache: "no-store" });
+
+    if (!response.ok) {
+      throw new Error("Standings request failed: " + response.status);
+    }
 
     const data = await response.json();
     const found = [];
@@ -662,13 +788,16 @@ async function loadStandings() {
         if (!Array.isArray(entries)) continue;
 
         for (const entry of entries) {
-          if (entry.team?.abbreviation) found.push(normaliseTeam(entry));
+          if (entry.team?.abbreviation) {
+            found.push(normaliseTeam(entry));
+          }
         }
       }
 
       if (Array.isArray(group.children)) {
         group.children.forEach(collect);
       }
+
       if (Array.isArray(group.standings?.children)) {
         group.standings.children.forEach(collect);
       }
@@ -677,8 +806,16 @@ async function loadStandings() {
     collect(data);
 
     const unique = new Map();
+
     found.forEach(team => {
-      if (team.abbreviation) unique.set(team.abbreviation, team);
+      if (team.abbreviation) {
+        const previous = unique.get(team.abbreviation);
+
+        if (!previous ||
+            team.sortWins >= 0 && previous.sortWins < 0) {
+          unique.set(team.abbreviation, team);
+        }
+      }
     });
 
     const teams = [...unique.values()];
@@ -689,7 +826,10 @@ async function loadStandings() {
 
     for (const [division, abbreviations] of Object.entries(NFL_DIVISIONS)) {
       abbreviations.forEach(abbreviation => {
-        const team = teams.find(item => item.abbreviation === abbreviation);
+        const team = teams.find(
+          item => item.abbreviation === abbreviation
+        );
+
         if (team) {
           team.division = division;
           team.conference = division.split(" ")[0];
@@ -701,9 +841,13 @@ async function loadStandings() {
     renderStandings();
 
   } catch (error) {
-    container.innerHTML =
-      '<div class="empty">Could not load NFL standings. Please try refreshing.</div>';
+    if (!standingsData.length) {
+      container.innerHTML =
+        '<div class="empty">Could not load NFL standings. Please try refreshing.</div>';
+    }
+
     console.error("NFL standings error:", error);
+
   } finally {
     button.disabled = false;
     button.textContent = "Refresh standings";
@@ -726,4 +870,3 @@ loadStandings();
 
 </body>
 </html>
-```
