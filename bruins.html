@@ -15,7 +15,7 @@
   --accent: #ffcc00;
   --border: #393939;
 }
-* { box-sizing: border-box; }
+* { box-sizing: border-box; scroll-behavior: smooth; }
 
 body {
   margin: 0;
@@ -23,7 +23,6 @@ body {
   color: white;
   font-family: Arial, sans-serif;
 }
-
 header {
   background: #080808;
   text-align: center;
@@ -60,7 +59,6 @@ main {
   margin: auto;
   padding: 22px 14px;
 }
-
 h2 { margin-top: 0; }
 
 .summary {
@@ -89,7 +87,6 @@ button:disabled { opacity: .6; cursor: wait; }
   margin: 10px 0;
   border-left: 4px solid var(--accent);
 }
-
 .game-top {
   display: flex;
   flex-wrap: wrap;
@@ -98,14 +95,12 @@ button:disabled { opacity: .6; cursor: wait; }
   color: var(--muted);
   font-size: 13px;
 }
-
 .matchup {
   font-size: 17px;
   font-weight: bold;
   margin: 12px 0 7px;
   overflow-wrap: anywhere;
 }
-
 .game-bottom {
   display: flex;
   flex-wrap: wrap;
@@ -115,17 +110,12 @@ button:disabled { opacity: .6; cursor: wait; }
   color: var(--muted);
   font-size: 13px;
 }
-
-.game-bottom span:last-child {
-  text-align: right;
-}
-
+.game-bottom span:last-child { text-align: right; }
 .score {
   color: var(--accent);
   font-size: 14px;
   font-weight: bold;
 }
-
 .status { color: var(--muted); font-size: 13px; }
 
 .empty {
@@ -135,69 +125,66 @@ button:disabled { opacity: .6; cursor: wait; }
   color: var(--muted);
   line-height: 1.5;
 }
-
 .table-wrap {
   overflow-x: auto;
   background: var(--panel);
   border-radius: 10px;
   border: 1px solid var(--border);
-  margin-top: 12px;
+  margin: 12px 0 24px;
 }
-
 table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 500px;
+  min-width: 540px;
 }
-
 th, td {
   padding: 11px 12px;
   text-align: left;
   border-bottom: 1px solid var(--border);
   white-space: nowrap;
 }
-
 th {
   background: #080808;
   color: white;
   font-size: 13px;
 }
-
 td { font-size: 14px; }
 tr:last-child td { border-bottom: 0; }
-
 tr.bruins {
   background: #39320f;
   color: var(--accent);
   font-weight: bold;
 }
 
-section { margin-bottom: 32px; scroll-margin-top: 80px; }
-
+section {
+  margin-bottom: 32px;
+  scroll-margin-top: 80px;
+}
 .standings-tabs {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin: 16px 0;
+  margin: 18px 0;
 }
-
-.standings-tab.active {
+.standings-tabs button {
+  flex: 1 1 150px;
+}
+.standings-tab.active,
+.standings-tab[aria-pressed="true"] {
   background: var(--accent);
   border-color: var(--accent);
   color: #111;
+  font-weight: bold;
 }
-
 .standings-heading {
-  margin: 24px 0 8px;
+  margin: 26px 0 10px;
   font-size: 18px;
 }
-
 .standings-note {
   color: var(--muted);
   font-size: 13px;
   line-height: 1.5;
 }
-
 footer {
   text-align: center;
   padding: 25px;
@@ -208,6 +195,7 @@ footer {
 @media (max-width: 480px) {
   main { padding: 17px 10px; }
   header h1 { font-size: 26px; }
+  .standings-tabs button { flex: 1 1 100%; }
 }
 </style>
 </head>
@@ -229,9 +217,14 @@ footer {
 <main>
   <section id="fixtures">
     <h2>Upcoming Fixtures</h2>
-    <p class="summary">Bruins fixtures with local American times and UK times, including daylight saving.</p>
+    <p class="summary">
+      Bruins fixtures with American local time and UK local time,
+      including daylight saving.
+    </p>
     <button id="refresh-fixtures">Refresh fixtures</button>
-    <p id="fixture-status" class="summary" aria-live="polite">Loading fixtures…</p>
+    <p id="fixture-status" class="summary" aria-live="polite">
+      Loading fixtures…
+    </p>
     <div id="fixtures-list">
       <div class="empty">Loading upcoming fixtures…</div>
     </div>
@@ -239,7 +232,9 @@ footer {
 
   <section id="results">
     <h2>Recent Results</h2>
-    <p class="summary">Completed games, final scores and results.</p>
+    <p class="summary">
+      The latest 10 completed games and final scores.
+    </p>
     <div id="results-list">
       <div class="empty">Loading results…</div>
     </div>
@@ -248,19 +243,28 @@ footer {
   <section id="standings">
     <h2>NHL Standings</h2>
     <p class="summary">
-      View the overall NHL standings, conferences or divisions.
-      The Bruins are highlighted in every view.
+      View all 32 NHL teams, both conferences, or all four divisions.
+      The Bruins are highlighted in gold.
     </p>
     <button id="refresh-standings">Refresh standings</button>
+    <p id="standings-status" class="summary" aria-live="polite">
+      Loading NHL standings…
+    </p>
 
-    <div class="standings-tabs" role="group" aria-label="Standings view">
-      <button class="standings-tab active" data-view="overall" aria-pressed="true">Overall NHL</button>
-      <button class="standings-tab" data-view="east" aria-pressed="false">Eastern Conference</button>
-      <button class="standings-tab" data-view="west" aria-pressed="false">Western Conference</button>
-      <button class="standings-tab" data-view="atlantic" aria-pressed="false">Atlantic Division</button>
-      <button class="standings-tab" data-view="metropolitan" aria-pressed="false">Metropolitan Division</button>
-      <button class="standings-tab" data-view="central" aria-pressed="false">Central Division</button>
-      <button class="standings-tab" data-view="pacific" aria-pressed="false">Pacific Division</button>
+    <div class="standings-tabs" role="group"
+         aria-label="Choose standings table">
+      <button class="standings-tab active"
+              data-view="overall" aria-pressed="true">
+        All Teams
+      </button>
+      <button class="standings-tab"
+              data-view="conferences" aria-pressed="false">
+        Conferences
+      </button>
+      <button class="standings-tab"
+              data-view="divisions" aria-pressed="false">
+        Divisions
+      </button>
     </div>
 
     <div id="standings-list">
@@ -282,9 +286,79 @@ const SCHEDULE_URL =
   "https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/teams/1/schedule";
 
 const STANDINGS_URL =
-  "https://site.api.espn.com/apis/v2/sports/hockey/nhl/standings?region=us&lang=en&limit=100";
+  "https://site.api.espn.com/apis/v2/sports/hockey/nhl/standings";
 
 const $ = id => document.getElementById(id);
+
+/* NHL seasons run across two calendar years.
+   ESPN identifies them by their starting year. */
+
+function nhlSeasonYear() {
+  const now = new Date();
+  const year = now.getUTCFullYear();
+  const month = now.getUTCMonth();
+
+  return month >= 6 ? year : year - 1;
+}
+
+function scheduleRequests() {
+  const year = nhlSeasonYear();
+
+  return [
+    { season: year, type: 2 },
+    { season: year, type: 3 },
+    { season: year - 1, type: 2 },
+    { season: year - 1, type: 3 }
+  ];
+}
+
+/* NHL conference and division structure */
+
+const NHL_GROUPS = {
+  east: {
+    "Atlantic Division": [
+      "BOS", "BUF", "DET", "FLA",
+      "MTL", "OTT", "TBL", "TOR"
+    ],
+    "Metropolitan Division": [
+      "CAR", "CBJ", "NJD", "NYI",
+      "NYR", "PHI", "PIT", "WSH"
+    ]
+  },
+
+  west: {
+    "Central Division": [
+      "CHI", "COL", "DAL", "MIN",
+      "NSH", "STL", "UTA", "WPG"
+    ],
+    "Pacific Division": [
+      "ANA", "CGY", "EDM", "LAK",
+      "SJS", "SEA", "VAN", "VGK"
+    ]
+  }
+};
+
+const ABBREVIATION_ALIASES = {
+  TB: "TBL",
+  NJ: "NJD",
+  SJ: "SJS",
+  LA: "LAK",
+  LV: "VGK",
+  UTAH: "UTA",
+  UHC: "UTA",
+  MON: "MTL"
+};
+
+const ALL_DIVISIONS = {
+  ...NHL_GROUPS.east,
+  ...NHL_GROUPS.west
+};
+
+const EAST_TEAMS = Object.values(NHL_GROUPS.east).flat();
+const WEST_TEAMS = Object.values(NHL_GROUPS.west).flat();
+
+let standingsData = [];
+let currentStandingsView = "overall";
 
 function safeText(value) {
   return String(value ?? "").replace(/[&<>"']/g, char => ({
@@ -325,9 +399,9 @@ function americanTimeLabel(value, event) {
   const date = new Date(value);
   if (!value || Number.isNaN(date.getTime())) return "Time TBC";
 
-  // ESPN sometimes provides the venue's timezone.
   const timezone =
     event?.competitions?.[0]?.venue?.address?.timeZone ||
+    event?.competitions?.[0]?.venue?.timeZone ||
     event?.competitions?.[0]?.venue?.timezone ||
     "America/New_York";
 
@@ -350,12 +424,16 @@ function americanTimeLabel(value, event) {
   }
 }
 
+/* Fixtures and results */
+
 function getCompetitors(event) {
   return event.competitions?.[0]?.competitors || [];
 }
 
 function getTeamCode(competitor) {
-  return String(competitor?.team?.abbreviation || "").toUpperCase();
+  return String(
+    competitor?.team?.abbreviation || ""
+  ).toUpperCase();
 }
 
 function getTeamName(competitor) {
@@ -365,13 +443,22 @@ function getTeamName(competitor) {
 }
 
 function scoreNumber(value) {
-  if (value === null || value === undefined || value === "") return null;
-
-  if (typeof value === "object") {
-    value = value.displayValue ?? value.value ?? value.score ?? value.text ?? null;
+  if (value === null || value === undefined || value === "") {
+    return null;
   }
 
-  if (value === null || value === undefined || value === "") return null;
+  if (typeof value === "object") {
+    value =
+      value.displayValue ??
+      value.value ??
+      value.score ??
+      value.text ??
+      null;
+  }
+
+  if (value === null || value === undefined || value === "") {
+    return null;
+  }
 
   const number = Number(value);
   return Number.isFinite(number) ? number : null;
@@ -422,33 +509,29 @@ function parseEvent(event) {
     home: home ? getTeamName(home) : "Home team TBC",
     away: away ? getTeamName(away) : "Away team TBC",
     completed,
-    status: event.status?.type?.shortDetail ||
-      event.status?.type?.detail ||
-      event.competitions?.[0]?.status?.type?.shortDetail ||
-      "Scheduled",
     ownScore,
     opponentScore,
-    outcome
+    outcome,
+    event
   };
 }
 
-/*
-  Fixture layout copied from the Patriots page:
-  Top: league/team and date
-  Middle: Away Team @ Home Team
-  Bottom: American time and UK time, or final score and result
-*/
 function gameCard(game, resultMode = false) {
   let bottomContent;
 
   if (resultMode) {
-    const score = game.ownScore === null || game.opponentScore === null
-      ? "Score unavailable"
-      : `${game.ownScore} – ${game.opponentScore}`;
+    const score =
+      game.ownScore === null || game.opponentScore === null
+        ? "Score unavailable"
+        : `${game.ownScore} – ${game.opponentScore}`;
 
     bottomContent = `
       <span class="score">
-        ${safeText(game.outcome ? `${score} · ${game.outcome}` : `Final · ${score}`)}
+        ${safeText(
+          game.outcome
+            ? `${score} · ${game.outcome}`
+            : `Final · ${score}`
+        )}
       </span>
       <span class="status">Completed</span>
     `;
@@ -477,37 +560,98 @@ function gameCard(game, resultMode = false) {
   `;
 }
 
+async function fetchSchedule(request) {
+  const url =
+    `${SCHEDULE_URL}?season=${request.season}&seasontype=${request.type}`;
+
+  const response = await fetch(url, {
+    cache: "no-store"
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      `Schedule ${request.season}/${request.type}: HTTP ${response.status}`
+    );
+  }
+
+  const data = await response.json();
+  const events = data.events || data.content?.events || [];
+
+  if (!Array.isArray(events)) {
+    throw new Error("Unexpected schedule response");
+  }
+
+  return events
+    .map(parseEvent)
+    .filter(game =>
+      game.date &&
+      Number.isFinite(new Date(game.date).getTime())
+    );
+}
+
 async function loadSchedule() {
   const button = $("refresh-fixtures");
+
   button.disabled = true;
-  $("fixture-status").textContent = "Loading schedule from ESPN…";
+  $("fixture-status").textContent =
+    "Loading schedules from ESPN…";
 
   try {
-    const response = await fetch(SCHEDULE_URL);
-    if (!response.ok) {
-      throw new Error("Schedule unavailable: " + response.status);
+    const requests = scheduleRequests();
+
+    const responses = await Promise.allSettled(
+      requests.map(fetchSchedule)
+    );
+
+    const gamesById = new Map();
+    let successful = 0;
+
+    responses.forEach((result, index) => {
+      if (result.status === "fulfilled") {
+        successful++;
+
+        result.value.forEach(game => {
+          const key = String(
+            game.id ||
+            `${game.date}-${game.home}-${game.away}`
+          );
+
+          const previous = gamesById.get(key);
+
+          if (!previous || (game.completed && !previous.completed)) {
+            gamesById.set(key, game);
+          }
+        });
+      } else {
+        console.warn(
+          "Bruins schedule request failed:",
+          requests[index],
+          result.reason
+        );
+      }
+    });
+
+    if (successful === 0) {
+      throw new Error("All schedule requests failed");
     }
 
-    const data = await response.json();
-
-    const games = (data.events || [])
-      .map(event => {
-        const game = parseEvent(event);
-        game.event = event;
-        return game;
-      })
-      .filter(game => game.date)
-      .sort((a, b) => new Date(a.date) - new Date(b.date));
-
+    const games = [...gamesById.values()];
     const now = Date.now();
 
-    const upcoming = games.filter(game =>
-      !game.completed && new Date(game.date).getTime() >= now
-    );
+    const upcoming = games
+      .filter(game =>
+        !game.completed &&
+        new Date(game.date).getTime() >= now
+      )
+      .sort((a, b) =>
+        new Date(a.date) - new Date(b.date)
+      );
 
     const results = games
       .filter(game => game.completed)
-      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .sort((a, b) =>
+        new Date(b.date) - new Date(a.date)
+      )
       .slice(0, 10);
 
     $("fixtures-list").innerHTML = upcoming.length
@@ -518,8 +662,12 @@ async function loadSchedule() {
       ? results.map(game => gameCard(game, true)).join("")
       : '<div class="empty">No recent results are currently available.</div>';
 
+    const updated = timeLabel(new Date().toISOString());
+
     $("fixture-status").textContent =
-      `Schedule updated at ${timeLabel(new Date().toISOString())}.`;
+      successful === requests.length
+        ? `Schedule updated at ${updated}.`
+        : `Schedule partially updated at ${updated}. Some ESPN feeds were unavailable.`;
 
   } catch (error) {
     $("fixture-status").textContent =
@@ -537,59 +685,58 @@ async function loadSchedule() {
   }
 }
 
-/* NHL STANDINGS */
+/* NHL standings */
 
-const DIVISIONS = {
-  atlantic: ["BOS", "BUF", "DET", "FLA", "MTL", "OTT", "TBL", "TOR"],
-  metropolitan: ["CAR", "CBJ", "NJD", "NYI", "NYR", "PHI", "PIT", "WSH"],
-  central: ["CHI", "COL", "DAL", "MIN", "NSH", "STL", "UTA", "WPG"],
-  pacific: ["ANA", "CGY", "EDM", "LAK", "SJS", "SEA", "VAN", "VGK"]
-};
+function normalizeAbbreviation(abbreviation) {
+  const original = String(
+    abbreviation || ""
+  ).toUpperCase();
 
-let standingsData = [];
-let currentStandingsView = "overall";
+  return ABBREVIATION_ALIASES[original] || original;
+}
 
-function collectStandings(data) {
-  const entries = [];
-  const seen = new Set();
+function collectStandings(node, output = []) {
+  if (!node || typeof node !== "object") {
+    return output;
+  }
 
-  function walk(node) {
-    if (!node || typeof node !== "object") return;
+  if (Array.isArray(node)) {
+    node.forEach(item => collectStandings(item, output));
+    return output;
+  }
 
-    if (Array.isArray(node)) {
-      node.forEach(walk);
-      return;
-    }
-
-    const directEntries = [
-      ...(Array.isArray(node.entries) ? node.entries : []),
-      ...(Array.isArray(node.standings?.entries) ? node.standings.entries : [])
-    ];
-
-    directEntries.forEach(entry => {
-      const code = String(entry.team?.abbreviation || "").toUpperCase();
-
-      if (code && !seen.has(code)) {
-        seen.add(code);
-        entries.push(entry);
+  if (Array.isArray(node.entries)) {
+    node.entries.forEach(entry => {
+      if (entry.team) {
+        output.push(entry);
       }
     });
+  }
 
-    if (Array.isArray(node.children)) {
-      node.children.forEach(walk);
-    }
+  if (Array.isArray(node.standings?.entries)) {
+    node.standings.entries.forEach(entry => {
+      if (entry.team) {
+        output.push(entry);
+      }
+    });
+  }
 
-    if (Array.isArray(node.standings?.children)) {
-      node.standings.children.forEach(walk);
+  for (const [key, value] of Object.entries(node)) {
+    if (
+      key !== "entries" &&
+      key !== "standings"
+    ) {
+      collectStandings(value, output);
     }
   }
 
-  walk(data);
-  return entries;
+  return output;
 }
 
 function getStatsArray(entry) {
-  if (Array.isArray(entry.stats)) return entry.stats;
+  if (Array.isArray(entry.stats)) {
+    return entry.stats;
+  }
 
   if (entry.stats && typeof entry.stats === "object") {
     return Object.entries(entry.stats).map(([name, value]) => ({
@@ -611,7 +758,9 @@ function statValue(stats, aliases) {
       String(stat.abbreviation || "").toLowerCase() === alias.toLowerCase()
     );
 
-    if (found) return found.displayValue ?? found.value ?? "—";
+    if (found) {
+      return found.displayValue ?? found.value ?? "—";
+    }
   }
 
   return "—";
@@ -625,8 +774,13 @@ function statNumber(stats, aliases) {
     );
 
     if (found) {
-      const number = Number(found.value ?? found.displayValue);
-      if (Number.isFinite(number)) return number;
+      const number = Number(
+        found.value ?? found.displayValue
+      );
+
+      if (Number.isFinite(number)) {
+        return number;
+      }
     }
   }
 
@@ -636,18 +790,20 @@ function statNumber(stats, aliases) {
 function normaliseTeam(entry) {
   const team = entry.team || {};
   const stats = getStatsArray(entry);
-  const abbreviation = String(team.abbreviation || "").toUpperCase();
 
   return {
     id: String(team.id || ""),
     name: team.displayName || team.name || "Unknown team",
-    abbreviation,
+    abbreviation: normalizeAbbreviation(team.abbreviation),
     gamesPlayed: statValue(stats, ["gamesPlayed", "gp"]),
     wins: statValue(stats, ["wins", "w"]),
     losses: statValue(stats, ["losses", "l"]),
     overtimeLosses: statValue(stats, ["overtimeLosses", "ot", "otl"]),
     points: statValue(stats, ["points", "pts"]),
-    goalDifference: statValue(stats, ["goalDifferential", "differential", "diff", "gd"]),
+    goalDifference: statValue(
+      stats,
+      ["goalDifferential", "differential", "diff", "gd"]
+    ),
     sortPoints: statNumber(stats, ["points", "pts"]),
     sortWins: statNumber(stats, ["wins", "w"]),
     sortLosses: statNumber(stats, ["losses", "l"])
@@ -669,57 +825,20 @@ function sortStandings(teams) {
   );
 }
 
-function getLeagueTeams() {
-  const unique = new Map();
-
-  standingsData.forEach(team => {
-    if (team.abbreviation) unique.set(team.abbreviation, team);
-  });
-
-  return [...unique.values()];
-}
-
-function filterStandings(view) {
-  const teams = getLeagueTeams();
-
-  if (view === "overall") {
-    return teams;
-  }
-
-  if (view === "east" || view === "west") {
-    const conferenceName = view === "east" ? "eastern" : "western";
-
-    const conferenceGroups = standingsData.filter(team =>
-      String(team.conference || "").toLowerCase().includes(conferenceName)
-    );
-
-    if (conferenceGroups.length) return conferenceGroups;
-
-    // NHL conferences are also derivable from their divisions.
-    const eastern = [...DIVISIONS.atlantic, ...DIVISIONS.metropolitan];
-    const western = [...DIVISIONS.central, ...DIVISIONS.pacific];
-    const codes = view === "east" ? eastern : western;
-
-    return teams.filter(team => codes.includes(team.abbreviation));
-  }
-
-  if (DIVISIONS[view]) {
-    return teams.filter(team =>
-      DIVISIONS[view].includes(team.abbreviation)
-    );
-  }
-
-  return teams;
-}
-
-function makeStandingsTable(teams) {
+function makeStandingsTable(title, teams) {
   const ordered = sortStandings(teams);
 
   if (!ordered.length) {
-    return '<div class="empty">No teams were found for this table.</div>';
+    return `
+      <h3 class="standings-heading">${safeText(title)}</h3>
+      <div class="empty">
+        No standings are available for this table.
+      </div>
+    `;
   }
 
   return `
+    <h3 class="standings-heading">${safeText(title)}</h3>
     <div class="table-wrap">
       <table>
         <thead>
@@ -755,73 +874,115 @@ function makeStandingsTable(teams) {
 
 function renderStandings() {
   const container = $("standings-list");
-  if (!standingsData.length) return;
 
-  if (currentStandingsView === "overall") {
-    container.innerHTML = `
-      <h3 class="standings-heading">Overall NHL Standings</h3>
-      <p class="standings-note">All teams ranked by points, with the Bruins highlighted.</p>
-      ${makeStandingsTable(filterStandings("overall"))}
-    `;
-  } else if (currentStandingsView === "east" || currentStandingsView === "west") {
-    const name = currentStandingsView === "east"
-      ? "Eastern Conference"
-      : "Western Conference";
-
-    container.innerHTML = `
-      <h3 class="standings-heading">${name}</h3>
-      ${makeStandingsTable(filterStandings(currentStandingsView))}
-    `;
-  } else {
-    const names = {
-      atlantic: "Atlantic Division",
-      metropolitan: "Metropolitan Division",
-      central: "Central Division",
-      pacific: "Pacific Division"
-    };
-
-    container.innerHTML = `
-      <h3 class="standings-heading">${names[currentStandingsView]}</h3>
-      ${makeStandingsTable(filterStandings(currentStandingsView))}
-    `;
+  if (!standingsData.length) {
+    container.innerHTML =
+      '<div class="empty">No standings data available.</div>';
+    return;
   }
 
   document.querySelectorAll(".standings-tab").forEach(button => {
-    const active = button.dataset.view === currentStandingsView;
+    const active =
+      button.dataset.view === currentStandingsView;
+
     button.classList.toggle("active", active);
     button.setAttribute("aria-pressed", String(active));
   });
+
+  if (currentStandingsView === "overall") {
+    container.innerHTML =
+      makeStandingsTable(
+        "NHL Overall — All 32 Teams",
+        standingsData
+      );
+    return;
+  }
+
+  if (currentStandingsView === "conferences") {
+    container.innerHTML =
+      makeStandingsTable(
+        "Eastern Conference",
+        standingsData.filter(team =>
+          EAST_TEAMS.includes(team.abbreviation)
+        )
+      ) +
+      makeStandingsTable(
+        "Western Conference",
+        standingsData.filter(team =>
+          WEST_TEAMS.includes(team.abbreviation)
+        )
+      );
+    return;
+  }
+
+  if (currentStandingsView === "divisions") {
+    container.innerHTML =
+      Object.entries(ALL_DIVISIONS)
+        .map(([division, abbreviations]) =>
+          makeStandingsTable(
+            division,
+            standingsData.filter(team =>
+              abbreviations.includes(team.abbreviation)
+            )
+          )
+        ).join("");
+  }
 }
 
 async function loadStandings() {
   const button = $("refresh-standings");
+  const status = $("standings-status");
   const container = $("standings-list");
 
   button.disabled = true;
   button.textContent = "Refreshing…";
-  container.innerHTML = '<div class="empty">Loading NHL standings…</div>';
+  status.textContent = "Loading NHL standings from ESPN…";
 
   try {
-    const response = await fetch(STANDINGS_URL);
+    const url =
+      `${STANDINGS_URL}?season=${nhlSeasonYear()}&type=2&region=us&lang=en&limit=100`;
+
+    const response = await fetch(url, {
+      cache: "no-store"
+    });
 
     if (!response.ok) {
-      throw new Error("Standings request failed: " + response.status);
+      throw new Error(
+        "Standings request failed: " + response.status
+      );
     }
 
     const data = await response.json();
     const entries = collectStandings(data);
 
-    standingsData = entries.map(normaliseTeam);
+    const all = entries.map(normaliseTeam);
 
-    if (!standingsData.length) {
-      throw new Error("No standings entries were returned by ESPN.");
+    standingsData = [
+      ...new Map(
+        all.map(team => [
+          team.id || team.abbreviation || team.name,
+          team
+        ])
+      ).values()
+    ];
+
+    if (standingsData.length !== 32) {
+      throw new Error(
+        `ESPN returned ${standingsData.length} NHL teams instead of 32`
+      );
     }
 
     renderStandings();
 
+    status.textContent =
+      `Standings updated at ${timeLabel(new Date().toISOString())}.`;
+
   } catch (error) {
     container.innerHTML =
       '<div class="empty">Could not load NHL standings. Please try refreshing.</div>';
+
+    status.textContent =
+      "Standings could not be updated.";
 
     console.error("NHL standings error:", error);
   } finally {
@@ -830,6 +991,8 @@ async function loadStandings() {
   }
 }
 
+/* Buttons */
+
 document.querySelectorAll(".standings-tab").forEach(button => {
   button.addEventListener("click", () => {
     currentStandingsView = button.dataset.view;
@@ -837,8 +1000,17 @@ document.querySelectorAll(".standings-tab").forEach(button => {
   });
 });
 
-$("refresh-fixtures").addEventListener("click", loadSchedule);
-$("refresh-standings").addEventListener("click", loadStandings);
+$("refresh-fixtures").addEventListener(
+  "click",
+  loadSchedule
+);
+
+$("refresh-standings").addEventListener(
+  "click",
+  loadStandings
+);
+
+/* Load page */
 
 loadSchedule();
 loadStandings();
