@@ -15,8 +15,10 @@
   --accent: #ffcc00;
   --border: #393939;
 }
-* { box-sizing: border-box; scroll-behavior: smooth; }
-
+* {
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
 body {
   margin: 0;
   background: var(--bg);
@@ -29,9 +31,14 @@ header {
   padding: 28px 16px;
   border-bottom: 4px solid var(--accent);
 }
-header h1 { margin: 0; font-size: 30px; }
-header p { color: var(--muted); margin-bottom: 0; }
-
+header h1 {
+  margin: 0;
+  font-size: 30px;
+}
+header p {
+  color: var(--muted);
+  margin-bottom: 0;
+}
 nav {
   position: sticky;
   top: 0;
@@ -52,22 +59,23 @@ nav a {
   border-radius: 8px;
   font-size: 14px;
 }
-nav a:hover { background: #484848; }
-
+nav a:hover {
+  background: #484848;
+}
 main {
   max-width: 1100px;
   margin: auto;
   padding: 22px 14px;
 }
-h2 { margin-top: 0; }
-
+h2 {
+  margin-top: 0;
+}
 .summary {
   color: var(--muted);
   font-size: 14px;
   line-height: 1.5;
   margin: 10px 0 18px;
 }
-
 button {
   background: #303030;
   color: white;
@@ -77,9 +85,13 @@ button {
   font-size: 14px;
   cursor: pointer;
 }
-button:hover { background: #484848; }
-button:disabled { opacity: .6; cursor: wait; }
-
+button:hover {
+  background: #484848;
+}
+button:disabled {
+  opacity: .6;
+  cursor: wait;
+}
 .game {
   background: var(--panel);
   border-radius: 10px;
@@ -110,14 +122,18 @@ button:disabled { opacity: .6; cursor: wait; }
   color: var(--muted);
   font-size: 13px;
 }
-.game-bottom span:last-child { text-align: right; }
+.game-bottom span:last-child {
+  text-align: right;
+}
 .score {
   color: var(--accent);
   font-size: 14px;
   font-weight: bold;
 }
-.status { color: var(--muted); font-size: 13px; }
-
+.status {
+  color: var(--muted);
+  font-size: 13px;
+}
 .empty {
   background: var(--panel);
   border-radius: 10px;
@@ -148,14 +164,17 @@ th {
   color: white;
   font-size: 13px;
 }
-td { font-size: 14px; }
-tr:last-child td { border-bottom: 0; }
+td {
+  font-size: 14px;
+}
+tr:last-child td {
+  border-bottom: 0;
+}
 tr.bruins {
   background: #39320f;
   color: var(--accent);
   font-weight: bold;
 }
-
 section {
   margin-bottom: 32px;
   scroll-margin-top: 80px;
@@ -180,22 +199,22 @@ section {
   margin: 26px 0 10px;
   font-size: 18px;
 }
-.standings-note {
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.5;
-}
 footer {
   text-align: center;
   padding: 25px;
   color: #999;
   font-size: 12px;
 }
-
 @media (max-width: 480px) {
-  main { padding: 17px 10px; }
-  header h1 { font-size: 26px; }
-  .standings-tabs button { flex: 1 1 100%; }
+  main {
+    padding: 17px 10px;
+  }
+  header h1 {
+    font-size: 26px;
+  }
+  .standings-tabs button {
+    flex: 1 1 100%;
+  }
 }
 </style>
 </head>
@@ -251,18 +270,25 @@ footer {
       Loading NHL standings…
     </p>
 
-    <div class="standings-tabs" role="group"
+    <div class="standings-tabs"
+         role="group"
          aria-label="Choose standings table">
+
       <button class="standings-tab active"
-              data-view="overall" aria-pressed="true">
+              data-view="overall"
+              aria-pressed="true">
         All Teams
       </button>
+
       <button class="standings-tab"
-              data-view="conferences" aria-pressed="false">
+              data-view="conferences"
+              aria-pressed="false">
         Conferences
       </button>
+
       <button class="standings-tab"
-              data-view="divisions" aria-pressed="false">
+              data-view="divisions"
+              aria-pressed="false">
         Divisions
       </button>
     </div>
@@ -290,15 +316,17 @@ const STANDINGS_URL =
 
 const $ = id => document.getElementById(id);
 
-/* NHL seasons run across two calendar years.
-   ESPN identifies them by their starting year. */
-
+/*
+  NHL season ending year.
+  October 2026 is part of the 2026–27 season,
+  which ESPN's schedule API identifies as 2027.
+*/
 function nhlSeasonYear() {
   const now = new Date();
   const year = now.getUTCFullYear();
   const month = now.getUTCMonth();
 
-  return month >= 6 ? year : year - 1;
+  return month >= 6 ? year + 1 : year;
 }
 
 function scheduleRequests() {
@@ -312,7 +340,7 @@ function scheduleRequests() {
   ];
 }
 
-/* NHL conference and division structure */
+/* NHL conferences and divisions */
 
 const NHL_GROUPS = {
   east: {
@@ -325,7 +353,6 @@ const NHL_GROUPS = {
       "NYR", "PHI", "PIT", "WSH"
     ]
   },
-
   west: {
     "Central Division": [
       "CHI", "COL", "DAL", "MIN",
@@ -372,7 +399,10 @@ function safeText(value) {
 
 function dateLabel(value) {
   const date = new Date(value);
-  if (!value || Number.isNaN(date.getTime())) return "Date TBC";
+
+  if (!value || Number.isNaN(date.getTime())) {
+    return "Date TBC";
+  }
 
   return new Intl.DateTimeFormat("en-GB", {
     weekday: "short",
@@ -385,7 +415,10 @@ function dateLabel(value) {
 
 function timeLabel(value) {
   const date = new Date(value);
-  if (!value || Number.isNaN(date.getTime())) return "Time TBC";
+
+  if (!value || Number.isNaN(date.getTime())) {
+    return "Time TBC";
+  }
 
   return new Intl.DateTimeFormat("en-GB", {
     hour: "2-digit",
@@ -397,7 +430,10 @@ function timeLabel(value) {
 
 function americanTimeLabel(value, event) {
   const date = new Date(value);
-  if (!value || Number.isNaN(date.getTime())) return "Time TBC";
+
+  if (!value || Number.isNaN(date.getTime())) {
+    return "Time TBC";
+  }
 
   const timezone =
     event?.competitions?.[0]?.venue?.address?.timeZone ||
@@ -443,7 +479,11 @@ function getTeamName(competitor) {
 }
 
 function scoreNumber(value) {
-  if (value === null || value === undefined || value === "") {
+  if (
+    value === null ||
+    value === undefined ||
+    value === ""
+  ) {
     return null;
   }
 
@@ -456,7 +496,11 @@ function scoreNumber(value) {
       null;
   }
 
-  if (value === null || value === undefined || value === "") {
+  if (
+    value === null ||
+    value === undefined ||
+    value === ""
+  ) {
     return null;
   }
 
@@ -479,15 +523,22 @@ function isCompleted(event) {
 
 function parseEvent(event) {
   const competitors = getCompetitors(event);
-  const home = competitors.find(team => team.homeAway === "home");
-  const away = competitors.find(team => team.homeAway === "away");
+  const home = competitors.find(
+    team => team.homeAway === "home"
+  );
+  const away = competitors.find(
+    team => team.homeAway === "away"
+  );
 
   const ownTeam = competitors.find(team =>
     getTeamCode(team) === TEAM_ABBREVIATION ||
     String(team.team?.id) === TEAM_ID
   );
 
-  const opponent = competitors.find(team => team !== ownTeam);
+  const opponent = competitors.find(
+    team => team !== ownTeam
+  );
+
   const completed = isCompleted(event);
 
   const ownScore = scoreNumber(ownTeam?.score);
@@ -495,7 +546,11 @@ function parseEvent(event) {
 
   let outcome = "";
 
-  if (completed && ownScore !== null && opponentScore !== null) {
+  if (
+    completed &&
+    ownScore !== null &&
+    opponentScore !== null
+  ) {
     outcome = ownScore > opponentScore
       ? "Bruins win"
       : ownScore < opponentScore
@@ -521,7 +576,8 @@ function gameCard(game, resultMode = false) {
 
   if (resultMode) {
     const score =
-      game.ownScore === null || game.opponentScore === null
+      game.ownScore === null ||
+      game.opponentScore === null
         ? "Score unavailable"
         : `${game.ownScore} – ${game.opponentScore}`;
 
@@ -537,7 +593,9 @@ function gameCard(game, resultMode = false) {
     `;
   } else {
     bottomContent = `
-      <span>${safeText(americanTimeLabel(game.date, game.event))}</span>
+      <span>${safeText(
+        americanTimeLabel(game.date, game.event)
+      )}</span>
       <span>UK: ${safeText(timeLabel(game.date))}</span>
     `;
   }
@@ -618,7 +676,10 @@ async function loadSchedule() {
 
           const previous = gamesById.get(key);
 
-          if (!previous || (game.completed && !previous.completed)) {
+          if (
+            !previous ||
+            (game.completed && !previous.completed)
+          ) {
             gamesById.set(key, game);
           }
         });
@@ -662,7 +723,9 @@ async function loadSchedule() {
       ? results.map(game => gameCard(game, true)).join("")
       : '<div class="empty">No recent results are currently available.</div>';
 
-    const updated = timeLabel(new Date().toISOString());
+    const updated = timeLabel(
+      new Date().toISOString()
+    );
 
     $("fixture-status").textContent =
       successful === requests.length
@@ -701,7 +764,9 @@ function collectStandings(node, output = []) {
   }
 
   if (Array.isArray(node)) {
-    node.forEach(item => collectStandings(item, output));
+    node.forEach(item =>
+      collectStandings(item, output)
+    );
     return output;
   }
 
@@ -738,14 +803,21 @@ function getStatsArray(entry) {
     return entry.stats;
   }
 
-  if (entry.stats && typeof entry.stats === "object") {
-    return Object.entries(entry.stats).map(([name, value]) => ({
-      name,
-      value: typeof value === "object" ? value.value : value,
-      displayValue: typeof value === "object"
-        ? value.displayValue
-        : String(value)
-    }));
+  if (
+    entry.stats &&
+    typeof entry.stats === "object"
+  ) {
+    return Object.entries(entry.stats).map(
+      ([name, value]) => ({
+        name,
+        value: typeof value === "object"
+          ? value.value
+          : value,
+        displayValue: typeof value === "object"
+          ? value.displayValue
+          : String(value)
+      })
+    );
   }
 
   return [];
@@ -754,8 +826,10 @@ function getStatsArray(entry) {
 function statValue(stats, aliases) {
   for (const alias of aliases) {
     const found = stats.find(stat =>
-      String(stat.name || "").toLowerCase() === alias.toLowerCase() ||
-      String(stat.abbreviation || "").toLowerCase() === alias.toLowerCase()
+      String(stat.name || "").toLowerCase() ===
+        alias.toLowerCase() ||
+      String(stat.abbreviation || "").toLowerCase() ===
+        alias.toLowerCase()
     );
 
     if (found) {
@@ -769,8 +843,10 @@ function statValue(stats, aliases) {
 function statNumber(stats, aliases) {
   for (const alias of aliases) {
     const found = stats.find(stat =>
-      String(stat.name || "").toLowerCase() === alias.toLowerCase() ||
-      String(stat.abbreviation || "").toLowerCase() === alias.toLowerCase()
+      String(stat.name || "").toLowerCase() ===
+        alias.toLowerCase() ||
+      String(stat.abbreviation || "").toLowerCase() ===
+        alias.toLowerCase()
     );
 
     if (found) {
@@ -793,20 +869,35 @@ function normaliseTeam(entry) {
 
   return {
     id: String(team.id || ""),
-    name: team.displayName || team.name || "Unknown team",
-    abbreviation: normalizeAbbreviation(team.abbreviation),
-    gamesPlayed: statValue(stats, ["gamesPlayed", "gp"]),
+    name:
+      team.displayName ||
+      team.name ||
+      "Unknown team",
+    abbreviation: normalizeAbbreviation(
+      team.abbreviation
+    ),
+    gamesPlayed: statValue(
+      stats, ["gamesPlayed", "gp"]
+    ),
     wins: statValue(stats, ["wins", "w"]),
     losses: statValue(stats, ["losses", "l"]),
-    overtimeLosses: statValue(stats, ["overtimeLosses", "ot", "otl"]),
+    overtimeLosses: statValue(
+      stats, ["overtimeLosses", "ot", "otl"]
+    ),
     points: statValue(stats, ["points", "pts"]),
     goalDifference: statValue(
       stats,
       ["goalDifferential", "differential", "diff", "gd"]
     ),
-    sortPoints: statNumber(stats, ["points", "pts"]),
-    sortWins: statNumber(stats, ["wins", "w"]),
-    sortLosses: statNumber(stats, ["losses", "l"])
+    sortPoints: statNumber(
+      stats, ["points", "pts"]
+    ),
+    sortWins: statNumber(
+      stats, ["wins", "w"]
+    ),
+    sortLosses: statNumber(
+      stats, ["losses", "l"]
+    )
   };
 }
 
@@ -830,7 +921,9 @@ function makeStandingsTable(title, teams) {
 
   if (!ordered.length) {
     return `
-      <h3 class="standings-heading">${safeText(title)}</h3>
+      <h3 class="standings-heading">
+        ${safeText(title)}
+      </h3>
       <div class="empty">
         No standings are available for this table.
       </div>
@@ -838,7 +931,10 @@ function makeStandingsTable(title, teams) {
   }
 
   return `
-    <h3 class="standings-heading">${safeText(title)}</h3>
+    <h3 class="standings-heading">
+      ${safeText(title)}
+    </h3>
+
     <div class="table-wrap">
       <table>
         <thead>
@@ -853,6 +949,7 @@ function makeStandingsTable(title, teams) {
             <th>Goal Diff.</th>
           </tr>
         </thead>
+
         <tbody>
           ${ordered.map((team, index) => `
             <tr class="${isBruins(team) ? "bruins" : ""}">
@@ -881,12 +978,17 @@ function renderStandings() {
     return;
   }
 
-  document.querySelectorAll(".standings-tab").forEach(button => {
+  document.querySelectorAll(
+    ".standings-tab"
+  ).forEach(button => {
     const active =
       button.dataset.view === currentStandingsView;
 
     button.classList.toggle("active", active);
-    button.setAttribute("aria-pressed", String(active));
+    button.setAttribute(
+      "aria-pressed",
+      String(active)
+    );
   });
 
   if (currentStandingsView === "overall") {
@@ -936,7 +1038,8 @@ async function loadStandings() {
 
   button.disabled = true;
   button.textContent = "Refreshing…";
-  status.textContent = "Loading NHL standings from ESPN…";
+  status.textContent =
+    "Loading NHL standings from ESPN…";
 
   try {
     const url =
@@ -948,19 +1051,21 @@ async function loadStandings() {
 
     if (!response.ok) {
       throw new Error(
-        "Standings request failed: " + response.status
+        "Standings request failed: " +
+        response.status
       );
     }
 
     const data = await response.json();
     const entries = collectStandings(data);
-
     const all = entries.map(normaliseTeam);
 
     standingsData = [
       ...new Map(
         all.map(team => [
-          team.id || team.abbreviation || team.name,
+          team.id ||
+          team.abbreviation ||
+          team.name,
           team
         ])
       ).values()
@@ -975,7 +1080,9 @@ async function loadStandings() {
     renderStandings();
 
     status.textContent =
-      `Standings updated at ${timeLabel(new Date().toISOString())}.`;
+      `Standings updated at ${
+        timeLabel(new Date().toISOString())
+      }.`;
 
   } catch (error) {
     container.innerHTML =
@@ -984,7 +1091,10 @@ async function loadStandings() {
     status.textContent =
       "Standings could not be updated.";
 
-    console.error("NHL standings error:", error);
+    console.error(
+      "NHL standings error:",
+      error
+    );
   } finally {
     button.disabled = false;
     button.textContent = "Refresh standings";
@@ -993,7 +1103,9 @@ async function loadStandings() {
 
 /* Buttons */
 
-document.querySelectorAll(".standings-tab").forEach(button => {
+document.querySelectorAll(
+  ".standings-tab"
+).forEach(button => {
   button.addEventListener("click", () => {
     currentStandingsView = button.dataset.view;
     renderStandings();
