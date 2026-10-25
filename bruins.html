@@ -2,978 +2,717 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Boston Bruins | Boston Sports Hub</title>
-
-  <style>
-    :root {
-      --bg: #101010;
-      --panel: #1b1b1b;
-      --panel-light: #252525;
-      --text: #f5f5f5;
-      --muted: #b7b7b7;
-      --accent: #ffcc00;
-      --border: #393939;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: Arial, Helvetica, sans-serif;
-      line-height: 1.5;
-    }
-
-    header {
-      background: #080808;
-      border-bottom: 3px solid var(--accent);
-      padding: 24px 16px;
-      text-align: center;
-    }
-
-    header h1 {
-      margin: 0;
-      color: var(--accent);
-      font-size: 2rem;
-    }
-
-    header p {
-      color: var(--muted);
-      margin: 6px 0 0;
-    }
-
-    nav {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 10px;
-      padding: 12px;
-      background: #151515;
-      border-bottom: 1px solid var(--border);
-    }
-
-    nav a {
-      color: var(--text);
-      text-decoration: none;
-      padding: 8px 13px;
-      border-radius: 6px;
-      font-weight: bold;
-    }
-
-    nav a:hover,
-    nav a.active {
-      background: var(--accent);
-      color: #111;
-    }
-
-    main {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 24px 16px 40px;
-    }
-
-    section {
-      margin-bottom: 36px;
-      scroll-margin-top: 90px;
-    }
-
-    h2 {
-      margin: 0 0 16px;
-      font-size: 1.55rem;
-    }
-
-    .section-intro {
-      color: var(--muted);
-      margin-top: -8px;
-      margin-bottom: 16px;
-    }
-
-    .tabs {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 18px;
-    }
-
-    .tab {
-      background: var(--panel-light);
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 9px 13px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      font-weight: bold;
-    }
-
-    .tab:hover,
-    .tab.active {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #111;
-    }
-
-    .games {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 14px;
-    }
-
-    .game {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-left: 4px solid var(--accent);
-      border-radius: 9px;
-      padding: 15px;
-      min-width: 0;
-    }
-
-    .game-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-
-    .matchup {
-      font-weight: bold;
-      font-size: 1.05rem;
-      overflow-wrap: anywhere;
-    }
-
-    .game-date {
-      color: var(--muted);
-      font-size: 0.85rem;
-      text-align: right;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    .game-times {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 12px;
-      margin-top: 16px;
-    }
-
-    .game-time {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .game-time:last-child {
-      text-align: right;
-    }
-
-    .time-label {
-      color: var(--muted);
-      font-size: 0.75rem;
-    }
-
-    .time-value {
-      font-weight: bold;
-      font-size: 0.95rem;
-    }
-
-    .score {
-      color: var(--accent);
-      font-size: 1.1rem;
-      font-weight: bold;
-      margin-top: 10px;
-    }
-
-    .status {
-      color: var(--muted);
-      font-size: 0.85rem;
-      margin-top: 10px;
-    }
-
-    .message {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 16px;
-      color: var(--muted);
-    }
-
-    .table-wrap {
-      overflow-x: auto;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 650px;
-      font-size: 0.9rem;
-    }
-
-    th,
-    td {
-      text-align: center;
-      padding: 11px 9px;
-      border-bottom: 1px solid var(--border);
-      white-space: nowrap;
-    }
-
-    th {
-      background: #252525;
-      color: var(--muted);
-      font-size: 0.8rem;
-      text-transform: uppercase;
-    }
-
-    th:nth-child(2),
-    td:nth-child(2) {
-      text-align: left;
-    }
-
-    tbody tr:last-child td {
-      border-bottom: none;
-    }
-
-    tbody tr.bruins-row {
-      background: rgba(255, 204, 0, 0.14);
-      color: var(--accent);
-      font-weight: bold;
-    }
-
-    .position {
-      color: var(--muted);
-      width: 45px;
-    }
-
-    footer {
-      text-align: center;
-      color: var(--muted);
-      border-top: 1px solid var(--border);
-      padding: 20px 12px;
-      font-size: 0.85rem;
-    }
-
-    @media (max-width: 480px) {
-      header h1 {
-        font-size: 1.65rem;
-      }
-
-      main {
-        padding: 20px 12px 32px;
-      }
-
-      .game-top {
-        gap: 8px;
-      }
-
-      .matchup {
-        font-size: 0.98rem;
-      }
-
-      .game-date {
-        font-size: 0.78rem;
-      }
-
-      .time-value {
-        font-size: 0.9rem;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Boston Bruins | Boston Sports Hub</title>
+<style>
+:root {
+  --bg:#101722;
+  --panel:#1c2838;
+  --muted:#bdc8d6;
+  --accent:#ffcc33;
+  --blue:#080808;
+  --border:#354255;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0;
+  background:var(--bg);
+  color:#f5f7fa;
+  font-family:Arial,sans-serif;
+  line-height:1.5;
+}
+header {
+  background:var(--blue);
+  padding:25px 16px;
+  text-align:center;
+  border-bottom:4px solid var(--accent);
+}
+header h1 { margin:0; font-size:clamp(1.7rem,5vw,2.5rem); }
+header p { margin:7px 0 0; color:var(--muted); }
+nav {
+  position:sticky;
+  top:0;
+  z-index:10;
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:8px;
+  padding:12px;
+  background:#080d14;
+  border-bottom:1px solid var(--border);
+}
+nav a {
+  color:#fff;
+  text-decoration:none;
+  background:var(--panel);
+  padding:9px 14px;
+  border-radius:7px;
+  font-size:.9rem;
+}
+nav a:hover { background:#354255; }
+main { max-width:1050px; margin:auto; padding:20px 14px 40px; }
+section { margin-bottom:32px; scroll-margin-top:80px; }
+.section-heading {
+  border-left:5px solid var(--accent);
+  padding-left:12px;
+  margin-bottom:15px;
+}
+.section-heading h2 { margin:0; font-size:1.5rem; }
+.section-heading p { color:var(--muted); margin:4px 0 0; font-size:.9rem; }
+.games { display:grid; gap:12px; }
+.game {
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-left:4px solid var(--accent);
+  border-radius:9px;
+  padding:14px;
+}
+.game-top {
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+  color:var(--muted);
+  font-size:.85rem;
+  margin-bottom:9px;
+}
+.game-date {
+  text-align:right;
+  color:#fff;
+  font-weight:bold;
+  flex-shrink:0;
+}
+.matchup { font-weight:bold; font-size:1.05rem; }
+.score { color:var(--accent); font-weight:bold; margin-top:5px; }
+.status { color:var(--muted); font-size:.85rem; margin-top:5px; }
+.game-times {
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  gap:12px;
+  margin-top:12px;
+  padding-top:10px;
+  border-top:1px solid var(--border);
+}
+.game-time { min-width:0; }
+.game-time:last-child { text-align:right; }
+.time-label {
+  display:block;
+  color:var(--muted);
+  font-size:.7rem;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+}
+.time-value {
+  display:block;
+  color:#fff;
+  font-weight:bold;
+  font-size:.95rem;
+}
+.message {
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:9px;
+  padding:16px;
+  color:var(--muted);
+}
+.table-wrap {
+  overflow-x:auto;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:9px;
+}
+table { width:100%; border-collapse:collapse; min-width:550px; }
+th,td {
+  padding:11px 12px;
+  border-bottom:1px solid var(--border);
+  text-align:left;
+  white-space:nowrap;
+}
+th { background:#080d14; color:var(--accent); font-size:.85rem; }
+td { font-size:.9rem; }
+tr:last-child td { border-bottom:0; }
+tr.boston { background:#413817; font-weight:bold; }
+.position-cell { color:var(--accent); font-weight:bold; }
+button {
+  background:var(--accent);
+  color:#111;
+  border:0;
+  border-radius:7px;
+  padding:10px 14px;
+  font-weight:bold;
+  cursor:pointer;
+}
+button:disabled { opacity:.6; cursor:wait; }
+.section-tools { margin:0 0 12px; }
+.standings-tabs {
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin:16px 0;
+}
+.standings-tabs button {
+  flex:0 0 auto;
+  background:var(--panel);
+  color:white;
+  border:1px solid var(--border);
+  padding:10px 13px;
+}
+.standings-tabs button.active {
+  background:var(--accent);
+  color:#111;
+  border-color:var(--accent);
+}
+.standings-tabs button:focus-visible {
+  outline:2px solid white;
+  outline-offset:2px;
+}
+#standings-table { scroll-margin-top:100px; }
+footer {
+  text-align:center;
+  padding:20px;
+  color:var(--muted);
+  border-top:1px solid var(--border);
+  font-size:.85rem;
+}
+@media(max-width:600px) {
+  nav { justify-content:flex-start; }
+  .standings-tabs { flex-wrap:nowrap; overflow-x:auto; padding-bottom:8px; }
+  .standings-tabs button { flex-shrink:0; }
+  .game { padding:12px; }
+  .time-value { font-size:.88rem; }
+}
+</style>
 </head>
-
 <body>
-  <header>
-    <h1>Boston Bruins</h1>
-    <p>Boston Sports Hub · National Hockey League</p>
-  </header>
 
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="#fixtures" class="active">Fixtures & Results</a>
-    <a href="#standings">Standings</a>
-  </nav>
+<header>
+  <h1>Boston Bruins</h1>
+  <p>Boston Sports Hub · National Hockey League</p>
+</header>
 
-  <main>
-    <section id="fixtures">
-      <h2>Fixtures & Results</h2>
-      <div class="tabs">
-        <button class="tab active" data-game-view="upcoming">Upcoming Fixtures</button>
-        <button class="tab" data-game-view="results">Recent Results</button>
-      </div>
-      <div id="games" class="games">
-        <div class="message">Loading Bruins fixtures...</div>
-      </div>
-    </section>
+<nav aria-label="Main navigation">
+  <a href="index.html">Home</a>
+  <a href="#fixtures">Fixtures</a>
+  <a href="#results">Results</a>
+  <a href="#leagues">Leagues ↓</a>
+</nav>
 
-    <section id="standings">
+<main>
+  <section id="fixtures">
+    <div class="section-heading">
+      <h2>Upcoming Fixtures</h2>
+      <p>Boston Bruins · UK and American local times</p>
+    </div>
+    <div id="fixtures-list" class="games">
+      <div class="message">Loading upcoming fixtures...</div>
+    </div>
+  </section>
+
+  <section id="results">
+    <div class="section-heading">
+      <h2>Recent Results</h2>
+      <p>Completed games and final scores</p>
+    </div>
+    <div id="results-list" class="games">
+      <div class="message">Loading recent results...</div>
+    </div>
+  </section>
+
+  <section id="leagues">
+    <div class="section-heading">
       <h2>NHL Standings</h2>
-      <p class="section-intro">Choose a table to view the league, conference or division standings.</p>
+      <p>Choose a league, conference or division. The Bruins are highlighted in yellow.</p>
+    </div>
 
-      <div class="tabs" id="standings-tabs">
-        <button class="tab active" data-standing-view="overall">Overall NHL</button>
-        <button class="tab" data-standing-view="east">Eastern Conference</button>
-        <button class="tab" data-standing-view="west">Western Conference</button>
-        <button class="tab" data-standing-view="atlantic">Atlantic Division</button>
-        <button class="tab" data-standing-view="metropolitan">Metropolitan Division</button>
-        <button class="tab" data-standing-view="central">Central Division</button>
-        <button class="tab" data-standing-view="pacific">Pacific Division</button>
+    <div class="section-tools">
+      <button id="refresh-standings">Refresh standings</button>
+    </div>
+
+    <p id="standings-status" class="status" aria-live="polite">
+      Loading NHL standings...
+    </p>
+
+    <div class="standings-tabs" id="standings-tabs" role="group" aria-label="Choose NHL standings table">
+      <button type="button" data-table="overall" class="active" aria-pressed="true">Overall NHL</button>
+      <button type="button" data-table="east" aria-pressed="false">Eastern Conference</button>
+      <button type="button" data-table="west" aria-pressed="false">Western Conference</button>
+      <button type="button" data-table="atlantic" aria-pressed="false">Atlantic</button>
+      <button type="button" data-table="metropolitan" aria-pressed="false">Metropolitan</button>
+      <button type="button" data-table="central" aria-pressed="false">Central</button>
+      <button type="button" data-table="pacific" aria-pressed="false">Pacific</button>
+    </div>
+
+    <div id="standings-table">
+      <div class="message">Loading standings...</div>
+    </div>
+  </section>
+</main>
+
+<footer>Boston Sports Hub · Data provided by ESPN</footer>
+
+<script>
+const TEAM_ID = "1";
+const TEAM_NAME = "Boston Bruins";
+
+const SCHEDULE_URL =
+  "https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/teams/1/schedule";
+
+const STANDINGS_URL =
+  "https://site.api.espn.com/apis/v2/sports/hockey/nhl/standings";
+
+const $ = id => document.getElementById(id);
+
+function safeText(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
+  })[char]);
+}
+
+function dateLabel(value) {
+  if (!value) return "Date TBC";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "Date TBC";
+
+  return new Intl.DateTimeFormat("en-GB", {
+    weekday:"short",
+    day:"numeric",
+    month:"short",
+    year:"numeric",
+    timeZone:"Europe/London"
+  }).format(date);
+}
+
+function timeLabel(value) {
+  if (!value) return "Time TBC";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "Time TBC";
+
+  return new Intl.DateTimeFormat("en-GB", {
+    hour:"2-digit",
+    minute:"2-digit",
+    timeZone:"Europe/London",
+    timeZoneName:"short"
+  }).format(date);
+}
+
+function americanTimeLabel(value, event) {
+  if (!value) return "Time TBC";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "Time TBC";
+
+  const home = getCompetitors(event).find(team => team.homeAway === "home");
+
+  // Use the venue's timezone if ESPN provides one; otherwise use Eastern Time.
+  const timezone =
+    home?.venue?.timezone ||
+    home?.team?.timeZone ||
+    home?.team?.timezone ||
+    "America/New_York";
+
+  try {
+    return new Intl.DateTimeFormat("en-US", {
+      hour:"numeric",
+      minute:"2-digit",
+      hour12:true,
+      timeZone:timezone,
+      timeZoneName:"short"
+    }).format(date);
+  } catch {
+    return new Intl.DateTimeFormat("en-US", {
+      hour:"numeric",
+      minute:"2-digit",
+      hour12:true,
+      timeZone:"America/New_York",
+      timeZoneName:"short"
+    }).format(date);
+  }
+}
+
+function getEvents(data) {
+  if (Array.isArray(data.events)) return data.events;
+  if (Array.isArray(data.content)) return data.content;
+  return [];
+}
+
+function getCompetitors(event) {
+  return event.competitions?.[0]?.competitors || [];
+}
+
+function isCompleted(event) {
+  const competition = event.competitions?.[0];
+  const status = competition?.status || event.status || {};
+  const state = status.type?.state;
+  const description = String(status.type?.description || "").toLowerCase();
+  const detail = String(status.type?.detail || "").toLowerCase();
+
+  return status.type?.completed === true ||
+    state === "post" ||
+    description.includes("final") ||
+    detail.includes("final") ||
+    description.includes("ended");
+}
+
+function gameDetails(event) {
+  const competitors = getCompetitors(event);
+  const home = competitors.find(team => team.homeAway === "home");
+
+  const ownTeam = competitors.find(team =>
+    team.team?.id === TEAM_ID ||
+    team.team?.abbreviation === "BOS" ||
+    team.team?.displayName === TEAM_NAME
+  );
+
+  const otherTeam = competitors.find(team => team !== ownTeam);
+  const isHome = home === ownTeam;
+
+  function extractScore(competitor) {
+    const score = competitor?.score;
+    if (score === null || score === undefined) return null;
+
+    if (typeof score === "object") {
+      return score.displayValue ?? score.value ??
+        score.alternateDisplayValue ?? null;
+    }
+
+    return score;
+  }
+
+  const ownScore = extractScore(ownTeam);
+  const otherScore = extractScore(otherTeam);
+  const hasScore = ownScore !== null && otherScore !== null;
+  const scoreText = hasScore ? `${ownScore} – ${otherScore}` : "";
+
+  let outcome = "";
+  if (hasScore && isCompleted(event)) {
+    const a = Number(ownScore);
+    const b = Number(otherScore);
+    if (Number.isFinite(a) && Number.isFinite(b)) {
+      outcome = a > b ? "Win" : a < b ? "Loss" : "Tie";
+    }
+  }
+
+  const status = event.competitions?.[0]?.status?.type?.shortDetail ||
+    event.status?.type?.shortDetail ||
+    event.competitions?.[0]?.status?.type?.detail ||
+    "";
+
+  return {
+    date:event.date,
+    opponent:otherTeam?.team?.displayName ||
+      otherTeam?.team?.name || "Opponent TBC",
+    homeAway:isHome ? "Home" : "Away",
+    scoreText,
+    outcome,
+    status
+  };
+}
+
+/* Fixture card: original matchup position retained.
+   Only the date and time positions have changed. */
+function renderGame(event, showResult) {
+  const details = gameDetails(event);
+
+  const americanTime = americanTimeLabel(details.date, event);
+  const ukTime = timeLabel(details.date);
+
+  return `
+    <article class="game">
+      <div class="game-top">
+        <span class="matchup">
+          Bruins ${details.homeAway === "Home" ? "vs" : "at"}
+          ${safeText(details.opponent)}
+        </span>
+        <span class="game-date">${safeText(dateLabel(details.date))}</span>
       </div>
 
-      <div id="standings-table">
-        <div class="message">Loading NHL standings...</div>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    Boston Sports Hub · Let's go Bruins!
-  </footer>
-
-  <script>
-    const SCHEDULE_URL =
-      "https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/teams/1/schedule";
-
-    const STANDINGS_URL =
-      "https://site.api.espn.com/apis/v2/sports/hockey/nhl/standings";
-
-    let allGames = [];
-    let allStandings = [];
-    let currentGameView = "upcoming";
-    let currentStandingView = "overall";
-
-    const teamAliases = {
-      "BOS": ["BOS"],
-      "BUF": ["BUF"],
-      "DET": ["DET"],
-      "FLA": ["FLA"],
-      "MTL": ["MTL"],
-      "OTT": ["OTT"],
-      "TBL": ["TBL", "TB"],
-      "TOR": ["TOR"],
-      "CAR": ["CAR"],
-      "CBJ": ["CBJ"],
-      "NJD": ["NJD", "NJ"],
-      "NYI": ["NYI"],
-      "NYR": ["NYR"],
-      "PHI": ["PHI"],
-      "PIT": ["PIT"],
-      "WSH": ["WSH", "WAS"],
-      "CHI": ["CHI"],
-      "COL": ["COL"],
-      "DAL": ["DAL"],
-      "MIN": ["MIN"],
-      "NSH": ["NSH"],
-      "STL": ["STL"],
-      "UTA": ["UTA"],
-      "WPG": ["WPG"],
-      "ANA": ["ANA"],
-      "CGY": ["CGY"],
-      "EDM": ["EDM"],
-      "LAK": ["LAK", "LA"],
-      "SJS": ["SJS", "SJ"],
-      "SEA": ["SEA"],
-      "VAN": ["VAN"],
-      "VGK": ["VGK"]
-    };
-
-    const divisionTeams = {
-      atlantic: ["BOS", "BUF", "DET", "FLA", "MTL", "OTT", "TBL", "TOR"],
-      metropolitan: ["CAR", "CBJ", "NJD", "NYI", "NYR", "PHI", "PIT", "WSH"],
-      central: ["CHI", "COL", "DAL", "MIN", "NSH", "STL", "UTA", "WPG"],
-      pacific: ["ANA", "CGY", "EDM", "LAK", "SJS", "SEA", "VAN", "VGK"]
-    };
-
-    function safeText(value) {
-      return String(value ?? "").replace(/[&<>"']/g, character => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#39;"
-      })[character]);
-    }
-
-    function dateLabel(dateString) {
-      if (!dateString) return "Date TBC";
-
-      const date = new Date(dateString);
-      if (Number.isNaN(date.getTime())) return "Date TBC";
-
-      return new Intl.DateTimeFormat("en-GB", {
-        timeZone: "Europe/London",
-        weekday: "short",
-        day: "numeric",
-        month: "short",
-        year: "numeric"
-      }).format(date);
-    }
-
-    function timeLabel(dateString) {
-      if (!dateString) return "TBC";
-
-      const date = new Date(dateString);
-      if (Number.isNaN(date.getTime())) return "TBC";
-
-      return new Intl.DateTimeFormat("en-GB", {
-        timeZone: "Europe/London",
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false
-      }).format(date);
-    }
-
-    function americanTimeLabel(dateString, event) {
-      if (!dateString) return "TBC";
-
-      const date = new Date(dateString);
-      if (Number.isNaN(date.getTime())) return "TBC";
-
-      // Use the venue's timezone when ESPN supplies it.
-      const venueTimezone =
-        event?.competitions?.[0]?.venue?.address?.timeZone ||
-        event?.competitions?.[0]?.venue?.timezone ||
-        "America/New_York";
-
-      try {
-        return new Intl.DateTimeFormat("en-US", {
-          timeZone: venueTimezone,
-          hour: "numeric",
-          minute: "2-digit",
-          hour12: true,
-          timeZoneName: "short"
-        }).format(date);
-      } catch {
-        return new Intl.DateTimeFormat("en-US", {
-          timeZone: "America/New_York",
-          hour: "numeric",
-          minute: "2-digit",
-          hour12: true,
-          timeZoneName: "short"
-        }).format(date);
-      }
-    }
-
-    function getCompetitors(event) {
-      return event?.competitions?.[0]?.competitors || [];
-    }
-
-    function getTeamCode(team) {
-      return (
-        team?.team?.abbreviation ||
-        team?.abbreviation ||
-        ""
-      ).toUpperCase();
-    }
-
-    function getTeamName(team) {
-      return (
-        team?.team?.displayName ||
-        team?.team?.name ||
-        team?.displayName ||
-        team?.name ||
-        "Team TBC"
-      );
-    }
-
-    function getTeamShortName(team) {
-      return (
-        team?.team?.shortDisplayName ||
-        team?.team?.name ||
-        team?.shortDisplayName ||
-        team?.name ||
-        getTeamName(team)
-      );
-    }
-
-    function getTeamScore(team) {
-      const score = team?.score;
-
-      if (score === null || score === undefined || score === "") {
-        return null;
-      }
-
-      if (typeof score === "object") {
-        const value = score.value ?? score.displayValue ?? score.score;
-        return value === undefined || value === null ? null : String(value);
-      }
-
-      return String(score);
-    }
-
-    function gameDetails(event) {
-      const competitors = getCompetitors(event);
-      const home = competitors.find(team => team.homeAway === "home");
-      const away = competitors.find(team => team.homeAway === "away");
-
-      const isBruinsHome = getTeamCode(home) === "BOS";
-      const opponent = isBruinsHome ? away : home;
-
-      const homeScore = getTeamScore(home);
-      const awayScore = getTeamScore(away);
-
-      let scoreText = "";
-      let outcome = "";
-
-      if (homeScore !== null && awayScore !== null) {
-        scoreText = `${getTeamShortName(away)} ${awayScore} – ${getTeamShortName(home)} ${homeScore}`;
-
-        const bruinsScore = isBruinsHome ? homeScore : awayScore;
-        const opponentScore = isBruinsHome ? awayScore : homeScore;
-
-        if (Number(bruinsScore) > Number(opponentScore)) {
-          outcome = "Bruins win";
-        } else if (Number(bruinsScore) < Number(opponentScore)) {
-          outcome = "Bruins loss";
-        } else {
-          outcome = "Draw";
-        }
-      }
-
-      return {
-        date: event?.date || event?.competitions?.[0]?.date,
-        home,
-        away,
-        opponent: opponent ? getTeamName(opponent) : "Opponent TBC",
-        homeAway: isBruinsHome ? "Home" : "Away",
-        scoreText,
-        outcome,
-        eventStatus:
-          event?.status?.type?.shortDetail ||
-          event?.status?.type?.detail ||
-          ""
-      };
-    }
-
-    function renderGame(event, showResult) {
-      const details = gameDetails(event);
-      const competitors = getCompetitors(event);
-
-      const home = competitors.find(team => team.homeAway === "home");
-      const away = competitors.find(team => team.homeAway === "away");
-
-      // Standard matchup format used on the main page and other team pages.
-      const matchup = `${getTeamName(away)} @ ${getTeamName(home)}`;
-
-      return `
-        <article class="game">
-          <div class="game-top">
-            <span class="matchup">${safeText(matchup)}</span>
-            <span class="game-date">${safeText(dateLabel(details.date))}</span>
+      ${showResult
+        ? `<div class="score">
+            ${safeText(details.scoreText)}
+            ${details.outcome ? " · " + safeText(details.outcome) : ""}
+           </div>`
+        : `
+          <div class="game-times">
+            <div class="game-time">
+              <span class="time-label">American time</span>
+              <span class="time-value">${safeText(americanTime)}</span>
+            </div>
+            <div class="game-time">
+              <span class="time-label">UK time</span>
+              <span class="time-value">${safeText(ukTime)}</span>
+            </div>
           </div>
-
-          ${
-            showResult
-              ? `
-                <div class="score">${safeText(details.scoreText || "Score unavailable")}</div>
-                <div class="status">
-                  ${safeText(details.outcome)}
-                  ${details.eventStatus ? " · " + safeText(details.eventStatus) : ""}
-                </div>
-              `
-              : `
-                <div class="game-times">
-                  <div class="game-time">
-                    <span class="time-label">American time</span>
-                    <span class="time-value">${safeText(americanTimeLabel(details.date, event))}</span>
-                  </div>
-
-                  <div class="game-time">
-                    <span class="time-label">UK time</span>
-                    <span class="time-value">${safeText(timeLabel(details.date))}</span>
-                  </div>
-                </div>
-
-                <div class="status">
-                  ${safeText(details.homeAway)}
-                  ${details.eventStatus ? " · " + safeText(details.eventStatus) : ""}
-                </div>
-              `
-          }
-        </article>
-      `;
-    }
-
-    function renderGames() {
-      const container = document.getElementById("games");
-
-      const now = Date.now();
-
-      const upcoming = allGames
-        .filter(event => new Date(gameDetails(event).date).getTime() >= now)
-        .sort((a, b) =>
-          new Date(gameDetails(a).date) - new Date(gameDetails(b).date)
-        );
-
-      const results = allGames
-        .filter(event => {
-          const date = new Date(gameDetails(event).date).getTime();
-          const status = String(gameDetails(event).eventStatus).toLowerCase();
-
-          return date < now && (
-            status.includes("final") ||
-            status.includes("ended") ||
-            status.includes("completed") ||
-            getCompetitors(event).every(team => getTeamScore(team) !== null)
-          );
-        })
-        .sort((a, b) =>
-          new Date(gameDetails(b).date) - new Date(gameDetails(a).date)
-        );
-
-      const selectedGames = currentGameView === "upcoming"
-        ? upcoming
-        : results.slice(0, 20);
-
-      if (!selectedGames.length) {
-        container.innerHTML = `
-          <div class="message">
-            ${currentGameView === "upcoming"
-              ? "No upcoming fixtures are currently available."
-              : "No recent results are currently available."}
+          <div class="status">${safeText(details.homeAway)}
+            ${details.status ? " · " + safeText(details.status) : ""}
           </div>
-        `;
-        return;
+        `
       }
-
-      container.innerHTML = selectedGames
-        .map(event => renderGame(event, currentGameView === "results"))
-        .join("");
-    }
-
-    function getAllEntries(node) {
-      if (!node) return [];
-
-      if (Array.isArray(node)) {
-        return node;
-      }
-
-      if (Array.isArray(node.entries)) {
-        return node.entries;
-      }
-
-      if (Array.isArray(node.team)) {
-        return node.team;
-      }
-
-      return [];
-    }
-
-    function collectStandings(data) {
-      const collected = [];
-
-      function walk(node, label = "") {
-        if (!node || typeof node !== "object") return;
-
-        if (Array.isArray(node)) {
-          node.forEach(item => walk(item, label));
-          return;
-        }
-
-        const entries = getAllEntries(node);
-
-        if (entries.length && entries.some(entry =>
-          entry?.team || entry?.stats || entry?.records
-        )) {
-          collected.push({
-            label: label || node.name || node.abbreviation || "",
-            entries
-          });
-        }
-
-        if (node.children) {
-          node.children.forEach(child => {
-            walk(child, child.name || child.abbreviation || label);
-          });
-        }
-
-        if (node.groups) {
-          node.groups.forEach(group => {
-            walk(group, group.name || group.abbreviation || label);
-          });
-        }
-
-        if (node.standings && node.standings !== node) {
-          walk(node.standings, node.name || label);
-        }
-      }
-
-      walk(data?.children || data?.standings?.children || data?.standings || data);
-
-      return collected;
-    }
-
-    function getStat(entry, possibleNames) {
-      const stats = entry?.stats || [];
-
-      for (const name of possibleNames) {
-        const found = stats.find(stat =>
-          String(stat.name || stat.abbreviation || "").toLowerCase() === name.toLowerCase()
-        );
-
-        if (found) {
-          return found.displayValue ?? found.value ?? "—";
-        }
-      }
-
-      return "—";
-    }
-
-    function teamAbbreviation(entry) {
-      return (
-        entry?.team?.abbreviation ||
-        entry?.team?.shortDisplayName ||
-        entry?.team?.name ||
-        ""
-      ).toUpperCase();
-    }
-
-    function isBruins(entry) {
-      return teamAbbreviation(entry) === "BOS";
-    }
-
-    function normaliseTeamCode(code) {
-      const upper = String(code || "").toUpperCase();
-
-      for (const [canonical, aliases] of Object.entries(teamAliases)) {
-        if (aliases.includes(upper)) return canonical;
-      }
-
-      return upper;
-    }
-
-    function getRecord(entry) {
-      const wins = getStat(entry, ["wins", "w"]);
-      const losses = getStat(entry, ["losses", "l"]);
-      const overtimeLosses = getStat(entry, ["ot", "overtimeLosses", "otl"]);
-
-      return `${wins}-${losses}-${overtimeLosses}`;
-    }
-
-    function getPoints(entry) {
-      return getStat(entry, ["points", "pts"]);
-    }
-
-    function getGoalDifference(entry) {
-      return getStat(entry, ["differential", "goalDifferential", "diff", "gd"]);
-    }
-
-    function findEntriesByConference(conference) {
-      const target = conference.toLowerCase();
-
-      return allStandings.filter(group =>
-        group.label.toLowerCase().includes(target)
-      );
-    }
-
-    function getLeagueEntries() {
-      const unique = new Map();
-
-      allStandings.forEach(group => {
-        group.entries.forEach(entry => {
-          const code = normaliseTeamCode(teamAbbreviation(entry));
-          if (code) unique.set(code, entry);
-        });
-      });
-
-      return Array.from(unique.values());
-    }
-
-    function filterStandings(view) {
-      const entries = getLeagueEntries();
-
-      if (view === "overall") {
-        return entries;
-      }
-
-      if (view === "east" || view === "west") {
-        const matches = findEntriesByConference(
-          view === "east" ? "eastern" : "western"
-        );
-
-        const conferenceEntries = new Map();
-
-        matches.forEach(group => {
-          group.entries.forEach(entry => {
-            conferenceEntries.set(
-              normaliseTeamCode(teamAbbreviation(entry)),
-              entry
-            );
-          });
-        });
-
-        const result = Array.from(conferenceEntries.values());
-        if (result.length) return result;
-
-        // Fallback when the API supplies conference information on each entry.
-        return entries.filter(entry => {
-          const text = JSON.stringify(entry).toLowerCase();
-          return view === "east"
-            ? text.includes("eastern")
-            : text.includes("western");
-        });
-      }
-
-      if (divisionTeams[view]) {
-        const wanted = divisionTeams[view];
-
-        return entries.filter(entry =>
-          wanted.includes(normaliseTeamCode(teamAbbreviation(entry)))
-        );
-      }
-
-      return entries;
-    }
-
-    function sortStandings(entries) {
-      return [...entries].sort((a, b) => {
-        const aPoints = Number(getPoints(a));
-        const bPoints = Number(getPoints(b));
-
-        if (Number.isFinite(aPoints) && Number.isFinite(bPoints) && aPoints !== bPoints) {
-          return bPoints - aPoints;
-        }
-
-        const aName = a?.team?.displayName || a?.team?.name || "";
-        const bName = b?.team?.displayName || b?.team?.name || "";
-
-        return aName.localeCompare(bName);
-      });
-    }
-
-    function renderStandings() {
-      const container = document.getElementById("standings-table");
-      const entries = sortStandings(filterStandings(currentStandingView));
-
-      if (!entries.length) {
-        container.innerHTML = `
-          <div class="message">
-            Standings are temporarily unavailable. Please try again later.
-          </div>
-        `;
-        return;
-      }
-
-      container.innerHTML = `
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Pos</th>
-                <th>Team</th>
-                <th>GP</th>
-                <th>W-L-OTL</th>
-                <th>PTS</th>
-                <th>Goal Diff.</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${entries.map((entry, index) => {
-                const team = entry.team || {};
-                const gamesPlayed = getStat(entry, ["gamesPlayed", "gp"]);
-                const record = getRecord(entry);
-                const points = getPoints(entry);
-                const goalDiff = getGoalDifference(entry);
-
-                return `
-                  <tr class="${isBruins(entry) ? "bruins-row" : ""}">
-                    <td class="position">${index + 1}</td>
-                    <td>${safeText(team.displayName || team.name || "Unknown team")}</td>
-                    <td>${safeText(gamesPlayed)}</td>
-                    <td>${safeText(record)}</td>
-                    <td>${safeText(points)}</td>
-                    <td>${safeText(goalDiff)}</td>
-                  </tr>
-                `;
-              }).join("")}
-            </tbody>
-          </table>
-        </div>
-      `;
-    }
-
-    async function loadSchedule() {
-      const container = document.getElementById("games");
-
-      try {
-        const response = await fetch(SCHEDULE_URL);
-
-        if (!response.ok) {
-          throw new Error("Unable to load schedule");
-        }
-
-        const data = await response.json();
-        allGames = data.events || [];
-
-        renderGames();
-      } catch (error) {
-        container.innerHTML = `
-          <div class="message">
-            Couldn't load Bruins fixtures right now. Please refresh the page to try again.
-          </div>
-        `;
-      }
-    }
-
-    async function loadStandings() {
-      const container = document.getElementById("standings-table");
-
-      try {
-        const response = await fetch(STANDINGS_URL);
-
-        if (!response.ok) {
-          throw new Error("Unable to load standings");
-        }
-
-        const data = await response.json();
-        allStandings = collectStandings(data);
-
-        renderStandings();
-      } catch (error) {
-        container.innerHTML = `
-          <div class="message">
-            Couldn't load NHL standings right now. Please refresh the page to try again.
-          </div>
-        `;
-      }
-    }
-
-    document.querySelectorAll("[data-game-view]").forEach(button => {
-      button.addEventListener("click", () => {
-        currentGameView = button.dataset.gameView;
-
-        document.querySelectorAll("[data-game-view]").forEach(tab => {
-          tab.classList.toggle("active", tab === button);
-        });
-
-        renderGames();
+    </article>
+  `;
+}
+
+async function loadSchedule() {
+  const fixtures = $("fixtures-list");
+  const results = $("results-list");
+
+  try {
+    const response = await fetch(SCHEDULE_URL);
+    if (!response.ok) throw new Error("Schedule unavailable");
+    const data = await response.json();
+
+    const events = getEvents(data).sort(
+      (a,b) => new Date(a.date) - new Date(b.date)
+    );
+
+    const completed = events.filter(isCompleted).reverse().slice(0,10);
+    const upcoming = events.filter(event => !isCompleted(event));
+
+    fixtures.innerHTML = upcoming.length
+      ? upcoming.map(event => renderGame(event,false)).join("")
+      : '<div class="message">No upcoming fixtures are currently listed.</div>';
+
+    results.innerHTML = completed.length
+      ? completed.map(event => renderGame(event,true)).join("")
+      : '<div class="message">No recent results are currently available.</div>';
+  } catch(error) {
+    fixtures.innerHTML =
+      '<div class="message">Could not load fixtures. Please try again later.</div>';
+    results.innerHTML =
+      '<div class="message">Could not load results. Please try again later.</div>';
+    console.error(error);
+  }
+}
+
+/* Standings helpers */
+
+function findStat(stats, aliases) {
+  for (const alias of aliases) {
+    const item = stats.find(stat =>
+      String(stat.name || "").toLowerCase() === alias ||
+      String(stat.abbreviation || "").toLowerCase() === alias
+    );
+    if (item) return item.displayValue ?? item.value ?? "—";
+  }
+  return "—";
+}
+
+function extractTeams(node, output = []) {
+  if (!node || typeof node !== "object") return output;
+
+  if (Array.isArray(node)) {
+    node.forEach(item => extractTeams(item,output));
+    return output;
+  }
+
+  if (Array.isArray(node.entries)) {
+    node.entries.forEach(entry => {
+      const team = entry.team || {};
+      const stats = entry.stats || [];
+
+      output.push({
+        id:String(team.id || ""),
+        name:team.displayName || team.name || "Unknown team",
+        abbreviation:String(team.abbreviation || "").toUpperCase(),
+        wins:findStat(stats,["wins","w"]),
+        losses:findStat(stats,["losses","l"]),
+        ot:findStat(stats,["otlosses","otl","overtime losses"]),
+        points:findStat(stats,["points","pts"]),
+        pct:findStat(stats,["winpercent","pct","win percentage"]),
+        gp:findStat(stats,["gamesplayed","gp"]),
+        streak:findStat(stats,["streak","strk"])
       });
     });
+  }
 
-    document.querySelectorAll("[data-standing-view]").forEach(button => {
-      button.addEventListener("click", () => {
-        currentStandingView = button.dataset.standingView;
+  for (const [key,value] of Object.entries(node)) {
+    if (key !== "entries") extractTeams(value,output);
+  }
 
-        document.querySelectorAll("[data-standing-view]").forEach(tab => {
-          tab.classList.toggle("active", tab === button);
-        });
+  return output;
+}
 
-        renderStandings();
-      });
-    });
+const divisions = {
+  atlantic:["BOS","BUF","DET","FLA","MTL","OTT","TBL","TB","TOR"],
+  metropolitan:["CAR","CBJ","NJD","NJ","NYI","NYR","PHI","PIT","WSH","WAS"],
+  central:["CHI","COL","DAL","MIN","NSH","STL","UTA","WPG"],
+  pacific:["ANA","CGY","EDM","LAK","LA","SJS","SJ","SEA","VAN","VGK"]
+};
 
-    loadSchedule();
-    loadStandings();
-  </script>
+const conferences = {
+  east:[...divisions.atlantic,...divisions.metropolitan],
+  west:[...divisions.central,...divisions.pacific]
+};
+
+const tableTitles = {
+  overall:"Overall NHL",
+  east:"Eastern Conference",
+  west:"Western Conference",
+  atlantic:"Atlantic Division",
+  metropolitan:"Metropolitan Division",
+  central:"Central Division",
+  pacific:"Pacific Division"
+};
+
+let standingsTables = {};
+let selectedTable = "overall";
+
+function teamPositionSort(a,b) {
+  const pointsA = Number(a.points);
+  const pointsB = Number(b.points);
+
+  if (Number.isFinite(pointsA) && Number.isFinite(pointsB) &&
+      pointsA !== pointsB) {
+    return pointsB - pointsA;
+  }
+
+  const winsA = Number(a.wins);
+  const winsB = Number(b.wins);
+  if (Number.isFinite(winsA) && Number.isFinite(winsB) &&
+      winsA !== winsB) {
+    return winsB - winsA;
+  }
+
+  return a.name.localeCompare(b.name);
+}
+
+function isBoston(team) {
+  return team.id === TEAM_ID ||
+    team.abbreviation === "BOS" ||
+    team.name === TEAM_NAME;
+}
+
+function renderStandingsTable(tableKey) {
+  const teams = standingsTables[tableKey] || [];
+
+  if (!teams.length) {
+    $("standings-table").innerHTML =
+      `<div class="message">No standings data was returned for ${safeText(tableTitles[tableKey])}.</div>`;
+    return;
+  }
+
+  const sorted = [...teams].sort(teamPositionSort);
+
+  $("standings-table").innerHTML = `
+    <h3>${safeText(tableTitles[tableKey])}</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Team</th>
+            <th>GP</th>
+            <th>W</th>
+            <th>L</th>
+            <th>OTL</th>
+            <th>PTS</th>
+            <th>PCT</th>
+            <th>Streak</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${sorted.map((team,index) => `
+            <tr class="${isBoston(team) ? "boston" : ""}">
+              <td class="position-cell">${index + 1}</td>
+              <td>${safeText(team.name)}${isBoston(team) ? " ★" : ""}</td>
+              <td>${safeText(team.gp)}</td>
+              <td>${safeText(team.wins)}</td>
+              <td>${safeText(team.losses)}</td>
+              <td>${safeText(team.ot)}</td>
+              <td>${safeText(team.points)}</td>
+              <td>${safeText(team.pct)}</td>
+              <td>${safeText(team.streak)}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
+    <p class="status">
+      Data supplied by ESPN. Positions are ranked by points, then wins where available.
+      Official NHL tiebreakers may differ.
+    </p>
+  `;
+}
+
+function selectStandingsTable(tableKey) {
+  selectedTable = tableKey;
+
+  document.querySelectorAll("#standings-tabs button").forEach(button => {
+    const active = button.dataset.table === tableKey;
+    button.classList.toggle("active",active);
+    button.setAttribute("aria-pressed",String(active));
+  });
+
+  renderStandingsTable(tableKey);
+}
+
+async function loadStandings() {
+  const container = $("standings-table");
+  const button = $("refresh-standings");
+  const status = $("standings-status");
+
+  button.disabled = true;
+  button.textContent = "Refreshing...";
+  status.textContent = "Loading NHL standings...";
+
+  try {
+    const response = await fetch(STANDINGS_URL);
+    if (!response.ok) throw new Error("Standings unavailable");
+    const data = await response.json();
+
+    const teams = extractTeams(data.children || data);
+    const uniqueTeams = [...new Map(
+      teams.map(team => [team.id || team.name,team])
+    ).values()];
+
+    if (!uniqueTeams.length) throw new Error("No standings found");
+
+    standingsTables = {
+      overall:uniqueTeams,
+      east:uniqueTeams.filter(team => conferences.east.includes(team.abbreviation)),
+      west:uniqueTeams.filter(team => conferences.west.includes(team.abbreviation)),
+      atlantic:uniqueTeams.filter(team => divisions.atlantic.includes(team.abbreviation)),
+      metropolitan:uniqueTeams.filter(team => divisions.metropolitan.includes(team.abbreviation)),
+      central:uniqueTeams.filter(team => divisions.central.includes(team.abbreviation)),
+      pacific:uniqueTeams.filter(team => divisions.pacific.includes(team.abbreviation))
+    };
+
+    const missing = Object.keys(tableTitles).filter(key =>
+      !standingsTables[key] || !standingsTables[key].length
+    );
+
+    status.textContent = missing.length
+      ? "Standings loaded, but ESPN data could not be matched for: " +
+        missing.map(key => tableTitles[key]).join(", ") + "."
+      : `Standings loaded at ${timeLabel(new Date().toISOString())}.`;
+
+    selectStandingsTable(selectedTable);
+  } catch(error) {
+    status.textContent = "Could not load NHL standings. Try refreshing.";
+    container.innerHTML =
+      '<div class="message">Standings are temporarily unavailable.</div>';
+    console.error(error);
+  } finally {
+    button.disabled = false;
+    button.textContent = "Refresh standings";
+  }
+}
+
+document.querySelectorAll("#standings-tabs button").forEach(button => {
+  button.addEventListener("click",() => {
+    selectStandingsTable(button.dataset.table);
+  });
+});
+
+$("refresh-standings").addEventListener("click",loadStandings);
+
+loadSchedule();
+loadStandings();
+</script>
 </body>
 </html>
