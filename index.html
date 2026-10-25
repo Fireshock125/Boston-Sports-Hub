@@ -1,4 +1,4 @@
-
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -82,6 +82,7 @@ button {
 }
 button:hover { background: #405570; }
 button:disabled { opacity: .6; cursor: wait; }
+
 .game {
   background: var(--panel);
   border-radius: 10px;
@@ -105,8 +106,25 @@ button:disabled { opacity: .6; cursor: wait; }
   font-size: 17px;
   font-weight: bold;
   margin: 12px 0 7px;
+  overflow-wrap: anywhere;
+}
+.game-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.game-bottom span:last-child { text-align: right; }
+.score {
+  color: var(--team-colour, white);
+  font-size: 14px;
+  font-weight: bold;
 }
 .status { color: var(--muted); font-size: 13px; }
+
 .empty {
   background: var(--panel);
   border-radius: 10px;
@@ -114,6 +132,7 @@ button:disabled { opacity: .6; cursor: wait; }
   color: var(--muted);
   line-height: 1.5;
 }
+section { margin-bottom: 32px; scroll-margin-top: 20px; }
 footer {
   text-align: center;
   padding: 25px;
@@ -130,144 +149,302 @@ footer {
 </style>
 </head>
 <body>
+
 <header>
   <h1>Boston Sports Hub</h1>
   <p>Four teams. One city. All in one place.</p>
 </header>
 
 <main>
-  <h2>Your Boston teams</h2>
-  <p class="summary">Choose a team to view its fixtures, results and league standings.</p>
+  <section id="teams-section">
+    <h2>Your Boston teams</h2>
+    <p class="summary">Choose a team to view its fixtures, results and league standings.</p>
 
-  <section class="teams">
-    <a class="team" href="patriots.html" style="--team-colour:#c8102e">
-      <span class="arrow">›</span>
-      <span class="tag">NFL</span>
-      <h3>New England Patriots</h3>
-      <p>American football</p>
-    </a>
+    <div class="teams">
+      <a class="team" href="patriots.html" style="--team-colour:#c8102e">
+        <span class="arrow">›</span>
+        <span class="tag">NFL</span>
+        <h3>New England Patriots</h3>
+        <p>American football</p>
+      </a>
 
-    <a class="team" href="celtics.html" style="--team-colour:#007a33">
-      <span class="arrow">›</span>
-      <span class="tag">NBA</span>
-      <h3>Boston Celtics</h3>
-      <p>Basketball</p>
-    </a>
+      <a class="team" href="celtics.html" style="--team-colour:#007a33">
+        <span class="arrow">›</span>
+        <span class="tag">NBA</span>
+        <h3>Boston Celtics</h3>
+        <p>Basketball</p>
+      </a>
 
-    <a class="team" href="red-sox.html" style="--team-colour:#e0b13d">
-      <span class="arrow">›</span>
-      <span class="tag">MLB</span>
-      <h3>Boston Red Sox</h3>
-      <p>Baseball</p>
-    </a>
+      <a class="team" href="red-sox.html" style="--team-colour:#e0b13d">
+        <span class="arrow">›</span>
+        <span class="tag">MLB</span>
+        <h3>Boston Red Sox</h3>
+        <p>Baseball</p>
+      </a>
 
-    <a class="team" href="bruins.html" style="--team-colour:#8ab4f8">
-      <span class="arrow">›</span>
-      <span class="tag">NHL</span>
-      <h3>Boston Bruins</h3>
-      <p>Ice hockey</p>
-    </a>
+      <a class="team" href="bruins.html" style="--team-colour:#8ab4f8">
+        <span class="arrow">›</span>
+        <span class="tag">NHL</span>
+        <h3>Boston Bruins</h3>
+        <p>Ice hockey</p>
+      </a>
+    </div>
   </section>
 
-  <section>
+  <section id="fixtures">
     <h2>Upcoming fixtures</h2>
     <p class="summary">
-      All four teams, in date order. Game times are shown in UK local time,
-      including daylight saving.
+      All four teams in date order. American local time is shown on the left
+      and UK local time on the right.
     </p>
-    <button id="refresh">Refresh fixtures</button>
+    <button id="refresh">Refresh fixtures and results</button>
     <p id="status" class="summary" aria-live="polite">Loading schedules…</p>
     <div id="upcoming">
       <div class="empty">Loading upcoming fixtures…</div>
     </div>
   </section>
+
+  <section id="results">
+    <h2>Recent results</h2>
+    <p class="summary">
+      The latest completed games across all four teams, with scores and results.
+    </p>
+    <div id="results-list">
+      <div class="empty">Loading recent results…</div>
+    </div>
+  </section>
 </main>
 
-<footer>Boston Sports Hub · Made for a Boston sports fan in the UK</footer>
+<footer>Boston Sports Hub · Data provided by ESPN</footer>
 
 <script>
+"use strict";
+
 const feeds = [
-  { league:"NFL", team:"New England Patriots", id:"17", sport:"football", path:"nfl" },
-  { league:"NBA", team:"Boston Celtics", id:"2", sport:"basketball", path:"nba" },
-  { league:"MLB", team:"Boston Red Sox", id:"2", sport:"baseball", path:"mlb" },
-  { league:"NHL", team:"Boston Bruins", id:"1", sport:"hockey", path:"nhl" }
+  {
+    league: "NFL",
+    team: "New England Patriots",
+    id: "17",
+    sport: "football",
+    path: "nfl"
+  },
+  {
+    league: "NBA",
+    team: "Boston Celtics",
+    id: "2",
+    sport: "basketball",
+    path: "nba"
+  },
+  {
+    league: "MLB",
+    team: "Boston Red Sox",
+    id: "2",
+    sport: "baseball",
+    path: "mlb"
+  },
+  {
+    league: "NHL",
+    team: "Boston Bruins",
+    id: "1",
+    sport: "hockey",
+    path: "nhl"
+  }
 ];
 
 const statusEl = document.getElementById("status");
 const upcomingEl = document.getElementById("upcoming");
+const resultsEl = document.getElementById("results-list");
 const refreshEl = document.getElementById("refresh");
+
+function safeText(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[char]);
+}
 
 function dateLabel(dateString) {
   const date = new Date(dateString);
-  if (Number.isNaN(date.getTime())) return "Date TBC";
+  if (!dateString || Number.isNaN(date.getTime())) return "Date TBC";
+
   return new Intl.DateTimeFormat("en-GB", {
-    weekday:"short",
-    day:"numeric",
-    month:"short",
-    year:"numeric",
-    timeZone:"Europe/London"
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "Europe/London"
   }).format(date);
 }
 
 function timeLabel(dateString) {
   const date = new Date(dateString);
-  if (Number.isNaN(date.getTime())) return "Time TBC";
+  if (!dateString || Number.isNaN(date.getTime())) return "Time TBC";
+
   return new Intl.DateTimeFormat("en-GB", {
-    hour:"2-digit",
-    minute:"2-digit",
-    timeZone:"Europe/London",
-    timeZoneName:"short"
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "Europe/London",
+    timeZoneName: "short"
   }).format(date);
+}
+
+function americanTimeLabel(dateString, event) {
+  const date = new Date(dateString);
+  if (!dateString || Number.isNaN(date.getTime())) return "US time TBC";
+
+  const competition = event?.competitions?.[0];
+  const venueTimeZone =
+    competition?.venue?.timeZone ||
+    event?.venue?.timeZone;
+
+  try {
+    return new Intl.DateTimeFormat("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      timeZone: venueTimeZone || "America/New_York",
+      timeZoneName: "short"
+    }).format(date);
+  } catch {
+    return new Intl.DateTimeFormat("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      timeZone: "America/New_York",
+      timeZoneName: "short"
+    }).format(date);
+  }
+}
+
+function isCompleted(event) {
+  const status =
+    event.status?.type ||
+    event.competitions?.[0]?.status?.type ||
+    {};
+
+  return status.completed === true ||
+    status.state === "post" ||
+    /final|ended|game over/i.test(
+      `${status.description || ""} ${status.detail || ""} ${status.shortDetail || ""}`
+    );
+}
+
+function scoreNumber(value) {
+  if (value === null || value === undefined) return null;
+
+  if (typeof value === "object") {
+    value = value.displayValue ??
+      value.value ??
+      value.score ??
+      value.text ??
+      null;
+  }
+
+  if (value === null || value === undefined || value === "") return null;
+
+  const number = Number(value);
+  return Number.isFinite(number) ? number : null;
 }
 
 function parseEvent(event, feed) {
   const competition = event.competitions?.[0];
   const competitors = competition?.competitors || [];
+
   const home = competitors.find(c => c.homeAway === "home");
   const away = competitors.find(c => c.homeAway === "away");
+
+  const ownTeam = competitors.find(c =>
+    String(c.team?.id) === feed.id
+  );
+
+  const opponent = competitors.find(c => c !== ownTeam);
+  const completed = isCompleted(event);
+
+  const homeScore = scoreNumber(home?.score);
+  const awayScore = scoreNumber(away?.score);
+  const ownScore = scoreNumber(ownTeam?.score);
+  const opponentScore = scoreNumber(opponent?.score);
+
+  let outcome = "";
+  if (completed && ownScore !== null && opponentScore !== null) {
+    outcome = ownScore > opponentScore ? "Win" :
+      ownScore < opponentScore ? "Loss" : "Tie";
+  }
 
   return {
     id: `${feed.league}-${event.id || event.date + event.name}`,
     league: feed.league,
     team: feed.team,
     date: event.date || competition?.date,
+    event,
     home: home?.team?.displayName || "Home team",
     away: away?.team?.displayName || "Away team",
-    completed: Boolean(event.status?.type?.completed),
+    completed,
     status: event.status?.type?.shortDetail ||
-      event.status?.type?.description || "Scheduled",
-    link: event.links?.[0]?.href || ""
+      event.status?.type?.description ||
+      competition?.status?.type?.shortDetail ||
+      "Scheduled",
+    link: event.links?.[0]?.href || "",
+    homeScore,
+    awayScore,
+    outcome
   };
 }
 
 async function loadFeed(feed) {
-  const url = `https://site.api.espn.com/apis/site/v2/sports/${feed.sport}/${feed.path}/teams/${feed.id}/schedule`;
+  const url =
+    `https://site.api.espn.com/apis/site/v2/sports/${feed.sport}/${feed.path}/teams/${feed.id}/schedule`;
+
   const response = await fetch(url);
   if (!response.ok) throw new Error(feed.league);
+
   const data = await response.json();
   const events = data.events || data.content?.events || [];
-  return events.map(event => parseEvent(event, feed))
+
+  return events
+    .map(event => parseEvent(event, feed))
     .filter(game => game.date);
 }
 
-function gameCard(game) {
+function gameCard(game, resultMode = false) {
+  const score = game.homeScore === null || game.awayScore === null
+    ? "Score unavailable"
+    : `${game.awayScore} – ${game.homeScore}`;
+
+  const resultText = game.outcome
+    ? `Final · ${score} · ${game.outcome}`
+    : `Final · ${score}`;
+
+  const bottomRow = resultMode
+    ? `
+      <div class="game-bottom">
+        <span class="score">${safeText(resultText)}</span>
+        <span class="status">Completed</span>
+      </div>`
+    : `
+      <div class="game-bottom">
+        <span>${safeText(americanTimeLabel(game.date, game.event))}</span>
+        <span>UK: ${safeText(timeLabel(game.date))}</span>
+      </div>`;
+
   const content = `
     <div class="game-top">
-      <span>${game.league} · ${game.team}</span>
-      <span>${dateLabel(game.date)}</span>
+      <span>${safeText(game.league)} · ${safeText(game.team)}</span>
+      <span>${safeText(dateLabel(game.date))}</span>
     </div>
-    <div class="matchup">${game.away} @ ${game.home}</div>
-    <div class="game-top">
-      <span>${timeLabel(game.date)}</span>
-      <span class="status">${game.status}</span>
+    <div class="matchup">
+      ${safeText(game.away)} @ ${safeText(game.home)}
     </div>
-  `;
+    ${bottomRow}`;
 
-  return `<article class="game ${game.league.toLowerCase()}">
-    ${game.link
-      ? `<a href="${game.link}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">${content}</a>`
-      : content}
-  </article>`;
+  const link = game.link
+    ? `<a href="${safeText(game.link)}" target="_blank"
+         rel="noopener noreferrer"
+         style="color:inherit;text-decoration:none">${content}</a>`
+    : content;
+
+  return `<article class="game ${game.league.toLowerCase()}">${link}</article>`;
 }
 
 async function loadAll() {
@@ -284,38 +461,59 @@ async function loadAll() {
         games.push(...result.value);
       } else {
         errors.push(feeds[index].league);
+        console.error(`${feeds[index].league} schedule error:`, result.reason);
       }
     });
 
     games = [...new Map(games.map(game => [game.id, game])).values()];
 
     const now = Date.now();
+
     const upcoming = games
-      .filter(game => !game.completed && new Date(game.date).getTime() >= now)
+      .filter(game =>
+        !game.completed &&
+        new Date(game.date).getTime() >= now
+      )
       .sort((a, b) => new Date(a.date) - new Date(b.date));
 
+    const results = games
+      .filter(game => game.completed)
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .slice(0, 10);
+
     upcomingEl.innerHTML = upcoming.length
-      ? upcoming.map(gameCard).join("")
-      : '<div class="empty">No upcoming fixtures were returned. Try refreshing later.</div>';
+      ? upcoming.map(game => gameCard(game)).join("")
+      : '<div class="empty">No upcoming fixtures are currently listed. Try refreshing later.</div>';
+
+    resultsEl.innerHTML = results.length
+      ? results.map(game => gameCard(game, true)).join("")
+      : '<div class="empty">No recent results are currently available.</div>';
 
     const loaded = 4 - errors.length;
-    const updated = new Intl.DateTimeFormat("en-GB", {
-      hour:"2-digit",
-      minute:"2-digit",
-      timeZone:"Europe/London",
-      timeZoneName:"short"
-    }).format(new Date());
+    const updated = timeLabel(new Date().toISOString());
 
     if (loaded === 4) {
-      statusEl.textContent = `All four league feeds loaded at ${updated}.`;
+      statusEl.textContent =
+        `All four league feeds loaded at ${updated}.`;
     } else if (loaded > 0) {
-      statusEl.textContent = `${loaded} of 4 league feeds loaded at ${updated}. Unavailable: ${errors.join(", ")}.`;
+      statusEl.textContent =
+        `${loaded} of 4 league feeds loaded at ${updated}. Unavailable: ${errors.join(", ")}.`;
     } else {
-      statusEl.textContent = "The sports feeds could not be loaded. Check your connection and try again.";
+      statusEl.textContent =
+        "The sports feeds could not be loaded. Check your connection and try again.";
     }
+
   } catch (error) {
-    statusEl.textContent = "Unable to load schedules. Please try again.";
-    upcomingEl.innerHTML = '<div class="empty">Fixtures could not be loaded. Check your connection and refresh.</div>';
+    statusEl.textContent =
+      "Unable to load schedules. Please try again.";
+
+    upcomingEl.innerHTML =
+      '<div class="empty">Fixtures could not be loaded. Check your connection and refresh.</div>';
+
+    resultsEl.innerHTML =
+      '<div class="empty">Results could not be loaded. Check your connection and refresh.</div>';
+
+    console.error("Boston Sports Hub schedule error:", error);
   } finally {
     refreshEl.disabled = false;
   }
@@ -324,5 +522,7 @@ async function loadAll() {
 refreshEl.addEventListener("click", loadAll);
 loadAll();
 </script>
+
 </body>
 </html>
+```
