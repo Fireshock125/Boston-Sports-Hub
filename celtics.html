@@ -28,10 +28,41 @@ nav a:hover { background: #405570; }
 button { background: #304158; color: white; border: 1px solid #52657b; border-radius: 8px; padding: 11px 13px; font-size: 14px; cursor: pointer; }
 button:hover { background: #405570; }
 button:disabled { opacity: .6; cursor: wait; }
-.game { background: var(--panel); border-radius: 10px; padding: 15px; margin: 10px 0; border-left: 4px solid var(--accent); }
-.game-top { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; color: var(--muted); font-size: 13px; }
-.matchup { font-size: 17px; font-weight: bold; margin: 12px 0 7px; }
+
+.game {
+  background: var(--panel);
+  border-radius: 10px;
+  padding: 15px;
+  margin: 10px 0;
+  border-left: 4px solid var(--accent);
+}
+.game-top {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.matchup {
+  font-size: 17px;
+  font-weight: bold;
+  margin: 12px 0 7px;
+  overflow-wrap: anywhere;
+}
+.game-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.game-bottom span:last-child { text-align: right; }
+.score { color: var(--accent); font-size: 14px; font-weight: bold; }
 .status { color: var(--muted); font-size: 13px; }
+
 .empty { background: var(--panel); border-radius: 10px; padding: 16px; color: var(--muted); line-height: 1.5; }
 .table-wrap { overflow-x: auto; background: var(--panel); border-radius: 10px; border: 1px solid #354357; margin-top: 12px; }
 table { width: 100%; border-collapse: collapse; min-width: 560px; }
@@ -71,7 +102,7 @@ footer { text-align: center; padding: 25px; color: #94a3b8; font-size: 12px; }
 <main>
   <section id="fixtures">
     <h2>Upcoming Fixtures</h2>
-    <p class="summary">Celtics fixtures in UK local time, including daylight saving.</p>
+    <p class="summary">Celtics fixtures with American local time and UK local time, including daylight saving.</p>
     <button id="refresh-fixtures">Refresh fixtures</button>
     <p id="fixture-status" class="summary" aria-live="polite">Loading fixtures…</p>
     <div id="fixtures-list"><div class="empty">Loading upcoming fixtures…</div></div>
@@ -153,9 +184,37 @@ function timeLabel(value) {
   const date = new Date(value);
   if (!value || Number.isNaN(date.getTime())) return "Time TBC";
   return new Intl.DateTimeFormat("en-GB", {
-    hour: "2-digit", minute: "2-digit", timeZone: "Europe/London",
+    hour: "2-digit", minute: "2-digit",
+    timeZone: "Europe/London",
     timeZoneName: "short"
   }).format(date);
+}
+
+function americanTimeLabel(value, event) {
+  const date = new Date(value);
+  if (!value || Number.isNaN(date.getTime())) return "US time TBC";
+
+  // Use the venue's time zone when ESPN provides it.
+  const competition = event?.competitions?.[0];
+  const venueTimeZone =
+    competition?.venue?.address?.timeZone ||
+    competition?.venue?.timeZone ||
+    event?.venue?.address?.timeZone ||
+    event?.venue?.timeZone;
+
+  const options = {
+    hour: "numeric",
+    minute: "2-digit",
+    timeZoneName: "short"
+  };
+
+  try {
+    options.timeZone = venueTimeZone || "America/New_York";
+    return new Intl.DateTimeFormat("en-US", options).format(date);
+  } catch {
+    options.timeZone = "America/New_York";
+    return new Intl.DateTimeFormat("en-US", options).format(date);
+  }
 }
 
 function isCompleted(event) {
@@ -199,7 +258,8 @@ function parseEvent(event) {
     link: event.links?.[0]?.href || "",
     ownScore,
     opponentScore,
-    outcome
+    outcome,
+    event
   };
 }
 
@@ -207,19 +267,29 @@ function gameCard(game, resultMode = false) {
   const content = `
     <div class="game-top">
       <span>NBA · ${TEAM_NAME}</span>
-      <span>${dateLabel(game.date)}</span>
+      <span>${safeText(dateLabel(game.date))}</span>
     </div>
-    <div class="matchup">${safeText(game.away)} @ ${safeText(game.home)}</div>
-    <div class="game-top">
-      <span>${resultMode
-        ? `Final · ${safeText(game.ownScore ?? "—")} – ${safeText(game.opponentScore ?? "—")}${game.outcome ? " · " + safeText(game.outcome) : ""}`
-        : timeLabel(game.date)}</span>
-      <span class="status">${safeText(resultMode ? "Completed" : game.status)}</span>
+    <div class="matchup">
+      ${safeText(game.away)} @ ${safeText(game.home)}
+    </div>
+    <div class="game-bottom">
+      ${resultMode
+        ? `<span class="score">${
+            game.ownScore !== null && game.opponentScore !== null
+              ? `Final · ${safeText(game.ownScore)} – ${safeText(game.opponentScore)}${game.outcome ? " · " + safeText(game.outcome) : ""}`
+              : "Final · Score unavailable"
+          }</span>
+          <span class="status">Completed</span>`
+        : `<span>${safeText(americanTimeLabel(game.date, game.event))}</span>
+          <span>UK: ${safeText(timeLabel(game.date))}</span>`
+      }
     </div>`;
 
-  return `<article class="game">${game.link
-    ? `<a href="${safeText(game.link)}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">${content}</a>`
-    : content}</article>`;
+  return `<article class="game">${
+    game.link
+      ? `<a href="${safeText(game.link)}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">${content}</a>`
+      : content
+  }</article>`;
 }
 
 async function loadSchedule() {
