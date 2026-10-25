@@ -7,88 +7,113 @@
 <title>Boston Red Sox | Boston Sports Hub</title>
 <style>
 :root {
-  color-scheme:dark;
-  --bg:#101722;
-  --panel:#1c2838;
-  --muted:#bdc8d6;
-  --red:#bd3039;
-  --blue:#0c2340;
+  color-scheme: dark;
+  --bg: #101722;
+  --panel: #1c2838;
+  --muted: #bdc8d6;
+  --red: #bd3039;
+  --blue: #0c2340;
 }
-* { box-sizing:border-box; scroll-behavior:smooth; }
-body { margin:0; background:var(--bg); color:white; font-family:Arial,sans-serif; }
+* { box-sizing: border-box; scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: white; font-family: Arial, sans-serif; }
 header {
-  background:var(--blue); text-align:center; padding:26px 16px;
-  border-bottom:4px solid var(--red);
+  background: var(--blue); text-align: center; padding: 26px 16px;
+  border-bottom: 4px solid var(--red);
 }
-header h1 { margin:0; font-size:28px; }
-header p { color:var(--muted); margin-bottom:0; }
-main { max-width:1000px; margin:auto; padding:20px 14px; }
-a { color:#9ec5ff; text-decoration:none; }
-a:hover { text-decoration:underline; }
-.back { display:inline-block; margin-bottom:18px; }
+header h1 { margin: 0; font-size: 28px; }
+header p { color: var(--muted); margin-bottom: 0; }
+main { max-width: 1000px; margin: auto; padding: 20px 14px; }
+a { color: #9ec5ff; text-decoration: none; }
+a:hover { text-decoration: underline; }
 nav {
-  position:sticky; top:0; z-index:10; display:flex; gap:8px;
-  overflow-x:auto; padding:10px; margin:0 -14px 22px;
-  background:#111d2d; border-bottom:1px solid #354357;
+  position: sticky; top: 0; z-index: 10; display: flex; gap: 8px;
+  overflow-x: auto; padding: 10px; margin: 0 -14px 22px;
+  background: #111d2d; border-bottom: 1px solid #354357;
 }
 nav a {
-  flex:0 0 auto; color:white; background:#304158; border-radius:8px;
-  padding:11px 15px; font-size:14px; font-weight:bold;
+  flex: 0 0 auto; color: white; background: #304158; border-radius: 8px;
+  padding: 11px 15px; font-size: 14px; font-weight: bold;
 }
-nav a:hover { background:#405570; text-decoration:none; }
-nav a.league-link { background:var(--red); }
-.summary { color:var(--muted); font-size:14px; line-height:1.5; }
-.section { margin:30px 0; scroll-margin-top:78px; }
+nav a:hover { background: #405570; text-decoration: none; }
+nav a.league-link { background: var(--red); }
+.summary { color: var(--muted); font-size: 14px; line-height: 1.5; }
+.section { margin: 30px 0; scroll-margin-top: 78px; }
+
 .game {
-  background:var(--panel); border-left:4px solid var(--red);
-  border-radius:10px; padding:15px; margin:10px 0;
+  background: var(--panel);
+  border-left: 4px solid var(--red);
+  border-radius: 10px;
+  padding: 15px;
+  margin: 10px 0;
 }
 .game-top {
-  display:flex; flex-wrap:wrap; justify-content:space-between;
-  gap:8px; color:var(--muted); font-size:13px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 13px;
 }
-.matchup { font-size:17px; font-weight:bold; margin:12px 0 7px; }
-.score { font-size:16px; font-weight:bold; margin-top:9px; }
-.status { color:var(--muted); font-size:13px; }
+.matchup {
+  font-size: 17px;
+  font-weight: bold;
+  margin: 12px 0 7px;
+  overflow-wrap: anywhere;
+}
+.game-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.game-bottom span:last-child { text-align: right; }
+.score { color: var(--red); font-size: 14px; font-weight: bold; }
+.status { color: var(--muted); font-size: 13px; }
+
 .empty {
-  background:var(--panel); border-radius:10px; padding:16px;
-  color:var(--muted); line-height:1.5;
+  background: var(--panel); border-radius: 10px; padding: 16px;
+  color: var(--muted); line-height: 1.5;
 }
 button {
-  background:#304158; color:white; border:1px solid #52657b;
-  border-radius:8px; padding:11px 13px; font-size:14px; cursor:pointer;
+  background: #304158; color: white; border: 1px solid #52657b;
+  border-radius: 8px; padding: 11px 13px; font-size: 14px; cursor: pointer;
 }
-button:disabled { opacity:.6; cursor:wait; }
+button:hover { background: #405570; }
+button:disabled { opacity: .6; cursor: wait; }
 .standings-tabs {
-  display:flex; flex-wrap:wrap; gap:8px; margin:16px 0;
+  display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0;
 }
-.standings-tabs button { flex:0 0 auto; padding:10px 13px; }
+.standings-tabs button { flex: 0 0 auto; padding: 10px 13px; }
 .standings-tabs button.active {
-  background:var(--red); border-color:var(--red); font-weight:bold;
+  background: var(--red); border-color: var(--red); font-weight: bold;
 }
-.table-wrap { overflow-x:auto; border-radius:8px; }
-table { width:100%; min-width:430px; border-collapse:collapse; font-size:13px; }
-th,td {
-  padding:10px 9px; text-align:right; white-space:nowrap;
-  border-bottom:1px solid #354357;
+.table-wrap { overflow-x: auto; border-radius: 8px; }
+table { width: 100%; min-width: 430px; border-collapse: collapse; font-size: 13px; }
+th, td {
+  padding: 10px 9px; text-align: right; white-space: nowrap;
+  border-bottom: 1px solid #354357;
 }
-th { background:#26374b; color:#dce7f5; font-size:11px; }
-th:first-child,td:first-child { text-align:left; }
-.boston-row { background:#3a2635; font-weight:bold; }
-footer { text-align:center; padding:25px; color:#94a3b8; font-size:12px; }
-@media(max-width:500px) {
-  main { padding:16px 10px; }
-  header h1 { font-size:24px; }
-  nav { margin-left:-10px; margin-right:-10px; }
+th { background: #26374b; color: #dce7f5; font-size: 11px; }
+th:first-child, td:first-child { text-align: left; }
+.boston-row { background: #3a2635; font-weight: bold; }
+footer { text-align: center; padding: 25px; color: #94a3b8; font-size: 12px; }
+
+@media(max-width: 500px) {
+  main { padding: 16px 10px; }
+  header h1 { font-size: 24px; }
+  nav { margin-left: -10px; margin-right: -10px; }
 }
 </style>
 </head>
 <body>
+
 <header>
   <h1>Boston Red Sox</h1>
   <p>Boston Sports Hub · MLB</p>
 </header>
-
 
 <main>
   <nav aria-label="Team page navigation">
@@ -98,11 +123,7 @@ footer { text-align:center; padding:25px; color:#94a3b8; font-size:12px; }
     <a class="league-link" href="#leagues">Leagues ↓</a>
   </nav>
 
-    <a href="#results">Results</a>
-    <a class="league-link" href="#leagues">Leagues ↓</a>
-  </nav>
-
-  <p class="summary">Fixtures and results use ESPN data. All game times are displayed in UK local time.</p>
+  <p class="summary">Fixtures and results use ESPN data. Upcoming games show American local time and UK local time. All UK times account for daylight saving.</p>
 
   <section class="section" id="upcoming">
     <h2>Upcoming fixtures</h2>
@@ -143,26 +164,70 @@ const $ = id => document.getElementById(id);
 
 function safeText(value) {
   return String(value ?? "").replace(/[&<>"']/g, char => ({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
   })[char]);
 }
 
 function dateLabel(value) {
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "Date TBC";
+  if (!value || Number.isNaN(date.getTime())) return "Date TBC";
+
   return new Intl.DateTimeFormat("en-GB", {
-    weekday:"short", day:"numeric", month:"short", year:"numeric",
-    timeZone:"Europe/London"
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "Europe/London"
   }).format(date);
 }
 
 function timeLabel(value) {
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "Time TBC";
+  if (!value || Number.isNaN(date.getTime())) return "Time TBC";
+
   return new Intl.DateTimeFormat("en-GB", {
-    hour:"2-digit", minute:"2-digit",
-    timeZone:"Europe/London", timeZoneName:"short"
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "Europe/London",
+    timeZoneName: "short"
   }).format(date);
+}
+
+function americanTimeLabel(value, event) {
+  const date = new Date(value);
+  if (!value || Number.isNaN(date.getTime())) return "US time TBC";
+
+  const competition = event?.competitions?.[0];
+  const venueTimeZone =
+    competition?.venue?.address?.timeZone ||
+    competition?.venue?.timeZone ||
+    event?.venue?.address?.timeZone ||
+    event?.venue?.timeZone;
+
+  const options = {
+    hour: "numeric",
+    minute: "2-digit",
+    timeZoneName: "short"
+  };
+
+  try {
+    options.timeZone = venueTimeZone || "America/New_York";
+    return new Intl.DateTimeFormat("en-US", options).format(date);
+  } catch {
+    options.timeZone = "America/New_York";
+    return new Intl.DateTimeFormat("en-US", options).format(date);
+  }
+}
+
+function parseScore(score) {
+  if (score === null || score === undefined || score === "") return null;
+
+  if (typeof score === "object") {
+    score = score.displayValue ?? score.value ?? score.score ?? null;
+  }
+
+  if (score === null || score === undefined || score === "") return null;
+  return String(score);
 }
 
 function parseEvent(event) {
@@ -171,6 +236,7 @@ function parseEvent(event) {
   const home = competitors.find(c => c.homeAway === "home");
   const away = competitors.find(c => c.homeAway === "away");
   const type = event.status?.type || competition?.status?.type || {};
+
   const statusText = [
     type.name, type.description, type.detail, type.shortDetail
   ].filter(Boolean).join(" ");
@@ -181,15 +247,16 @@ function parseEvent(event) {
     /\b(final|game over|completed|ended)\b/i.test(statusText);
 
   return {
-    id:event.id,
-    date:event.date || competition?.date,
-    home:home?.team?.displayName || "Home team",
-    away:away?.team?.displayName || "Away team",
-    homeScore:home?.score?.displayValue ?? home?.score?.value ?? home?.score ?? null,
-    awayScore:away?.score?.displayValue ?? away?.score?.value ?? away?.score ?? null,
+    id: event.id,
+    date: event.date || competition?.date,
+    home: home?.team?.displayName || "Home team",
+    away: away?.team?.displayName || "Away team",
+    homeScore: parseScore(home?.score),
+    awayScore: parseScore(away?.score),
     completed,
-    status:type.shortDetail || type.description || type.detail || "Scheduled",
-    link:event.links?.[0]?.href || ""
+    status: type.shortDetail || type.description || type.detail || "Scheduled",
+    link: event.links?.[0]?.href || "",
+    event
   };
 }
 
@@ -198,32 +265,65 @@ function hasScores(game) {
     game.awayScore !== null && game.awayScore !== undefined;
 }
 
-function gameCard(game) {
+function getResult(game) {
+  if (!hasScores(game)) return "Final · Score unavailable";
+
+  const homeScore = Number(game.homeScore);
+  const awayScore = Number(game.awayScore);
+  let outcome = "";
+
+  if (Number.isFinite(homeScore) && Number.isFinite(awayScore)) {
+    if (homeScore === awayScore) {
+      outcome = "Tie";
+    } else if (
+      (game.home.includes("Boston Red Sox") && homeScore > awayScore) ||
+      (game.away.includes("Boston Red Sox") && awayScore > homeScore)
+    ) {
+      outcome = "Win";
+    } else if (
+      (game.home.includes("Boston Red Sox") && homeScore < awayScore) ||
+      (game.away.includes("Boston Red Sox") && awayScore < homeScore)
+    ) {
+      outcome = "Loss";
+    }
+  }
+
+  const score = `${game.awayScore} – ${game.homeScore}`;
+  return `Final · ${score}${outcome ? " · " + outcome : ""}`;
+}
+
+function gameCard(game, resultMode = false) {
+  const bottomContent = resultMode
+    ? `<span class="score">${safeText(getResult(game))}</span>
+       <span class="status">Completed</span>`
+    : `<span>${safeText(americanTimeLabel(game.date, game.event))}</span>
+       <span>UK: ${safeText(timeLabel(game.date))}</span>`;
+
   const content = `
     <div class="game-top">
       <span>MLB · Boston Red Sox</span>
-      <span>${dateLabel(game.date)}</span>
+      <span>${safeText(dateLabel(game.date))}</span>
     </div>
     <div class="matchup">${safeText(game.away)} @ ${safeText(game.home)}</div>
-    <div class="game-top">
-      <span>${timeLabel(game.date)}</span>
-      <span class="status">${safeText(game.status)}</span>
-    </div>
-    ${hasScores(game) ? `<div class="score">${safeText(game.awayScore)} – ${safeText(game.homeScore)}</div>` : ""}
+    <div class="game-bottom">${bottomContent}</div>
   `;
+
   return `<article class="game">${game.link
     ? `<a href="${safeText(game.link)}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">${content}</a>`
     : content}</article>`;
 }
 
 async function loadGames() {
+  $("upcomingGames").innerHTML = '<div class="empty">Loading fixtures…</div>';
+  $("resultGames").innerHTML = '<div class="empty">Loading results…</div>';
+
   try {
     const response = await fetch(
       "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/teams/2/schedule"
     );
     if (!response.ok) throw new Error("Schedule unavailable");
-    const data = await response.json();
 
+    const data = await response.json();
     const games = (data.events || data.content?.events || [])
       .map(parseEvent)
       .filter(game => game.date);
@@ -232,58 +332,63 @@ async function loadGames() {
 
     const upcoming = games.filter(game =>
       !game.completed && new Date(game.date).getTime() >= now
-    ).sort((a,b) => new Date(a.date) - new Date(b.date));
+    ).sort((a, b) => new Date(a.date) - new Date(b.date));
 
     const results = games.filter(game => game.completed)
-      .sort((a,b) => new Date(b.date) - new Date(a.date));
+      .sort((a, b) => new Date(b.date) - new Date(a.date));
 
     $("upcomingGames").innerHTML = upcoming.length
-      ? upcoming.map(gameCard).join("")
+      ? upcoming.map(game => gameCard(game)).join("")
       : '<div class="empty">No upcoming Red Sox fixtures were returned.</div>';
 
     $("resultGames").innerHTML = results.length
-      ? results.map(gameCard).join("")
+      ? results.map(game => gameCard(game, true)).join("")
       : '<div class="empty">No completed results were returned.</div>';
-  } catch(error) {
-    $("upcomingGames").innerHTML = '<div class="empty">Could not load fixtures. Check your connection and try again.</div>';
-    $("resultGames").innerHTML = '<div class="empty">Could not load results. Check your connection and try again.</div>';
+  } catch (error) {
+    $("upcomingGames").innerHTML =
+      '<div class="empty">Could not load fixtures. Check your connection and try again.</div>';
+    $("resultGames").innerHTML =
+      '<div class="empty">Could not load results. Check your connection and try again.</div>';
+    console.error(error);
   }
 }
 
-function getStat(entry,names) {
+function getStat(entry, names) {
   const found = (entry?.stats || []).find(stat =>
     names.includes(String(stat.name || "").toLowerCase()) ||
     names.includes(String(stat.abbreviation || "").toLowerCase())
   );
+
   return found?.displayValue ?? found?.summary ??
     (found?.value !== undefined ? found.value : null);
 }
 
 /* Collect standings entries from ESPN's response. */
-function collectGroups(node,path=[],out=[]) {
+function collectGroups(node, path = [], out = []) {
   if (!node || typeof node !== "object") return out;
 
   if (Array.isArray(node)) {
-    node.forEach(child => collectGroups(child,path,out));
+    node.forEach(child => collectGroups(child, path, out));
     return out;
   }
 
   const name = node.name || node.abbreviation || "";
-  const next = name ? [...path,name] : path;
+  const next = name ? [...path, name] : path;
 
   if (Array.isArray(node.standings?.entries)) {
     out.push({
-      name:next.join(" · ") || "MLB standings",
-      path:next.join(" ").toLowerCase(),
-      entries:node.standings.entries
+      name: next.join(" · ") || "MLB standings",
+      path: next.join(" ").toLowerCase(),
+      entries: node.standings.entries
     });
   }
 
-  for (const [key,value] of Object.entries(node)) {
+  for (const [key, value] of Object.entries(node)) {
     if (key !== "standings" && value && typeof value === "object") {
-      collectGroups(value,next,out);
+      collectGroups(value, next, out);
     }
   }
+
   return out;
 }
 
@@ -302,52 +407,53 @@ function isRedSox(entry) {
     String(team.displayName || "").toLowerCase() === "boston red sox";
 }
 
-function numericStat(entry,names) {
-  const raw = getStat(entry,names);
+function numericStat(entry, names) {
+  const raw = getStat(entry, names);
   if (raw === null || raw === undefined) return 0;
-  const number = Number(String(raw).replace("%",""));
+
+  const number = Number(String(raw).replace("%", ""));
   return Number.isFinite(number) ? number : 0;
 }
 
 function sortTeams(entries) {
-  return [...entries].sort((a,b) => {
-    const pctA = numericStat(a,["winpercent","pct","win_pct"]);
-    const pctB = numericStat(b,["winpercent","pct","win_pct"]);
+  return [...entries].sort((a, b) => {
+    const pctA = numericStat(a, ["winpercent", "pct", "win_pct"]);
+    const pctB = numericStat(b, ["winpercent", "pct", "win_pct"]);
     if (pctA !== pctB) return pctB - pctA;
 
-    const winsA = numericStat(a,["wins","w"]);
-    const winsB = numericStat(b,["wins","w"]);
+    const winsA = numericStat(a, ["wins", "w"]);
+    const winsB = numericStat(b, ["wins", "w"]);
     if (winsA !== winsB) return winsB - winsA;
 
-    const lossesA = numericStat(a,["losses","l"]);
-    const lossesB = numericStat(b,["losses","l"]);
+    const lossesA = numericStat(a, ["losses", "l"]);
+    const lossesB = numericStat(b, ["losses", "l"]);
     if (lossesA !== lossesB) return lossesA - lossesB;
 
     return teamName(a).localeCompare(teamName(b));
   });
 }
 
-function renderTable(title,entries) {
+function renderTable(title, entries) {
   if (!entries.length) {
     return `<div class="empty">No standings data was returned for ${safeText(title)}.</div>`;
   }
 
   const columns = [
-    ["W",["wins","w"]],
-    ["L",["losses","l"]],
-    ["PCT",["winpercent","pct","win_pct"]],
-    ["GB",["gamesbehind","gb"]],
-    ["STRK",["streak","strk"]]
+    ["W", ["wins", "w"]],
+    ["L", ["losses", "l"]],
+    ["PCT", ["winpercent", "pct", "win_pct"]],
+    ["GB", ["gamesbehind", "gb"]],
+    ["STRK", ["streak", "strk"]]
   ];
 
-  const rows = sortTeams(entries).map((entry,index) => {
-    const cells = columns.map(([,keys]) => {
-      const value = getStat(entry,keys);
+  const rows = sortTeams(entries).map((entry, index) => {
+    const cells = columns.map(([, keys]) => {
+      const value = getStat(entry, keys);
       return `<td>${safeText(value === null ? "—" : value)}</td>`;
     }).join("");
 
     return `<tr class="${isRedSox(entry) ? "boston-row" : ""}">
-      <td>${index+1}. ${safeText(teamName(entry))}${isRedSox(entry) ? " ★" : ""}</td>
+      <td>${index + 1}. ${safeText(teamName(entry))}${isRedSox(entry) ? " ★" : ""}</td>
       ${cells}
     </tr>`;
   }).join("");
@@ -369,46 +475,41 @@ let standingsTables = {};
 let selectedTable = "overall";
 
 const tableTitles = {
-  overall:"Overall MLB",
-  al:"American League",
-  nl:"National League",
-  "al-east":"American League East",
-  "al-central":"American League Central",
-  "al-west":"American League West",
-  "nl-east":"National League East",
-  "nl-central":"National League Central",
-  "nl-west":"National League West"
+  overall: "Overall MLB",
+  al: "American League",
+  nl: "National League",
+  "al-east": "American League East",
+  "al-central": "American League Central",
+  "al-west": "American League West",
+  "nl-east": "National League East",
+  "nl-central": "National League Central",
+  "nl-west": "National League West"
 };
 
-/*
-  Assign teams using their names and abbreviations, not ESPN's
-  standings-group hierarchy. This makes the division tabs independent
-  of how ESPN nests its response.
-*/
 const divisionDefinitions = {
   "al-east": {
-    league:"al",
-    teams:["BAL","BOS","NYY","TB","TBR","TOR"]
+    league: "al",
+    teams: ["BAL", "BOS", "NYY", "TB", "TBR", "TOR"]
   },
   "al-central": {
-    league:"al",
-    teams:["CWS","CHW","CLE","DET","KC","KCR","MIN"]
+    league: "al",
+    teams: ["CWS", "CHW", "CLE", "DET", "KC", "KCR", "MIN"]
   },
   "al-west": {
-    league:"al",
-    teams:["HOU","LAA","ATH","OAK","SEA","TEX"]
+    league: "al",
+    teams: ["HOU", "LAA", "ATH", "OAK", "SEA", "TEX"]
   },
   "nl-east": {
-    league:"nl",
-    teams:["ATL","MIA","NYM","PHI","WSH","WSN"]
+    league: "nl",
+    teams: ["ATL", "MIA", "NYM", "PHI", "WSH", "WSN"]
   },
   "nl-central": {
-    league:"nl",
-    teams:["CHC","CIN","MIL","PIT","STL"]
+    league: "nl",
+    teams: ["CHC", "CIN", "MIL", "PIT", "STL"]
   },
   "nl-west": {
-    league:"nl",
-    teams:["ARI","COL","LAD","SD","SDP","SF","SFG"]
+    league: "nl",
+    teams: ["ARI", "COL", "LAD", "SD", "SDP", "SF", "SFG"]
   }
 };
 
@@ -426,7 +527,7 @@ function getTeamIdentity(entry) {
   ].filter(Boolean).join(" ").toLowerCase();
 }
 
-function belongsToDivision(entry,divisionKey) {
+function belongsToDivision(entry, divisionKey) {
   const definition = divisionDefinitions[divisionKey];
   if (!definition) return false;
 
@@ -437,28 +538,28 @@ function belongsToDivision(entry,divisionKey) {
 
   const nameAliases = {
     "al-east": [
-      "baltimore orioles","boston red sox","new york yankees",
-      "tampa bay rays","toronto blue jays"
+      "baltimore orioles", "boston red sox", "new york yankees",
+      "tampa bay rays", "toronto blue jays"
     ],
     "al-central": [
-      "chicago white sox","cleveland guardians","cleveland indians",
-      "detroit tigers","kansas city royals","minnesota twins"
+      "chicago white sox", "cleveland guardians", "cleveland indians",
+      "detroit tigers", "kansas city royals", "minnesota twins"
     ],
     "al-west": [
-      "houston astros","los angeles angels","oakland athletics",
-      "athletics","seattle mariners","texas rangers"
+      "houston astros", "los angeles angels", "oakland athletics",
+      "athletics", "seattle mariners", "texas rangers"
     ],
     "nl-east": [
-      "atlanta braves","miami marlins","new york mets",
-      "philadelphia phillies","washington nationals"
+      "atlanta braves", "miami marlins", "new york mets",
+      "philadelphia phillies", "washington nationals"
     ],
     "nl-central": [
-      "chicago cubs","cincinnati reds","milwaukee brewers",
-      "pittsburgh pirates","st. louis cardinals","st louis cardinals"
+      "chicago cubs", "cincinnati reds", "milwaukee brewers",
+      "pittsburgh pirates", "st. louis cardinals", "st louis cardinals"
     ],
     "nl-west": [
-      "arizona diamondbacks","colorado rockies","los angeles dodgers",
-      "san diego padres","san francisco giants"
+      "arizona diamondbacks", "colorado rockies", "los angeles dodgers",
+      "san diego padres", "san francisco giants"
     ]
   };
 
@@ -467,10 +568,11 @@ function belongsToDivision(entry,divisionKey) {
 
 function showStandingsTable(tableKey) {
   selectedTable = tableKey;
+
   document.querySelectorAll("#standingsTabs button").forEach(button => {
     const active = button.dataset.table === tableKey;
-    button.classList.toggle("active",active);
-    button.setAttribute("aria-pressed",String(active));
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-pressed", String(active));
   });
 
   $("standings").innerHTML = renderTable(
@@ -481,10 +583,12 @@ function showStandingsTable(tableKey) {
 
 function uniqueEntries(groups) {
   const result = new Map();
+
   groups.forEach(group => group.entries.forEach(entry => {
     const key = teamKey(entry);
-    if (key && !result.has(key)) result.set(key,entry);
+    if (key && !result.has(key)) result.set(key, entry);
   }));
+
   return [...result.values()];
 }
 
@@ -503,9 +607,9 @@ async function loadStandings() {
 
     if (!groups.length && Array.isArray(data.standings?.entries)) {
       groups.push({
-        name:"MLB standings",
-        path:"",
-        entries:data.standings.entries
+        name: "MLB standings",
+        path: "",
+        entries: data.standings.entries
       });
     }
 
@@ -517,10 +621,6 @@ async function loadStandings() {
     const americanLeague = new Map();
     const nationalLeague = new Map();
 
-    /*
-      First use the existing ESPN league groups where available.
-      Then use known MLB team identities to fill league and division tabs.
-    */
     groups.forEach(group => {
       const path = `${group.path} ${group.name}`.toLowerCase();
       let league = "";
@@ -535,7 +635,7 @@ async function loadStandings() {
         group.entries.forEach(entry => {
           const key = teamKey(entry);
           if (key) {
-            (league === "al" ? americanLeague : nationalLeague).set(key,entry);
+            (league === "al" ? americanLeague : nationalLeague).set(key, entry);
           }
         });
       }
@@ -550,32 +650,27 @@ async function loadStandings() {
       const key = teamKey(entry);
       if (!key) return;
 
-      let matchedDivision = "";
-
       for (const divisionKey of Object.keys(divisionDefinitions)) {
-        if (belongsToDivision(entry,divisionKey)) {
-          matchedDivision = divisionKey;
-          divisionMaps[divisionKey].set(key,entry);
+        if (belongsToDivision(entry, divisionKey)) {
+          divisionMaps[divisionKey].set(key, entry);
+
+          const league = divisionDefinitions[divisionKey].league;
+          (league === "al" ? americanLeague : nationalLeague).set(key, entry);
           break;
         }
-      }
-
-      if (matchedDivision) {
-        const league = divisionDefinitions[matchedDivision].league;
-        (league === "al" ? americanLeague : nationalLeague).set(key,entry);
       }
     });
 
     standingsTables = {
-      overall:allTeams,
-      al:[...americanLeague.values()],
-      nl:[...nationalLeague.values()],
-      "al-east":[...divisionMaps["al-east"].values()],
-      "al-central":[...divisionMaps["al-central"].values()],
-      "al-west":[...divisionMaps["al-west"].values()],
-      "nl-east":[...divisionMaps["nl-east"].values()],
-      "nl-central":[...divisionMaps["nl-central"].values()],
-      "nl-west":[...divisionMaps["nl-west"].values()]
+      overall: allTeams,
+      al: [...americanLeague.values()],
+      nl: [...nationalLeague.values()],
+      "al-east": [...divisionMaps["al-east"].values()],
+      "al-central": [...divisionMaps["al-central"].values()],
+      "al-west": [...divisionMaps["al-west"].values()],
+      "nl-east": [...divisionMaps["nl-east"].values()],
+      "nl-central": [...divisionMaps["nl-central"].values()],
+      "nl-west": [...divisionMaps["nl-west"].values()]
     };
 
     const emptyDivisions = Object.keys(divisionDefinitions)
@@ -591,21 +686,22 @@ async function loadStandings() {
     }
 
     showStandingsTable(selectedTable);
-  } catch(error) {
+  } catch (error) {
     $("standingsStatus").textContent =
       "Could not load MLB standings. Try refreshing later.";
     $("standings").innerHTML =
       '<div class="empty">Standings are temporarily unavailable.</div>';
+    console.error(error);
   } finally {
     $("refreshStandings").disabled = false;
   }
 }
 
 document.querySelectorAll("#standingsTabs button").forEach(button => {
-  button.addEventListener("click",() => showStandingsTable(button.dataset.table));
+  button.addEventListener("click", () => showStandingsTable(button.dataset.table));
 });
 
-$("refreshStandings").addEventListener("click",loadStandings);
+$("refreshStandings").addEventListener("click", loadStandings);
 
 loadGames();
 loadStandings();
