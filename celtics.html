@@ -110,7 +110,7 @@ footer { text-align: center; padding: 25px; color: #94a3b8; font-size: 12px; }
 
   <section id="results">
     <h2>Recent Results</h2>
-    <p class="summary">Completed games and final scores.</p>
+    <p class="summary">The latest 10 completed games and final scores.</p>
     <div id="results-list"><div class="empty">Loading results…</div></div>
   </section>
 
@@ -138,6 +138,23 @@ const TEAM_NAME = "Boston Celtics";
 const SPORT = "basketball";
 const LEAGUE = "nba";
 const SCHEDULE_URL = `https://site.api.espn.com/apis/site/v2/sports/${SPORT}/${LEAGUE}/teams/${TEAM_ID}/schedule`;
+
+// ESPN labels NBA seasons by their ending year (2026–27 = 2027).
+// From July onwards, prepare for the season beginning that autumn.
+function nbaSeasonYear() {
+  const now = new Date();
+  return now.getUTCFullYear() + (now.getUTCMonth() >= 6 ? 1 : 0);
+}
+
+function scheduleRequests() {
+  const current = nbaSeasonYear();
+  return [
+    { season: current, type: 2 },
+    { season: current, type: 3 },
+    { season: current - 1, type: 2 },
+    { season: current - 1, type: 3 }
+  ];
+}
 const STANDINGS_URL = `https://site.api.espn.com/apis/v2/sports/${SPORT}/${LEAGUE}/standings`;
 const $ = id => document.getElementById(id);
 
@@ -292,26 +309,57 @@ function gameCard(game, resultMode = false) {
   }</article>`;
 }
 
+async function fetchSchedule(request) {
+  const url = `${SCHEDULE_URL}?season=${request.season}&seasontype=${request.type}`;
+  const response = await fetch(url, { cache: "no-store" });
+  if (!response.ok) {
+    throw new Error(`Schedule ${request.season}/${request.type}: HTTP ${response.status}`);
+  }
+  const data = await response.json();
+  const events = data.events || data.content?.events || [];
+  if (!Array.isArray(events)) throw new Error("Unexpected schedule response");
+  return events.map(parseEvent).filter(game =>
+    game.date && Number.isFinite(new Date(game.date).getTime())
+  );
+}
+
 async function loadSchedule() {
   const button = $("refresh-fixtures");
   button.disabled = true;
-  $("fixture-status").textContent = "Loading schedule from ESPN…";
+  $("fixture-status").textContent = "Loading schedules from ESPN…";
 
   try {
-    const response = await fetch(SCHEDULE_URL);
-    if (!response.ok) throw new Error("Schedule unavailable");
-    const data = await response.json();
+    const requests = scheduleRequests();
+    const responses = await Promise.allSettled(requests.map(fetchSchedule));
+    const gamesById = new Map();
+    let successful = 0;
 
-    const games = (data.events || data.content?.events || [])
-      .map(parseEvent)
-      .filter(game => game.date)
-      .sort((a, b) => new Date(a.date) - new Date(b.date));
+    responses.forEach((result, index) => {
+      if (result.status === "fulfilled") {
+        successful++;
+        result.value.forEach(game => {
+          const key = String(game.id || `${game.date}-${game.home}-${game.away}`);
+          const previous = gamesById.get(key);
+          if (!previous || (game.completed && !previous.completed)) {
+            gamesById.set(key, game);
+          }
+        });
+      } else {
+        console.warn("Celtics schedule request failed:", requests[index], result.reason);
+      }
+    });
 
+    if (successful === 0) throw new Error("All schedule requests failed");
+
+    const games = [...gamesById.values()];
     const now = Date.now();
-    const upcoming = games.filter(game =>
-      !game.completed && new Date(game.date).getTime() >= now
-    );
-    const results = games.filter(game => game.completed).reverse().slice(0, 10);
+    const upcoming = games
+      .filter(game => !game.completed && new Date(game.date).getTime() >= now)
+      .sort((a, b) => new Date(a.date) - new Date(b.date));
+    const results = games
+      .filter(game => game.completed)
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .slice(0, 10);
 
     $("fixtures-list").innerHTML = upcoming.length
       ? upcoming.map(game => gameCard(game)).join("")
@@ -321,15 +369,17 @@ async function loadSchedule() {
       ? results.map(game => gameCard(game, true)).join("")
       : '<div class="empty">No recent results are currently available.</div>';
 
-    $("fixture-status").textContent =
-      `Schedule updated at ${timeLabel(new Date().toISOString())}.`;
+    const updated = timeLabel(new Date().toISOString());
+    $("fixture-status").textContent = successful === requests.length
+      ? `Schedule updated at ${updated}.`
+      : `Schedule partially updated at ${updated}. Some ESPN feeds were unavailable.`;
   } catch (error) {
     $("fixture-status").textContent = "Could not load the schedule. Please try again.";
     $("fixtures-list").innerHTML =
       '<div class="empty">Fixtures could not be loaded. Check your connection and refresh.</div>';
     $("results-list").innerHTML =
       '<div class="empty">Results could not be loaded. Check your connection and refresh.</div>';
-    console.error(error);
+    console.error("Celtics schedule error:", error);
   } finally {
     button.disabled = false;
   }
@@ -482,7 +532,8 @@ async function loadStandings() {
   status.textContent = "Loading standings from ESPN…";
 
   try {
-    const response = await fetch(STANDINGS_URL);
+    const standingsUrl = `${STANDINGS_URL}?season=${nbaSeasonYear()}&type=2&limit=100`;
+    const response = await fetch(standingsUrl, { cache: "no-store" });
     if (!response.ok) throw new Error("Standings unavailable");
 
     const data = await response.json();
@@ -491,7 +542,7 @@ async function loadStandings() {
       ...new Map(all.map(team => [team.id || team.abbreviation || team.name, team])).values()
     ];
 
-    if (uniqueTeams.length < 20) {
+    if (uniqueTeams.length !== 30) {
       throw new Error("ESPN returned incomplete NBA standings");
     }
 
