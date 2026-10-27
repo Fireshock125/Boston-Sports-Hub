@@ -15,9 +15,7 @@
   --red: #c8102e;
   --blue: #071d38;
 }
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 body {
   margin: 0;
   background: var(--bg);
@@ -30,22 +28,14 @@ header {
   padding: 28px 16px;
   border-bottom: 4px solid var(--red);
 }
-header h1 {
-  margin: 0;
-  font-size: 30px;
-}
-header p {
-  color: var(--muted);
-  margin-bottom: 0;
-}
+header h1 { margin: 0; font-size: 30px; }
+header p { color: var(--muted); margin-bottom: 0; }
 main {
   max-width: 1100px;
   margin: auto;
   padding: 22px 14px;
 }
-h2 {
-  margin-top: 0;
-}
+h2 { margin-top: 0; }
 .teams {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -67,15 +57,8 @@ h2 {
   background: #29394d;
   transform: translateY(-2px);
 }
-.team h3 {
-  margin: 0 0 8px;
-  font-size: 18px;
-}
-.team p {
-  color: var(--muted);
-  margin: 0;
-  font-size: 14px;
-}
+.team h3 { margin: 0 0 8px; font-size: 18px; }
+.team p { color: var(--muted); margin: 0; font-size: 14px; }
 .tag {
   display: inline-block;
   color: #dce7f5;
@@ -105,13 +88,8 @@ button {
   font-size: 14px;
   cursor: pointer;
 }
-button:hover {
-  background: #405570;
-}
-button:disabled {
-  opacity: .6;
-  cursor: wait;
-}
+button:hover { background: #405570; }
+button:disabled { opacity: .6; cursor: wait; }
 .game {
   background: var(--panel);
   border-radius: 10px;
@@ -119,18 +97,10 @@ button:disabled {
   margin: 10px 0;
   border-left: 4px solid #64748b;
 }
-.game.nfl {
-  border-left-color: #c8102e;
-}
-.game.nba {
-  border-left-color: #007a33;
-}
-.game.mlb {
-  border-left-color: #e0b13d;
-}
-.game.nhl {
-  border-left-color: #8ab4f8;
-}
+.game.nfl { border-left-color: #c8102e; }
+.game.nba { border-left-color: #007a33; }
+.game.mlb { border-left-color: #e0b13d; }
+.game.nhl { border-left-color: #8ab4f8; }
 .game.live {
   border-top: 1px solid #a83c4c;
   border-right: 1px solid #a83c4c;
@@ -147,23 +117,9 @@ button:disabled {
 }
 .matchup {
   font-size: 17px;
-  font-weight: normal;
+  font-weight: bold;
   margin: 12px 0 7px;
   overflow-wrap: anywhere;
-}
-.boston-team {
-  font-size: 1.13em;
-  font-weight: 800;
-  color: #fff;
-}
-.opponent-team {
-  font-weight: 500;
-  color: #d1dbe8;
-}
-.at-symbol {
-  color: #94a3b8;
-  font-size: .9em;
-  padding: 0 5px;
 }
 .game-bottom {
   display: flex;
@@ -174,9 +130,7 @@ button:disabled {
   color: var(--muted);
   font-size: 13px;
 }
-.game-bottom span:last-child {
-  text-align: right;
-}
+.game-bottom span:last-child { text-align: right; }
 .live-indicator {
   display: inline-flex;
   align-items: center;
@@ -194,12 +148,8 @@ button:disabled {
   animation: pulse 1.5s infinite;
 }
 @keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: .35;
-  }
+  0%, 100% { opacity: 1; }
+  50% { opacity: .35; }
 }
 .empty {
   background: var(--panel);
@@ -208,18 +158,14 @@ button:disabled {
   color: var(--muted);
   line-height: 1.5;
 }
-section {
-  margin-bottom: 32px;
-}
+section { margin-bottom: 32px; }
 .filters {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   margin: 18px 0;
 }
-.filter {
-  flex: 1 1 100px;
-}
+.filter { flex: 1 1 100px; }
 .filter.active {
   background: #e7edf6;
   color: #101722;
@@ -244,10 +190,7 @@ section {
   gap: 10px;
   margin-bottom: 15px;
 }
-.calendar-heading h3 {
-  margin: 0;
-  font-size: 17px;
-}
+.calendar-heading h3 { margin: 0; font-size: 17px; }
 .calendar-period {
   color: var(--muted);
   font-size: 13px;
@@ -257,9 +200,7 @@ section {
   display: flex;
   gap: 6px;
 }
-.calendar-controls button {
-  padding: 8px 11px;
-}
+.calendar-controls button { padding: 8px 11px; }
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
@@ -278,12 +219,8 @@ section {
   align-items: center;
   gap: 8px;
 }
-.calendar-day:hover {
-  background: #344861;
-}
-.calendar-day.today {
-  border-color: #cbd5e1;
-}
+.calendar-day:hover { background: #344861; }
+.calendar-day.today { border-color: #cbd5e1; }
 .calendar-day.selected {
   background: #e7edf6;
   color: #101722;
@@ -297,9 +234,7 @@ section {
   font-size: 18px;
   font-weight: bold;
 }
-.calendar-day.selected .day-name {
-  color: #354357;
-}
+.calendar-day.selected .day-name { color: #354357; }
 .day-dots {
   display: flex;
   flex-wrap: wrap;
@@ -312,18 +247,10 @@ section {
   height: 8px;
   border-radius: 50%;
 }
-.fixture-dot.nfl {
-  background: #c8102e;
-}
-.fixture-dot.nba {
-  background: #00a64b;
-}
-.fixture-dot.mlb {
-  background: #e0b13d;
-}
-.fixture-dot.nhl {
-  background: #8ab4f8;
-}
+.fixture-dot.nfl { background: #c8102e; }
+.fixture-dot.nba { background: #00a64b; }
+.fixture-dot.mlb { background: #e0b13d; }
+.fixture-dot.nhl { background: #8ab4f8; }
 .calendar-legend {
   display: flex;
   flex-wrap: wrap;
@@ -351,10 +278,7 @@ section {
   gap: 10px;
   margin: 22px 0 12px;
 }
-.fixtures-heading h3 {
-  margin: 0;
-  font-size: 18px;
-}
+.fixtures-heading h3 { margin: 0; font-size: 18px; }
 .clear-date {
   padding: 7px 10px;
   font-size: 12px;
@@ -366,50 +290,25 @@ footer {
   font-size: 12px;
 }
 @media (max-width: 480px) {
-  main {
-    padding: 17px 10px;
-  }
-  header h1 {
-    font-size: 26px;
-  }
-  .teams {
-    gap: 10px;
-  }
-  .team {
-    padding: 16px 12px;
-  }
-  .team h3 {
-    font-size: 16px;
-  }
-  .filter {
-    flex: 1 1 80px;
-  }
-  .calendar {
-    padding: 10px;
-  }
-  .calendar-grid {
-    gap: 3px;
-  }
+  main { padding: 17px 10px; }
+  header h1 { font-size: 26px; }
+  .teams { gap: 10px; }
+  .team { padding: 16px 12px; }
+  .team h3 { font-size: 16px; }
+  .filter { flex: 1 1 80px; }
+  .calendar { padding: 10px; }
+  .calendar-grid { gap: 3px; }
   .calendar-day {
     min-height: 83px;
     padding: 9px 2px;
     gap: 7px;
   }
-  .day-name {
-    font-size: 10px;
-  }
-  .day-number {
-    font-size: 16px;
-  }
-  .fixture-dot {
-    width: 7px;
-    height: 7px;
-  }
+  .day-name { font-size: 10px; }
+  .day-number { font-size: 16px; }
+  .fixture-dot { width: 7px; height: 7px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .live-dot {
-    animation: none;
-  }
+  .live-dot { animation: none; }
 }
 </style>
 </head>
@@ -427,38 +326,26 @@ footer {
     <p class="summary">
       Choose a team to view its fixtures, results and league standings.
     </p>
-
     <div class="teams">
-      <a class="team"
-         href="patriots.html"
-         style="--team-colour:#c8102e">
+      <a class="team" href="patriots.html" style="--team-colour:#c8102e">
         <span class="arrow">›</span>
         <span class="tag">NFL</span>
         <h3>New England Patriots</h3>
         <p>American football</p>
       </a>
-
-      <a class="team"
-         href="celtics.html"
-         style="--team-colour:#007a33">
+      <a class="team" href="celtics.html" style="--team-colour:#007a33">
         <span class="arrow">›</span>
         <span class="tag">NBA</span>
         <h3>Boston Celtics</h3>
         <p>Basketball</p>
       </a>
-
-      <a class="team"
-         href="red-sox.html"
-         style="--team-colour:#e0b13d">
+      <a class="team" href="red-sox.html" style="--team-colour:#e0b13d">
         <span class="arrow">›</span>
         <span class="tag">MLB</span>
         <h3>Boston Red Sox</h3>
         <p>Baseball</p>
       </a>
-
-      <a class="team"
-         href="bruins.html"
-         style="--team-colour:#8ab4f8">
+      <a class="team" href="bruins.html" style="--team-colour:#8ab4f8">
         <span class="arrow">›</span>
         <span class="tag">NHL</span>
         <h3>Boston Bruins</h3>
@@ -489,17 +376,10 @@ footer {
             Loading week…
           </div>
         </div>
-
         <div class="calendar-controls">
-          <button id="previous-week"
-                  aria-label="Previous week"
-                  title="Previous week">‹</button>
-
+          <button id="previous-week" aria-label="Previous week" title="Previous week">‹</button>
           <button id="today-week">Today</button>
-
-          <button id="next-week"
-                  aria-label="Next week"
-                  title="Next week">›</button>
+          <button id="next-week" aria-label="Next week" title="Next week">›</button>
         </div>
       </div>
 
@@ -532,43 +412,18 @@ footer {
     <div class="filters"
          role="group"
          aria-label="Filter fixtures by sport">
-
-      <button class="filter active"
-              data-league="ALL"
-              aria-pressed="true">
+      <button class="filter active" data-league="ALL" aria-pressed="true">
         All Sports
       </button>
-
-      <button class="filter"
-              data-league="NFL"
-              aria-pressed="false">
-        NFL
-      </button>
-
-      <button class="filter"
-              data-league="NBA"
-              aria-pressed="false">
-        NBA
-      </button>
-
-      <button class="filter"
-              data-league="MLB"
-              aria-pressed="false">
-        MLB
-      </button>
-
-      <button class="filter"
-              data-league="NHL"
-              aria-pressed="false">
-        NHL
-      </button>
+      <button class="filter" data-league="NFL" aria-pressed="false">NFL</button>
+      <button class="filter" data-league="NBA" aria-pressed="false">NBA</button>
+      <button class="filter" data-league="MLB" aria-pressed="false">MLB</button>
+      <button class="filter" data-league="NHL" aria-pressed="false">NHL</button>
     </div>
 
     <div class="fixtures-heading">
       <h3 id="fixtures-title">All upcoming fixtures</h3>
-      <button id="clear-date"
-              class="clear-date"
-              hidden>
+      <button id="clear-date" class="clear-date" hidden>
         Show all dates
       </button>
     </div>
@@ -587,34 +442,10 @@ footer {
 "use strict";
 
 const feeds = [
-  {
-    league: "NFL",
-    team: "New England Patriots",
-    id: "17",
-    sport: "football",
-    path: "nfl"
-  },
-  {
-    league: "NBA",
-    team: "Boston Celtics",
-    id: "2",
-    sport: "basketball",
-    path: "nba"
-  },
-  {
-    league: "MLB",
-    team: "Boston Red Sox",
-    id: "2",
-    sport: "baseball",
-    path: "mlb"
-  },
-  {
-    league: "NHL",
-    team: "Boston Bruins",
-    id: "1",
-    sport: "hockey",
-    path: "nhl"
-  }
+  { league: "NFL", team: "New England Patriots", id: "17", sport: "football", path: "nfl" },
+  { league: "NBA", team: "Boston Celtics", id: "2", sport: "basketball", path: "nba" },
+  { league: "MLB", team: "Boston Red Sox", id: "2", sport: "baseball", path: "mlb" },
+  { league: "NHL", team: "Boston Bruins", id: "1", sport: "hockey", path: "nhl" }
 ];
 
 const statusEl = document.getElementById("status");
@@ -644,10 +475,7 @@ function safeText(value) {
 
 function dateLabel(value) {
   const date = new Date(value);
-
-  if (!value || Number.isNaN(date.getTime())) {
-    return "Date TBC";
-  }
+  if (!value || Number.isNaN(date.getTime())) return "Date TBC";
 
   return new Intl.DateTimeFormat("en-GB", {
     weekday: "short",
@@ -660,10 +488,7 @@ function dateLabel(value) {
 
 function timeLabel(value) {
   const date = new Date(value);
-
-  if (!value || Number.isNaN(date.getTime())) {
-    return "Time TBC";
-  }
+  if (!value || Number.isNaN(date.getTime())) return "Time TBC";
 
   return new Intl.DateTimeFormat("en-GB", {
     hour: "2-digit",
@@ -675,13 +500,9 @@ function timeLabel(value) {
 
 function americanTimeLabel(value, event) {
   const date = new Date(value);
-
-  if (!value || Number.isNaN(date.getTime())) {
-    return "US time TBC";
-  }
+  if (!value || Number.isNaN(date.getTime())) return "US time TBC";
 
   const competition = event?.competitions?.[0];
-
   const venueTimeZone =
     competition?.venue?.address?.timeZone ||
     competition?.venue?.timeZone ||
@@ -710,10 +531,7 @@ function americanTimeLabel(value, event) {
 
 function ukDateKey(value) {
   const date = new Date(value);
-
-  if (Number.isNaN(date.getTime())) {
-    return "";
-  }
+  if (Number.isNaN(date.getTime())) return "";
 
   const parts = new Intl.DateTimeFormat("en-GB", {
     year: "numeric",
@@ -723,7 +541,6 @@ function ukDateKey(value) {
   }).formatToParts(date);
 
   const values = {};
-
   parts.forEach(part => {
     values[part.type] = part.value;
   });
@@ -740,10 +557,7 @@ function mondayOfWeek(dateKey) {
   const weekday = date.getUTCDay();
   const daysFromMonday = (weekday + 6) % 7;
 
-  date.setUTCDate(
-    date.getUTCDate() - daysFromMonday
-  );
-
+  date.setUTCDate(date.getUTCDate() - daysFromMonday);
   return date;
 }
 
@@ -783,9 +597,7 @@ function isLive(event) {
     event.competitions?.[0]?.status?.type ||
     {};
 
-  if (isCompleted(event)) {
-    return false;
-  }
+  if (isCompleted(event)) return false;
 
   return status.state === "in" ||
     /in progress|in-progress|halftime|intermission|live/i.test(
@@ -796,48 +608,17 @@ function isLive(event) {
 function parseEvent(event, feed) {
   const competition = event.competitions?.[0];
   const competitors = competition?.competitors || [];
-
-  const home = competitors.find(
-    competitor => competitor.homeAway === "home"
-  );
-
-  const away = competitors.find(
-    competitor => competitor.homeAway === "away"
-  );
-
-  const homeId = String(home?.team?.id || "");
-  const awayId = String(away?.team?.id || "");
-
-  const homeAbbreviation =
-    home?.team?.abbreviation || "";
-
-  const awayAbbreviation =
-    away?.team?.abbreviation || "";
-
-  const bostonHome =
-    homeId === feed.id ||
-    homeAbbreviation.toUpperCase() ===
-      (feed.league === "NFL" ? "NE" :
-       feed.league === "NBA" ? "BOS" :
-       feed.league === "MLB" ? "BOS" : "BOS");
-
-  const bostonAway =
-    awayId === feed.id ||
-    awayAbbreviation.toUpperCase() ===
-      (feed.league === "NFL" ? "NE" : "BOS");
+  const home = competitors.find(c => c.homeAway === "home");
+  const away = competitors.find(c => c.homeAway === "away");
 
   return {
-    id:
-      `${feed.league}-${event.id ||
-      event.date + event.name}`,
+    id: `${feed.league}-${event.id || event.date + event.name}`,
     league: feed.league,
     team: feed.team,
     date: event.date || competition?.date,
     event,
     home: home?.team?.displayName || "Home team",
     away: away?.team?.displayName || "Away team",
-    bostonHome,
-    bostonAway,
     completed: isCompleted(event),
     live: isLive(event),
     link: event.links?.[0]?.href || ""
@@ -848,7 +629,6 @@ function nflSeasonYear() {
   const now = new Date();
   const year = now.getUTCFullYear();
   const month = now.getUTCMonth();
-
   return month >= 2 ? year : year - 1;
 }
 
@@ -856,7 +636,6 @@ function nbaSeasonYear() {
   const now = new Date();
   const year = now.getUTCFullYear();
   const month = now.getUTCMonth();
-
   return month >= 6 ? year + 1 : year;
 }
 
@@ -864,7 +643,6 @@ function nhlSeasonYear() {
   const now = new Date();
   const year = now.getUTCFullYear();
   const month = now.getUTCMonth();
-
   return month >= 6 ? year + 1 : year;
 }
 
@@ -873,7 +651,6 @@ function scheduleRequests(feed) {
 
   if (feed.league === "NFL") {
     const season = nflSeasonYear();
-
     return [
       { season, type: 2 },
       { season, type: 3 },
@@ -883,7 +660,6 @@ function scheduleRequests(feed) {
 
   if (feed.league === "NBA") {
     const season = nbaSeasonYear();
-
     return [
       { season, type: 2 },
       { season, type: 3 },
@@ -901,7 +677,6 @@ function scheduleRequests(feed) {
 
   if (feed.league === "NHL") {
     const season = nhlSeasonYear();
-
     return [
       { season, type: 2 },
       { season, type: 3 },
@@ -918,9 +693,7 @@ async function fetchSchedule(feed, request) {
     `${feed.sport}/${feed.path}/teams/${feed.id}/schedule` +
     `?season=${request.season}&seasontype=${request.type}`;
 
-  const response = await fetch(url, {
-    cache: "no-store"
-  });
+  const response = await fetch(url, { cache: "no-store" });
 
   if (!response.ok) {
     throw new Error(
@@ -945,11 +718,8 @@ async function fetchSchedule(feed, request) {
 
 async function loadFeed(feed) {
   const requests = scheduleRequests(feed);
-
   const results = await Promise.allSettled(
-    requests.map(request =>
-      fetchSchedule(feed, request)
-    )
+    requests.map(request => fetchSchedule(feed, request))
   );
 
   const gamesById = new Map();
@@ -962,11 +732,9 @@ async function loadFeed(feed) {
       result.value.forEach(game => {
         const previous = gamesById.get(game.id);
 
-        if (
-          !previous ||
-          (game.live && !previous.live) ||
-          (game.completed && !previous.completed)
-        ) {
+        if (!previous ||
+            (game.live && !previous.live) ||
+            (game.completed && !previous.completed)) {
           gamesById.set(game.id, game);
         }
       });
@@ -980,35 +748,13 @@ async function loadFeed(feed) {
   });
 
   if (successful === 0) {
-    throw new Error(
-      `All ${feed.league} schedule requests failed`
-    );
+    throw new Error(`All ${feed.league} schedule requests failed`);
   }
 
   return {
     games: [...gamesById.values()],
     partial: successful < requests.length
   };
-}
-
-function matchupHtml(game) {
-  const awayClass = game.bostonAway
-    ? "boston-team"
-    : "opponent-team";
-
-  const homeClass = game.bostonHome
-    ? "boston-team"
-    : "opponent-team";
-
-  return `
-    <span class="${awayClass}">
-      ${safeText(game.away)}
-    </span>
-    <span class="at-symbol">@</span>
-    <span class="${homeClass}">
-      ${safeText(game.home)}
-    </span>
-  `;
 }
 
 function gameCard(game) {
@@ -1022,52 +768,36 @@ function gameCard(game) {
   const content = `
     <div class="game-top">
       <span>
-        ${safeText(game.league)} ·
-        ${safeText(game.team)}
+        ${safeText(game.league)} · ${safeText(game.team)}
         ${liveLabel}
       </span>
       <span>${safeText(dateLabel(game.date))}</span>
     </div>
 
     <div class="matchup">
-      ${matchupHtml(game)}
+      ${safeText(game.away)} @ ${safeText(game.home)}
     </div>
 
     <div class="game-bottom">
-      <span>
-        ${safeText(
-          americanTimeLabel(game.date, game.event)
-        )}
-      </span>
-      <span>
-        UK: ${safeText(timeLabel(game.date))}
-      </span>
-    </div>
-  `;
+      <span>${safeText(americanTimeLabel(game.date, game.event))}</span>
+      <span>UK: ${safeText(timeLabel(game.date))}</span>
+    </div>`;
 
   const link = game.link
     ? `<a href="${safeText(game.link)}"
          target="_blank"
          rel="noopener noreferrer"
-         style="color:inherit;text-decoration:none">
-         ${content}
-       </a>`
+         style="color:inherit;text-decoration:none">${content}</a>`
     : content;
 
-  return `
-    <article class="game ${game.league.toLowerCase()} ${game.live ? "live" : ""}">
-      ${link}
-    </article>
-  `;
+  return `<article class="game ${game.league.toLowerCase()} ${game.live ? "live" : ""}">${link}</article>`;
 }
 
 function filteredGames() {
   let games = allUpcomingGames;
 
   if (activeLeague !== "ALL") {
-    games = games.filter(
-      game => game.league === activeLeague
-    );
+    games = games.filter(game => game.league === activeLeague);
   }
 
   if (selectedDate) {
@@ -1089,9 +819,7 @@ function renderFixtures() {
   const games = filteredGames();
 
   if (selectedDate) {
-    const date = new Date(
-      `${selectedDate}T12:00:00Z`
-    );
+    const date = new Date(`${selectedDate}T12:00:00Z`);
 
     fixturesTitleEl.textContent =
       `Fixtures for ${formatCalendarDate(date, {
@@ -1102,15 +830,12 @@ function renderFixtures() {
 
     clearDateEl.hidden = false;
   } else {
-    fixturesTitleEl.textContent =
-      "All upcoming fixtures";
-
+    fixturesTitleEl.textContent = "All upcoming fixtures";
     clearDateEl.hidden = true;
   }
 
   if (games.length) {
-    upcomingEl.innerHTML =
-      games.map(gameCard).join("");
+    upcomingEl.innerHTML = games.map(gameCard).join("");
     return;
   }
 
@@ -1152,8 +877,7 @@ function renderCalendar() {
     { day: "numeric", month: "short", year: "numeric" }
   );
 
-  calendarPeriodEl.textContent =
-    `${startLabel} – ${endLabel}`;
+  calendarPeriodEl.textContent = `${startLabel} – ${endLabel}`;
 
   const days = [];
 
@@ -1198,26 +922,16 @@ function renderCalendar() {
           })
         )}${leagues.length ? `: ${leagues.join(", ")}` : ": no listed fixtures"}">
 
-        <span class="day-name">
-          ${safeText(dayName)}
-        </span>
-
-        <span class="day-number">
-          ${dayNumber}
-        </span>
-
-        <span class="day-dots">
-          ${dots}
-        </span>
+        <span class="day-name">${safeText(dayName)}</span>
+        <span class="day-number">${dayNumber}</span>
+        <span class="day-dots">${dots}</span>
       </button>
     `);
   }
 
   calendarGridEl.innerHTML = days.join("");
 
-  calendarGridEl.querySelectorAll(
-    ".calendar-day"
-  ).forEach(button => {
+  calendarGridEl.querySelectorAll(".calendar-day").forEach(button => {
     button.addEventListener("click", () => {
       const date = button.dataset.date;
 
@@ -1233,32 +947,23 @@ function renderCalendar() {
 function setActiveLeague(league) {
   activeLeague = league;
 
-  document.querySelectorAll(".filter").forEach(
-    button => {
-      const active =
-        button.dataset.league === league;
+  document.querySelectorAll(".filter").forEach(button => {
+    const active = button.dataset.league === league;
 
-      button.classList.toggle("active", active);
-      button.setAttribute(
-        "aria-pressed",
-        String(active)
-      );
-    }
-  );
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-pressed", String(active));
+  });
 
   renderFixtures();
 }
 
 async function loadAll() {
-  if (loading) {
-    return;
-  }
+  if (loading) return;
 
   loading = true;
   refreshEl.disabled = true;
   refreshEl.textContent = "Refreshing…";
-  statusEl.textContent =
-    "Loading schedules from ESPN…";
+  statusEl.textContent = "Loading schedules from ESPN…";
 
   try {
     const outcomes = await Promise.allSettled(
@@ -1278,7 +983,6 @@ async function loadAll() {
         }
       } else {
         errors.push(feeds[index].league);
-
         console.error(
           `${feeds[index].league} schedule error:`,
           result.reason
@@ -1287,9 +991,7 @@ async function loadAll() {
     });
 
     if (errors.length === feeds.length) {
-      throw new Error(
-        "All four league schedules failed"
-      );
+      throw new Error("All four league schedules failed");
     }
 
     games = [
@@ -1302,47 +1004,32 @@ async function loadAll() {
 
     allUpcomingGames = games
       .filter(game => {
-        if (game.completed) {
-          return false;
-        }
-
-        if (game.live) {
-          return true;
-        }
-
+        if (game.completed) return false;
+        if (game.live) return true;
         return new Date(game.date).getTime() >= now;
       })
       .sort((a, b) => {
         if (a.live !== b.live) {
           return a.live ? -1 : 1;
         }
-
         return new Date(a.date) - new Date(b.date);
       });
 
     hasLoadedFixtures = true;
-
     renderCalendar();
     renderFixtures();
 
     const loaded = feeds.length - errors.length;
-    const updated = timeLabel(
-      new Date().toISOString()
-    );
+    const updated = timeLabel(new Date().toISOString());
 
-    if (
-      loaded === feeds.length &&
-      partialFeeds.length === 0
-    ) {
+    if (loaded === feeds.length && partialFeeds.length === 0) {
       statusEl.textContent =
         `All four league feeds loaded at ${updated}.`;
     } else {
       const warnings = [];
 
       if (errors.length) {
-        warnings.push(
-          `Unavailable: ${errors.join(", ")}`
-        );
+        warnings.push(`Unavailable: ${errors.join(", ")}`);
       }
 
       if (partialFeeds.length) {
@@ -1365,10 +1052,7 @@ async function loadAll() {
         '<div class="empty">Fixtures could not be loaded. Check your connection and refresh.</div>';
     }
 
-    console.error(
-      "Boston Sports Hub schedule error:",
-      error
-    );
+    console.error("Boston Sports Hub schedule error:", error);
 
   } finally {
     loading = false;
@@ -1377,39 +1061,27 @@ async function loadAll() {
   }
 }
 
-/* Sport filter buttons */
+document.querySelectorAll(".filter").forEach(button => {
+  button.addEventListener("click", () => {
+    setActiveLeague(button.dataset.league);
+  });
+});
 
-document.querySelectorAll(".filter").forEach(
-  button => {
-    button.addEventListener("click", () => {
-      setActiveLeague(button.dataset.league);
-    });
-  }
-);
-
-/* Calendar navigation */
-
-document.getElementById(
-  "previous-week"
-).addEventListener("click", () => {
+document.getElementById("previous-week").addEventListener("click", () => {
   weekOffset--;
   selectedDate = null;
   renderCalendar();
   renderFixtures();
 });
 
-document.getElementById(
-  "next-week"
-).addEventListener("click", () => {
+document.getElementById("next-week").addEventListener("click", () => {
   weekOffset++;
   selectedDate = null;
   renderCalendar();
   renderFixtures();
 });
 
-document.getElementById(
-  "today-week"
-).addEventListener("click", () => {
+document.getElementById("today-week").addEventListener("click", () => {
   weekOffset = 0;
   selectedDate = null;
   renderCalendar();
@@ -1422,19 +1094,12 @@ clearDateEl.addEventListener("click", () => {
   renderFixtures();
 });
 
-/* Manual refresh */
-
 refreshEl.addEventListener("click", loadAll);
-
-/* Automatic refresh every 60 seconds */
 
 setInterval(loadAll, 60000);
 
-/* Initial load */
-
 renderCalendar();
 loadAll();
-
 </script>
 </body>
 </html>
