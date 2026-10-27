@@ -9,31 +9,37 @@ from email.utils import parsedate_to_datetime
 from html import unescape
 from pathlib import Path
 
-OUTPUT = Path("patriots-news.json")
 MAX_ARTICLES = 10
 
-FEEDS = [
-    (
-        "ESPN",
-        "https://www.espn.com/espn/rss/nfl/news"
-    ),
-    (
-        "Google News",
-        "https://news.google.com/rss/search?q="
-        + urllib.parse.quote(
-            '"New England Patriots" when:7d'
-        )
-        + "&hl=en-US&gl=US&ceid=US:en"
-    ),
-    (
-        "Google News",
-        "https://news.google.com/rss/search?q="
-        + urllib.parse.quote(
+TEAMS = {
+    "patriots": {
+        "name": "New England Patriots",
+        "sport": "nfl",
+        "searches": [
+            '"New England Patriots" when:7d',
             '"New England Patriots" NFL when:7d'
-        )
-        + "&hl=en-US&gl=US&ceid=US:en"
-    )
-]
+        ],
+        "keywords": [
+            "patriots",
+            "new england",
+            "drake maye"
+        ]
+    },
+    "celtics": {
+        "name": "Boston Celtics",
+        "sport": "nba",
+        "searches": [
+            '"Boston Celtics" when:7d',
+            '"Boston Celtics" NBA when:7d'
+        ],
+        "keywords": [
+            "celtics",
+            "boston celtics",
+            "jayson tatum",
+            "jaylen brown"
+        ]
+    }
+}
 
 HEADERS = {
     "User-Agent": "BostonSportsHub/1.0 (news feed reader)"
@@ -67,22 +73,56 @@ def get_image(item):
         if tag.endswith("enclosure"):
             url = child.attrib.get("url", "")
             media_type = child.attrib.get("type", "")
-            if url.startswith("https://") and media_type.startswith("image/"):
+
+            if (
+                url.startswith("https://")
+                and media_type.startswith("image/")
+            ):
                 return url
 
     description = item.findtext("description", "")
+
     match = re.search(
         r'<img[^>]+src=["\'](https?://[^"\']+)',
         description,
         re.IGNORECASE
     )
+
     return unescape(match.group(1)) if match else ""
 
 
-def read_feed(source, url):
-    request = urllib.request.Request(url, headers=HEADERS)
+def get_feeds(team):
+    sport = team["sport"]
 
-    with urllib.request.urlopen(request, timeout=20) as response:
+    feeds = [
+        (
+            "ESPN",
+            f"https://www.espn.com/espn/rss/{sport}/news"
+        )
+    ]
+
+    for search in team["searches"]:
+        url = (
+            "https://news.google.com/rss/search?q="
+            + urllib.parse.quote(search)
+            + "&hl=en-US&gl=US&ceid=US:en"
+        )
+
+        feeds.append(("Google News", url))
+
+    return feeds
+
+
+def read_feed(source, url, keywords):
+    request = urllib.request.Request(
+        url,
+        headers=HEADERS
+    )
+
+    with urllib.request.urlopen(
+        request,
+        timeout=20
+    ) as response:
         content = response.read()
 
     root = ET.fromstring(content)
@@ -95,32 +135,47 @@ def read_feed(source, url):
         if not title or not link.startswith("https://"):
             continue
 
-        # ESPN's NFL feed covers all teams, so filter its headlines.
+        description = clean_text(
+            item.findtext("description")
+        )
+
+        # ESPN's feeds cover the whole league.
+        # Only keep articles relevant to this team.
         if source == "ESPN":
             combined = (
-                title + " " + clean_text(item.findtext("description"))
+                title + " " + description
             ).lower()
 
-            if not any(term in combined for term in [
-                "patriots",
-                "new england",
-                "drake maye"
-            ]):
+            if not any(
+                keyword in combined
+                for keyword in keywords
+            ):
                 continue
 
         publisher = source
         source_element = item.find("source")
 
-        if source_element is not None and source_element.text:
-            publisher = clean_text(source_element.text)
+        if (
+            source_element is not None
+            and source_element.text
+        ):
+            publisher = clean_text(
+                source_element.text
+            )
 
-        description = clean_text(item.findtext("description"))
+        # Google News often includes the publisher
+        # at the end of the headline.
+        if (
+            source == "Google News"
+            and " - " in title
+        ):
+            headline, suffix = title.rsplit(
+                " - ", 1
+            )
 
-        # Google News often adds the publisher to the headline.
-        if source == "Google News" and " - " in title:
-            headline, suffix = title.rsplit(" - ", 1)
             if publisher == "Google News":
                 publisher = suffix
+
             title = headline
 
         articles.append({
@@ -128,34 +183,55 @@ def read_feed(source, url):
             "description": description[:250],
             "url": link,
             "source": publisher,
-            "published": parse_date(item.findtext("pubDate")),
+            "published": parse_date(
+                item.findtext("pubDate")
+            ),
             "image": get_image(item)
         })
 
     return articles
 
 
-def main():
+def update_team(team_key, team):
+    print(f"\nUpdating {team['name']} news...")
+
     articles = []
 
-    for source, url in FEEDS:
+    for source, url in get_feeds(team):
         try:
-            fetched = read_feed(source, url)
+            fetched = read_feed(
+                source,
+                url,
+                team["keywords"]
+            )
+
             articles.extend(fetched)
-            print(f"{source}: found {len(fetched)} articles")
+
+            print(
+                f"{source}: found {len(fetched)} articles"
+            )
+
         except Exception as error:
-            print(f"Could not read {source}: {error}")
+            print(
+                f"Could not read {source}: {error}"
+            )
 
     unique = {}
+
     for article in articles:
         key = re.sub(
-            r"[^a-z0-9]+", "",
+            r"[^a-z0-9]+",
+            "",
             article["title"].lower()
         )
 
         if key not in unique:
             unique[key] = article
-        elif article["image"] and not unique[key]["image"]:
+
+        elif (
+            article["image"]
+            and not unique[key]["image"]
+        ):
             unique[key] = article
 
     latest = sorted(
@@ -164,22 +240,43 @@ def main():
         reverse=True
     )[:MAX_ARTICLES]
 
-    # Don't erase previously collected news if all feeds fail.
+    # Preserve existing news if the feeds fail.
     if not latest:
-        print("No new articles found. Keeping existing news.")
+        print(
+            f"No new {team['name']} articles found. "
+            "Keeping existing news."
+        )
         return
 
     output = {
-        "updated": datetime.now(timezone.utc).isoformat(),
+        "updated": datetime.now(
+            timezone.utc
+        ).isoformat(),
         "articles": latest
     }
 
-    OUTPUT.write_text(
-        json.dumps(output, indent=2, ensure_ascii=False),
+    output_file = Path(
+        f"{team_key}-news.json"
+    )
+
+    output_file.write_text(
+        json.dumps(
+            output,
+            indent=2,
+            ensure_ascii=False
+        ),
         encoding="utf-8"
     )
 
-    print(f"Saved {len(latest)} articles to {OUTPUT}")
+    print(
+        f"Saved {len(latest)} articles "
+        f"to {output_file}"
+    )
+
+
+def main():
+    for team_key, team in TEAMS.items():
+        update_team(team)
 
 
 if __name__ == "__main__":
