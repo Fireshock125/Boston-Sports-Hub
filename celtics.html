@@ -136,6 +136,8 @@ footer { text-align: center; padding: 25px; color: #94a3b8; font-size: 12px; }
 <footer>Boston Sports Hub · Data provided by ESPN</footer>
 
 <script>
+"use strict";
+
 const TEAM_ID = "2";
 const TEAM_NAME = "Boston Celtics";
 const SPORT = "basketball";
@@ -703,58 +705,126 @@ function showStandingsTable(tableKey) {
   }
 }
 
+/*
+  Future-proofed NBA standings.
+
+  Try the current season first.
+  If ESPN does not return all 30 teams,
+  automatically try previous seasons.
+
+  Keep previously loaded standings visible
+  if a refresh fails.
+*/
 async function loadStandings() {
   const button = $("refresh-standings");
   const status = $("standings-status");
+  const container = $("standings-list");
 
   button.disabled = true;
   button.textContent = "Refreshing…";
-  status.textContent = "Loading standings from ESPN…";
+  status.textContent = "Checking NBA standings…";
+
+  if (!standingsTables.overall.length) {
+    container.innerHTML =
+      '<div class="empty">Loading NBA standings…</div>';
+  }
 
   try {
-    const standingsUrl =
-      `${STANDINGS_URL}?season=${nbaSeasonYear()}&type=2&limit=100`;
+    const currentSeason = nbaSeasonYear();
 
-    const response = await fetch(standingsUrl, {
-      cache: "no-store"
-    });
-
-    if (!response.ok) {
-      throw new Error("Standings unavailable");
-    }
-
-    const data = await response.json();
-    const all = collectEntries(data.children || data);
-
-    const uniqueTeams = [
-      ...new Map(
-        all.map(team => [
-          team.id || team.abbreviation || team.name,
-          team
-        ])
-      ).values()
+    const seasons = [
+      currentSeason,
+      currentSeason - 1,
+      currentSeason - 2
     ];
 
-    if (uniqueTeams.length !== 30) {
+    let selectedTeams = null;
+    let selectedSeason = null;
+
+    for (const season of seasons) {
+      try {
+        status.textContent =
+          `Checking ${season - 1}–${String(season).slice(-2)} NBA standings…`;
+
+        const standingsUrl =
+          `${STANDINGS_URL}?season=${season}&type=2&limit=100`;
+
+        const response = await fetch(standingsUrl, {
+          cache: "no-store"
+        });
+
+        if (!response.ok) {
+          throw new Error(
+            `NBA ${season}: HTTP ${response.status}`
+          );
+        }
+
+        const data = await response.json();
+
+        const all = collectEntries(
+          data.children || data
+        );
+
+        const uniqueTeams = [
+          ...new Map(
+            all.map(team => [
+              team.id ||
+              team.abbreviation ||
+              team.name,
+              team
+            ])
+          ).values()
+        ];
+
+        if (uniqueTeams.length !== 30) {
+          console.warn(
+            `NBA ${season}: expected 30 teams, found ${uniqueTeams.length}`
+          );
+          continue;
+        }
+
+        selectedTeams = uniqueTeams;
+        selectedSeason = season;
+        break;
+
+      } catch (error) {
+        console.warn(
+          `NBA standings unavailable for ${season}:`,
+          error
+        );
+      }
+    }
+
+    if (!selectedTeams) {
       throw new Error(
-        `ESPN returned ${uniqueTeams.length} NBA teams instead of 30`
+        "No complete NBA standings found"
       );
     }
 
-    standingsTables.overall = uniqueTeams;
+    standingsTables.overall = selectedTeams;
 
     showStandingsTable(selectedTable);
 
+    const seasonLabel =
+      `${selectedSeason - 1}–${String(selectedSeason).slice(-2)}`;
+
     status.textContent =
-      `Standings updated at ${timeLabel(new Date().toISOString())}.`;
+      `${seasonLabel} NBA regular-season standings` +
+      (selectedSeason !== currentSeason
+        ? " · Previous season"
+        : "");
 
   } catch (error) {
-    $("standings-list").innerHTML =
-      '<div class="empty">Could not load NBA standings. Please try refreshing.</div>';
+    status.textContent =
+      "NBA standings are temporarily unavailable.";
 
-    status.textContent = "Standings could not be updated.";
+    if (!standingsTables.overall.length) {
+      container.innerHTML =
+        '<div class="empty">Could not load NBA standings. Please try refreshing.</div>';
+    }
 
-    console.error(error);
+    console.error("NBA standings error:", error);
+
   } finally {
     button.disabled = false;
     button.textContent = "Refresh standings";
