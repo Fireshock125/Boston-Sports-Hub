@@ -38,6 +38,34 @@ TEAMS = {
             "jayson tatum",
             "jaylen brown"
         ]
+    },
+    "red-sox": {
+        "name": "Boston Red Sox",
+        "sport": "mlb",
+        "searches": [
+            '"Boston Red Sox" when:7d',
+            '"Boston Red Sox" MLB when:7d'
+        ],
+        "keywords": [
+            "red sox",
+            "boston red sox",
+            "fenway park",
+            "alex cora"
+        ]
+    },
+    "bruins": {
+        "name": "Boston Bruins",
+        "sport": "nhl",
+        "searches": [
+            '"Boston Bruins" when:7d',
+            '"Boston Bruins" NHL when:7d'
+        ],
+        "keywords": [
+            "bruins",
+            "boston bruins",
+            "david pastrnak",
+            "charlie mcavoy"
+        ]
     }
 }
 
@@ -67,6 +95,7 @@ def get_image(item):
 
         if tag.endswith("thumbnail") or tag.endswith("content"):
             url = child.attrib.get("url", "")
+
             if url.startswith("https://"):
                 return url
 
@@ -139,8 +168,6 @@ def read_feed(source, url, keywords):
             item.findtext("description")
         )
 
-        # ESPN feeds cover the entire league.
-        # Keep only articles about this team.
         if source == "ESPN":
             combined = (
                 title + " " + description
@@ -163,15 +190,8 @@ def read_feed(source, url, keywords):
                 source_element.text
             )
 
-        # Google News sometimes adds the publisher
-        # to the end of the headline.
-        if (
-            source == "Google News"
-            and " - " in title
-        ):
-            headline, suffix = title.rsplit(
-                " - ", 1
-            )
+        if source == "Google News" and " - " in title:
+            headline, suffix = title.rsplit(" - ", 1)
 
             if publisher == "Google News":
                 publisher = suffix
@@ -193,7 +213,9 @@ def read_feed(source, url, keywords):
 
 
 def update_team(team_key, team):
-    print(f"\nUpdating {team['name']} news...")
+    print(
+        f"\nUpdating {team['name']} news..."
+    )
 
     articles = []
 
@@ -240,7 +262,6 @@ def update_team(team_key, team):
         reverse=True
     )[:MAX_ARTICLES]
 
-    # Keep previous news if all feeds fail.
     if not latest:
         print(
             f"No new {team['name']} articles found. "
