@@ -90,9 +90,23 @@ button:disabled { opacity: .6; cursor: wait; }
 }
 .matchup {
   font-size: 17px;
-  font-weight: bold;
+  font-weight: normal;
   margin: 12px 0 7px;
   overflow-wrap: anywhere;
+}
+.boston-team {
+  font-size: 1.13em;
+  font-weight: 800;
+  color: #fff;
+}
+.opponent-team {
+  font-weight: 500;
+  color: #d1dbe8;
+}
+.at-symbol {
+  color: #94a3b8;
+  font-size: .9em;
+  padding: 0 5px;
 }
 .game-bottom {
   display: flex;
@@ -260,13 +274,6 @@ const STANDINGS_BASE =
 
 const $ = id => document.getElementById(id);
 
-/*
-  NFL seasons start in one calendar year and finish
-  in the following January or February.
-
-  Before March, use the previous year's season.
-  From March onwards, use the current year's season.
-*/
 function nflSeasonYear() {
   const now = new Date();
   const year = now.getFullYear();
@@ -414,12 +421,30 @@ function parseEvent(event) {
     event,
     home: home?.team?.displayName || "Home team",
     away: away?.team?.displayName || "Away team",
+    bostonHome: home === ownTeam,
+    bostonAway: away === ownTeam,
     completed,
     link: event.links?.[0]?.href || "",
     ownScore,
     opponentScore,
     outcome
   };
+}
+
+function matchupHtml(game) {
+  const awayClass = game.bostonAway
+    ? "boston-team"
+    : "opponent-team";
+
+  const homeClass = game.bostonHome
+    ? "boston-team"
+    : "opponent-team";
+
+  return `
+    <span class="${awayClass}">${safeText(game.away)}</span>
+    <span class="at-symbol">@</span>
+    <span class="${homeClass}">${safeText(game.home)}</span>
+  `;
 }
 
 function gameCard(game, resultMode = false) {
@@ -449,7 +474,7 @@ function gameCard(game, resultMode = false) {
       <span>${safeText(dateLabel(game.date))}</span>
     </div>
     <div class="matchup">
-      ${safeText(game.away)} @ ${safeText(game.home)}
+      ${matchupHtml(game)}
     </div>
     ${bottomRow}`;
 
