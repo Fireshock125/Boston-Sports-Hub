@@ -243,6 +243,8 @@ footer {
 <footer>Boston Sports Hub · Data provided by ESPN</footer>
 
 <script>
+"use strict";
+
 const $ = id => document.getElementById(id);
 
 const TEAM_ID = "2";
@@ -836,59 +838,121 @@ function showStandingsTable(tableKey) {
   }
 }
 
+/*
+  Future-proofed MLB standings.
+
+  Try the current season first.
+  If ESPN does not return all 30 teams,
+  automatically try previous seasons.
+
+  Keep previously loaded standings visible
+  if a refresh fails.
+*/
 async function loadStandings() {
   const button = $("refreshStandings");
   const status = $("standingsStatus");
+  const container = $("standings");
 
   button.disabled = true;
   button.textContent = "Refreshing…";
-  status.textContent = "Loading MLB standings from ESPN…";
+  status.textContent = "Checking MLB standings…";
+
+  if (!standingsTeams.length) {
+    container.innerHTML =
+      '<div class="empty">Loading MLB standings…</div>';
+  }
 
   try {
-    const url =
-      `${STANDINGS_URL}?season=${mlbSeasonYear()}&type=2&limit=100`;
+    const currentSeason = mlbSeasonYear();
 
-    const response = await fetch(url, {
-      cache: "no-store"
-    });
-
-    if (!response.ok) {
-      throw new Error("Standings unavailable");
-    }
-
-    const data = await response.json();
-
-    const all = collectEntries(data);
-    const uniqueTeams = [
-      ...new Map(
-        all.map(team => [
-          team.id || team.abbreviation || team.name,
-          team
-        ])
-      ).values()
+    const seasons = [
+      currentSeason,
+      currentSeason - 1,
+      currentSeason - 2
     ];
 
-    if (uniqueTeams.length !== 30) {
+    let selectedTeams = null;
+    let selectedSeason = null;
+
+    for (const season of seasons) {
+      try {
+        status.textContent =
+          `Checking ${season} MLB standings…`;
+
+        const url =
+          `${STANDINGS_URL}?season=${season}&type=2&limit=100`;
+
+        const response = await fetch(url, {
+          cache: "no-store"
+        });
+
+        if (!response.ok) {
+          throw new Error(
+            `MLB ${season}: HTTP ${response.status}`
+          );
+        }
+
+        const data = await response.json();
+
+        const all = collectEntries(data);
+
+        const uniqueTeams = [
+          ...new Map(
+            all.map(team => [
+              team.id ||
+              team.abbreviation ||
+              team.name,
+              team
+            ])
+          ).values()
+        ];
+
+        if (uniqueTeams.length !== 30) {
+          console.warn(
+            `MLB ${season}: expected 30 teams, found ${uniqueTeams.length}`
+          );
+          continue;
+        }
+
+        selectedTeams = uniqueTeams;
+        selectedSeason = season;
+        break;
+
+      } catch (error) {
+        console.warn(
+          `MLB standings unavailable for ${season}:`,
+          error
+        );
+      }
+    }
+
+    if (!selectedTeams) {
       throw new Error(
-        `ESPN returned ${uniqueTeams.length} MLB teams instead of 30`
+        "No complete MLB standings found"
       );
     }
 
-    standingsTeams = uniqueTeams;
+    standingsTeams = selectedTeams;
 
     showStandingsTable(selectedTable);
 
     status.textContent =
-      `Standings updated at ${timeLabel(new Date().toISOString())}.`;
+      `${selectedSeason} MLB regular-season standings` +
+      (selectedSeason !== currentSeason
+        ? " · Previous season"
+        : "");
 
   } catch (error) {
-    $("standings").innerHTML =
-      '<div class="empty">Could not load MLB standings. Please try refreshing.</div>';
-
     status.textContent =
-      "Standings could not be updated.";
+      "MLB standings are temporarily unavailable.";
+
+    if (!standingsTeams.length) {
+      container.innerHTML =
+        '<div class="empty">Could not load MLB standings. Please try refreshing.</div>';
+    }
 
     console.error("MLB standings error:", error);
+
   } finally {
     button.disabled = false;
     button.textContent = "Refresh standings";
