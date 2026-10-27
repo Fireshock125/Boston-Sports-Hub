@@ -131,6 +131,12 @@ button:disabled {
 .game.nhl {
   border-left-color: #8ab4f8;
 }
+.game.live {
+  border-top: 1px solid #a83c4c;
+  border-right: 1px solid #a83c4c;
+  border-bottom: 1px solid #a83c4c;
+  background: #2a2432;
+}
 .game-top {
   display: flex;
   flex-wrap: wrap;
@@ -141,9 +147,23 @@ button:disabled {
 }
 .matchup {
   font-size: 17px;
-  font-weight: bold;
+  font-weight: normal;
   margin: 12px 0 7px;
   overflow-wrap: anywhere;
+}
+.boston-team {
+  font-size: 1.13em;
+  font-weight: 800;
+  color: #fff;
+}
+.opponent-team {
+  font-weight: 500;
+  color: #d1dbe8;
+}
+.at-symbol {
+  color: #94a3b8;
+  font-size: .9em;
+  padding: 0 5px;
 }
 .game-bottom {
   display: flex;
@@ -156,6 +176,30 @@ button:disabled {
 }
 .game-bottom span:last-child {
   text-align: right;
+}
+.live-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #ff7b8d;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: .5px;
+}
+.live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ff526c;
+  animation: pulse 1.5s infinite;
+}
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: .35;
+  }
 }
 .empty {
   background: var(--panel);
@@ -182,6 +226,139 @@ section {
   border-color: #e7edf6;
   font-weight: bold;
 }
+
+/* Weekly calendar */
+
+.calendar {
+  background: var(--panel);
+  border: 1px solid #354357;
+  border-radius: 12px;
+  padding: 15px;
+  margin: 20px 0;
+}
+.calendar-heading {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+.calendar-heading h3 {
+  margin: 0;
+  font-size: 17px;
+}
+.calendar-period {
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 5px;
+}
+.calendar-controls {
+  display: flex;
+  gap: 6px;
+}
+.calendar-controls button {
+  padding: 8px 11px;
+}
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+}
+.calendar-day {
+  min-width: 0;
+  min-height: 94px;
+  padding: 10px 3px;
+  background: #263548;
+  border: 1px solid #3c4c61;
+  border-radius: 8px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.calendar-day:hover {
+  background: #344861;
+}
+.calendar-day.today {
+  border-color: #cbd5e1;
+}
+.calendar-day.selected {
+  background: #e7edf6;
+  color: #101722;
+  border-color: #e7edf6;
+}
+.day-name {
+  font-size: 12px;
+  color: #c0cad8;
+}
+.day-number {
+  font-size: 18px;
+  font-weight: bold;
+}
+.calendar-day.selected .day-name {
+  color: #354357;
+}
+.day-dots {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+}
+.fixture-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.fixture-dot.nfl {
+  background: #c8102e;
+}
+.fixture-dot.nba {
+  background: #00a64b;
+}
+.fixture-dot.mlb {
+  background: #e0b13d;
+}
+.fixture-dot.nhl {
+  background: #8ab4f8;
+}
+.calendar-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 13px;
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.calendar-note {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 13px 0 0;
+}
+.fixtures-heading {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin: 22px 0 12px;
+}
+.fixtures-heading h3 {
+  margin: 0;
+  font-size: 18px;
+}
+.clear-date {
+  padding: 7px 10px;
+  font-size: 12px;
+}
 footer {
   text-align: center;
   padding: 25px;
@@ -206,6 +383,32 @@ footer {
   }
   .filter {
     flex: 1 1 80px;
+  }
+  .calendar {
+    padding: 10px;
+  }
+  .calendar-grid {
+    gap: 3px;
+  }
+  .calendar-day {
+    min-height: 83px;
+    padding: 9px 2px;
+    gap: 7px;
+  }
+  .day-name {
+    font-size: 10px;
+  }
+  .day-number {
+    font-size: 16px;
+  }
+  .fixture-dot {
+    width: 7px;
+    height: 7px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .live-dot {
+    animation: none;
   }
 }
 </style>
@@ -278,6 +481,54 @@ footer {
       Loading schedules…
     </p>
 
+    <div class="calendar">
+      <div class="calendar-heading">
+        <div>
+          <h3>Weekly calendar</h3>
+          <div id="calendar-period" class="calendar-period">
+            Loading week…
+          </div>
+        </div>
+
+        <div class="calendar-controls">
+          <button id="previous-week"
+                  aria-label="Previous week"
+                  title="Previous week">‹</button>
+
+          <button id="today-week">Today</button>
+
+          <button id="next-week"
+                  aria-label="Next week"
+                  title="Next week">›</button>
+        </div>
+      </div>
+
+      <div id="calendar-grid"
+           class="calendar-grid"
+           aria-label="Weekly fixtures calendar">
+      </div>
+
+      <div class="calendar-legend">
+        <span class="legend-item">
+          <span class="fixture-dot nfl"></span> NFL
+        </span>
+        <span class="legend-item">
+          <span class="fixture-dot nba"></span> NBA
+        </span>
+        <span class="legend-item">
+          <span class="fixture-dot mlb"></span> MLB
+        </span>
+        <span class="legend-item">
+          <span class="fixture-dot nhl"></span> NHL
+        </span>
+      </div>
+
+      <p class="calendar-note">
+        Dates use UK time. Select a day to show its fixtures.
+        Select the same day again to show all fixtures.
+      </p>
+    </div>
+
     <div class="filters"
          role="group"
          aria-label="Filter fixtures by sport">
@@ -310,6 +561,15 @@ footer {
               data-league="NHL"
               aria-pressed="false">
         NHL
+      </button>
+    </div>
+
+    <div class="fixtures-heading">
+      <h3 id="fixtures-title">All upcoming fixtures</h3>
+      <button id="clear-date"
+              class="clear-date"
+              hidden>
+        Show all dates
       </button>
     </div>
 
@@ -360,10 +620,17 @@ const feeds = [
 const statusEl = document.getElementById("status");
 const upcomingEl = document.getElementById("upcoming");
 const refreshEl = document.getElementById("refresh");
+const calendarGridEl = document.getElementById("calendar-grid");
+const calendarPeriodEl = document.getElementById("calendar-period");
+const fixturesTitleEl = document.getElementById("fixtures-title");
+const clearDateEl = document.getElementById("clear-date");
 
 let allUpcomingGames = [];
 let activeLeague = "ALL";
+let selectedDate = null;
 let hasLoadedFixtures = false;
+let weekOffset = 0;
+let loading = false;
 
 function safeText(value) {
   return String(value ?? "").replace(/[&<>"']/g, char => ({
@@ -441,6 +708,62 @@ function americanTimeLabel(value, event) {
   }
 }
 
+function ukDateKey(value) {
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "";
+  }
+
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    timeZone: "Europe/London"
+  }).formatToParts(date);
+
+  const values = {};
+
+  parts.forEach(part => {
+    values[part.type] = part.value;
+  });
+
+  return `${values.year}-${values.month}-${values.day}`;
+}
+
+function todayKey() {
+  return ukDateKey(new Date());
+}
+
+function mondayOfWeek(dateKey) {
+  const date = new Date(`${dateKey}T12:00:00Z`);
+  const weekday = date.getUTCDay();
+  const daysFromMonday = (weekday + 6) % 7;
+
+  date.setUTCDate(
+    date.getUTCDate() - daysFromMonday
+  );
+
+  return date;
+}
+
+function addDays(date, amount) {
+  const result = new Date(date);
+  result.setUTCDate(result.getUTCDate() + amount);
+  return result;
+}
+
+function calendarDateKey(date) {
+  return date.toISOString().slice(0, 10);
+}
+
+function formatCalendarDate(date, options) {
+  return new Intl.DateTimeFormat("en-GB", {
+    ...options,
+    timeZone: "UTC"
+  }).format(date);
+}
+
 function isCompleted(event) {
   const status =
     event.status?.type ||
@@ -451,6 +774,22 @@ function isCompleted(event) {
     status.state === "post" ||
     /final|ended|game over|completed/i.test(
       `${status.description || ""} ${status.detail || ""} ${status.shortDetail || ""}`
+    );
+}
+
+function isLive(event) {
+  const status =
+    event.status?.type ||
+    event.competitions?.[0]?.status?.type ||
+    {};
+
+  if (isCompleted(event)) {
+    return false;
+  }
+
+  return status.state === "in" ||
+    /in progress|in-progress|halftime|intermission|live/i.test(
+      `${status.name || ""} ${status.description || ""} ${status.detail || ""}`
     );
 }
 
@@ -466,6 +805,27 @@ function parseEvent(event, feed) {
     competitor => competitor.homeAway === "away"
   );
 
+  const homeId = String(home?.team?.id || "");
+  const awayId = String(away?.team?.id || "");
+
+  const homeAbbreviation =
+    home?.team?.abbreviation || "";
+
+  const awayAbbreviation =
+    away?.team?.abbreviation || "";
+
+  const bostonHome =
+    homeId === feed.id ||
+    homeAbbreviation.toUpperCase() ===
+      (feed.league === "NFL" ? "NE" :
+       feed.league === "NBA" ? "BOS" :
+       feed.league === "MLB" ? "BOS" : "BOS");
+
+  const bostonAway =
+    awayId === feed.id ||
+    awayAbbreviation.toUpperCase() ===
+      (feed.league === "NFL" ? "NE" : "BOS");
+
   return {
     id:
       `${feed.league}-${event.id ||
@@ -476,17 +836,13 @@ function parseEvent(event, feed) {
     event,
     home: home?.team?.displayName || "Home team",
     away: away?.team?.displayName || "Away team",
+    bostonHome,
+    bostonAway,
     completed: isCompleted(event),
+    live: isLive(event),
     link: event.links?.[0]?.href || ""
   };
 }
-
-/*
-  Season identifiers.
-
-  NFL and MLB use their starting/calendar year.
-  NBA and NHL use the season's ending year.
-*/
 
 function nflSeasonYear() {
   const now = new Date();
@@ -608,6 +964,7 @@ async function loadFeed(feed) {
 
         if (
           !previous ||
+          (game.live && !previous.live) ||
           (game.completed && !previous.completed)
         ) {
           gamesById.set(game.id, game);
@@ -634,17 +991,46 @@ async function loadFeed(feed) {
   };
 }
 
+function matchupHtml(game) {
+  const awayClass = game.bostonAway
+    ? "boston-team"
+    : "opponent-team";
+
+  const homeClass = game.bostonHome
+    ? "boston-team"
+    : "opponent-team";
+
+  return `
+    <span class="${awayClass}">
+      ${safeText(game.away)}
+    </span>
+    <span class="at-symbol">@</span>
+    <span class="${homeClass}">
+      ${safeText(game.home)}
+    </span>
+  `;
+}
+
 function gameCard(game) {
+  const liveLabel = game.live
+    ? `<span class="live-indicator">
+         <span class="live-dot"></span>
+         LIVE
+       </span>`
+    : "";
+
   const content = `
     <div class="game-top">
       <span>
-        ${safeText(game.league)} · ${safeText(game.team)}
+        ${safeText(game.league)} ·
+        ${safeText(game.team)}
+        ${liveLabel}
       </span>
       <span>${safeText(dateLabel(game.date))}</span>
     </div>
 
     <div class="matchup">
-      ${safeText(game.away)} @ ${safeText(game.home)}
+      ${matchupHtml(game)}
     </div>
 
     <div class="game-bottom">
@@ -669,10 +1055,28 @@ function gameCard(game) {
     : content;
 
   return `
-    <article class="game ${game.league.toLowerCase()}">
+    <article class="game ${game.league.toLowerCase()} ${game.live ? "live" : ""}">
       ${link}
     </article>
   `;
+}
+
+function filteredGames() {
+  let games = allUpcomingGames;
+
+  if (activeLeague !== "ALL") {
+    games = games.filter(
+      game => game.league === activeLeague
+    );
+  }
+
+  if (selectedDate) {
+    games = games.filter(
+      game => ukDateKey(game.date) === selectedDate
+    );
+  }
+
+  return games;
 }
 
 function renderFixtures() {
@@ -682,11 +1086,27 @@ function renderFixtures() {
     return;
   }
 
-  const games = activeLeague === "ALL"
-    ? allUpcomingGames
-    : allUpcomingGames.filter(
-        game => game.league === activeLeague
-      );
+  const games = filteredGames();
+
+  if (selectedDate) {
+    const date = new Date(
+      `${selectedDate}T12:00:00Z`
+    );
+
+    fixturesTitleEl.textContent =
+      `Fixtures for ${formatCalendarDate(date, {
+        weekday: "long",
+        day: "numeric",
+        month: "long"
+      })}`;
+
+    clearDateEl.hidden = false;
+  } else {
+    fixturesTitleEl.textContent =
+      "All upcoming fixtures";
+
+    clearDateEl.hidden = true;
+  }
 
   if (games.length) {
     upcomingEl.innerHTML =
@@ -694,12 +1114,120 @@ function renderFixtures() {
     return;
   }
 
-  const message = activeLeague === "ALL"
-    ? "No upcoming fixtures are currently listed. Try refreshing later."
-    : `No upcoming ${activeLeague} fixtures are currently listed. The team may be in its off-season or its next schedule has not been announced.`;
+  let message;
+
+  if (selectedDate) {
+    message =
+      "No fixtures are currently listed for this date and sport selection.";
+  } else if (activeLeague === "ALL") {
+    message =
+      "No upcoming fixtures are currently listed. Try refreshing later.";
+  } else {
+    message =
+      `No upcoming ${activeLeague} fixtures are currently listed. ` +
+      "The team may be in its off-season or its next schedule has not been announced.";
+  }
 
   upcomingEl.innerHTML =
     `<div class="empty">${safeText(message)}</div>`;
+}
+
+function renderCalendar() {
+  const today = todayKey();
+  const monday = mondayOfWeek(today);
+
+  monday.setUTCDate(
+    monday.getUTCDate() + weekOffset * 7
+  );
+
+  const sunday = addDays(monday, 6);
+
+  const startLabel = formatCalendarDate(
+    monday,
+    { day: "numeric", month: "short" }
+  );
+
+  const endLabel = formatCalendarDate(
+    sunday,
+    { day: "numeric", month: "short", year: "numeric" }
+  );
+
+  calendarPeriodEl.textContent =
+    `${startLabel} – ${endLabel}`;
+
+  const days = [];
+
+  for (let i = 0; i < 7; i++) {
+    const date = addDays(monday, i);
+    const key = calendarDateKey(date);
+
+    const dayGames = allUpcomingGames.filter(
+      game => ukDateKey(game.date) === key
+    );
+
+    const leagues = [
+      ...new Set(dayGames.map(game => game.league))
+    ];
+
+    const dots = leagues.map(league => `
+      <span class="fixture-dot ${league.toLowerCase()}"
+            title="${safeText(league)}"></span>
+    `).join("");
+
+    const isToday = key === today;
+    const isSelected = key === selectedDate;
+
+    const dayName = formatCalendarDate(
+      date,
+      { weekday: "short" }
+    );
+
+    const dayNumber = date.getUTCDate();
+
+    days.push(`
+      <button
+        class="calendar-day ${isToday ? "today" : ""} ${isSelected ? "selected" : ""}"
+        data-date="${key}"
+        aria-pressed="${isSelected}"
+        aria-label="${safeText(
+          formatCalendarDate(date, {
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+            year: "numeric"
+          })
+        )}${leagues.length ? `: ${leagues.join(", ")}` : ": no listed fixtures"}">
+
+        <span class="day-name">
+          ${safeText(dayName)}
+        </span>
+
+        <span class="day-number">
+          ${dayNumber}
+        </span>
+
+        <span class="day-dots">
+          ${dots}
+        </span>
+      </button>
+    `);
+  }
+
+  calendarGridEl.innerHTML = days.join("");
+
+  calendarGridEl.querySelectorAll(
+    ".calendar-day"
+  ).forEach(button => {
+    button.addEventListener("click", () => {
+      const date = button.dataset.date;
+
+      selectedDate =
+        selectedDate === date ? null : date;
+
+      renderCalendar();
+      renderFixtures();
+    });
+  });
 }
 
 function setActiveLeague(league) {
@@ -722,6 +1250,11 @@ function setActiveLeague(league) {
 }
 
 async function loadAll() {
+  if (loading) {
+    return;
+  }
+
+  loading = true;
   refreshEl.disabled = true;
   refreshEl.textContent = "Refreshing…";
   statusEl.textContent =
@@ -768,16 +1301,28 @@ async function loadAll() {
     const now = Date.now();
 
     allUpcomingGames = games
-      .filter(game =>
-        !game.completed &&
-        new Date(game.date).getTime() >= now
-      )
-      .sort(
-        (a, b) =>
-          new Date(a.date) - new Date(b.date)
-      );
+      .filter(game => {
+        if (game.completed) {
+          return false;
+        }
+
+        if (game.live) {
+          return true;
+        }
+
+        return new Date(game.date).getTime() >= now;
+      })
+      .sort((a, b) => {
+        if (a.live !== b.live) {
+          return a.live ? -1 : 1;
+        }
+
+        return new Date(a.date) - new Date(b.date);
+      });
 
     hasLoadedFixtures = true;
+
+    renderCalendar();
     renderFixtures();
 
     const loaded = feeds.length - errors.length;
@@ -826,12 +1371,13 @@ async function loadAll() {
     );
 
   } finally {
+    loading = false;
     refreshEl.disabled = false;
     refreshEl.textContent = "Refresh fixtures";
   }
 }
 
-/* Filter buttons */
+/* Sport filter buttons */
 
 document.querySelectorAll(".filter").forEach(
   button => {
@@ -841,14 +1387,54 @@ document.querySelectorAll(".filter").forEach(
   }
 );
 
-/* Refresh button */
+/* Calendar navigation */
+
+document.getElementById(
+  "previous-week"
+).addEventListener("click", () => {
+  weekOffset--;
+  selectedDate = null;
+  renderCalendar();
+  renderFixtures();
+});
+
+document.getElementById(
+  "next-week"
+).addEventListener("click", () => {
+  weekOffset++;
+  selectedDate = null;
+  renderCalendar();
+  renderFixtures();
+});
+
+document.getElementById(
+  "today-week"
+).addEventListener("click", () => {
+  weekOffset = 0;
+  selectedDate = null;
+  renderCalendar();
+  renderFixtures();
+});
+
+clearDateEl.addEventListener("click", () => {
+  selectedDate = null;
+  renderCalendar();
+  renderFixtures();
+});
+
+/* Manual refresh */
 
 refreshEl.addEventListener("click", loadAll);
 
-/* Load homepage */
+/* Automatic refresh every 60 seconds */
 
+setInterval(loadAll, 60000);
+
+/* Initial load */
+
+renderCalendar();
 loadAll();
-</script>
 
+</script>
 </body>
 </html>
