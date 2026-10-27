@@ -1031,6 +1031,19 @@ function renderStandings() {
   }
 }
 
+/*
+  Future-proofed NHL standings.
+
+  Try the current NHL season first.
+  If ESPN doesn't return all 32 teams,
+  automatically try the previous two seasons.
+
+  NHL seasons use their ending year:
+  2026–27 is season 2027.
+
+  Keep existing standings visible if
+  a refresh cannot retrieve new data.
+*/
 async function loadStandings() {
   const button = $("refresh-standings");
   const status = $("standings-status");
@@ -1038,63 +1051,110 @@ async function loadStandings() {
 
   button.disabled = true;
   button.textContent = "Refreshing…";
-  status.textContent =
-    "Loading NHL standings from ESPN…";
+  status.textContent = "Checking NHL standings…";
+
+  if (!standingsData.length) {
+    container.innerHTML =
+      '<div class="empty">Loading NHL standings…</div>';
+  }
 
   try {
-    const url =
-      `${STANDINGS_URL}?season=${nhlSeasonYear()}&type=2&region=us&lang=en&limit=100`;
+    const currentSeason = nhlSeasonYear();
 
-    const response = await fetch(url, {
-      cache: "no-store"
-    });
-
-    if (!response.ok) {
-      throw new Error(
-        "Standings request failed: " +
-        response.status
-      );
-    }
-
-    const data = await response.json();
-    const entries = collectStandings(data);
-    const all = entries.map(normaliseTeam);
-
-    standingsData = [
-      ...new Map(
-        all.map(team => [
-          team.id ||
-          team.abbreviation ||
-          team.name,
-          team
-        ])
-      ).values()
+    const seasons = [
+      currentSeason,
+      currentSeason - 1,
+      currentSeason - 2
     ];
 
-    if (standingsData.length !== 32) {
+    let selectedTeams = null;
+    let selectedSeason = null;
+
+    for (const season of seasons) {
+      try {
+        status.textContent =
+          `Checking ${season - 1}–${String(season).slice(-2)} NHL standings…`;
+
+        const url =
+          `${STANDINGS_URL}?season=${season}&type=2&region=us&lang=en&limit=100`;
+
+        const response = await fetch(url, {
+          cache: "no-store"
+        });
+
+        if (!response.ok) {
+          throw new Error(
+            `NHL ${season}: HTTP ${response.status}`
+          );
+        }
+
+        const data = await response.json();
+        const entries = collectStandings(data);
+        const all = entries.map(normaliseTeam);
+
+        const uniqueTeams = [
+          ...new Map(
+            all.map(team => [
+              team.id ||
+              team.abbreviation ||
+              team.name,
+              team
+            ])
+          ).values()
+        ];
+
+        if (uniqueTeams.length !== 32) {
+          console.warn(
+            `NHL ${season}: expected 32 teams, found ${uniqueTeams.length}`
+          );
+          continue;
+        }
+
+        selectedTeams = uniqueTeams;
+        selectedSeason = season;
+        break;
+
+      } catch (error) {
+        console.warn(
+          `NHL standings unavailable for ${season}:`,
+          error
+        );
+      }
+    }
+
+    if (!selectedTeams) {
       throw new Error(
-        `ESPN returned ${standingsData.length} NHL teams instead of 32`
+        "No complete NHL standings found"
       );
     }
+
+    standingsData = selectedTeams;
 
     renderStandings();
 
+    const seasonLabel =
+      `${selectedSeason - 1}–${String(selectedSeason).slice(-2)}`;
+
     status.textContent =
-      `Standings updated at ${
-        timeLabel(new Date().toISOString())
-      }.`;
+      `${seasonLabel} NHL regular-season standings` +
+      (selectedSeason !== currentSeason
+        ? " · Previous season"
+        : "");
 
   } catch (error) {
-    container.innerHTML =
-      '<div class="empty">Could not load NHL standings. Please try refreshing.</div>';
-
     status.textContent =
-      "Standings could not be updated.";
+      "NHL standings are temporarily unavailable.";
+
+    if (!standingsData.length) {
+      container.innerHTML =
+        '<div class="empty">Could not load NHL standings. Please try refreshing.</div>';
+    }
 
     console.error(
       "NHL standings error:",
       error
     );
+
   } finally {
     button.disabled = false;
     button.textContent = "Refresh standings";
