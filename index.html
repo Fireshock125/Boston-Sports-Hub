@@ -5,6 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Boston Sports Hub</title>
+
 <style>
 :root {
   color-scheme: dark;
@@ -14,7 +15,9 @@
   --red: #c8102e;
   --blue: #071d38;
 }
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 body {
   margin: 0;
   background: var(--bg);
@@ -27,14 +30,22 @@ header {
   padding: 28px 16px;
   border-bottom: 4px solid var(--red);
 }
-header h1 { margin: 0; font-size: 30px; }
-header p { color: var(--muted); margin-bottom: 0; }
+header h1 {
+  margin: 0;
+  font-size: 30px;
+}
+header p {
+  color: var(--muted);
+  margin-bottom: 0;
+}
 main {
   max-width: 1100px;
   margin: auto;
   padding: 22px 14px;
 }
-h2 { margin-top: 0; }
+h2 {
+  margin-top: 0;
+}
 .teams {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -56,8 +67,15 @@ h2 { margin-top: 0; }
   background: #29394d;
   transform: translateY(-2px);
 }
-.team h3 { margin: 0 0 8px; font-size: 18px; }
-.team p { color: var(--muted); margin: 0; font-size: 14px; }
+.team h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+.team p {
+  color: var(--muted);
+  margin: 0;
+  font-size: 14px;
+}
 .tag {
   display: inline-block;
   color: #dce7f5;
@@ -87,8 +105,13 @@ button {
   font-size: 14px;
   cursor: pointer;
 }
-button:hover { background: #405570; }
-button:disabled { opacity: .6; cursor: wait; }
+button:hover {
+  background: #405570;
+}
+button:disabled {
+  opacity: .6;
+  cursor: wait;
+}
 .game {
   background: var(--panel);
   border-radius: 10px;
@@ -96,10 +119,18 @@ button:disabled { opacity: .6; cursor: wait; }
   margin: 10px 0;
   border-left: 4px solid #64748b;
 }
-.game.nfl { border-left-color: #c8102e; }
-.game.nba { border-left-color: #007a33; }
-.game.mlb { border-left-color: #e0b13d; }
-.game.nhl { border-left-color: #8ab4f8; }
+.game.nfl {
+  border-left-color: #c8102e;
+}
+.game.nba {
+  border-left-color: #007a33;
+}
+.game.mlb {
+  border-left-color: #e0b13d;
+}
+.game.nhl {
+  border-left-color: #8ab4f8;
+}
 .game-top {
   display: flex;
   flex-wrap: wrap;
@@ -136,6 +167,21 @@ button:disabled { opacity: .6; cursor: wait; }
 section {
   margin-bottom: 32px;
 }
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 18px 0;
+}
+.filter {
+  flex: 1 1 100px;
+}
+.filter.active {
+  background: #e7edf6;
+  color: #101722;
+  border-color: #e7edf6;
+  font-weight: bold;
+}
 footer {
   text-align: center;
   padding: 25px;
@@ -143,14 +189,28 @@ footer {
   font-size: 12px;
 }
 @media (max-width: 480px) {
-  main { padding: 17px 10px; }
-  header h1 { font-size: 26px; }
-  .teams { gap: 10px; }
-  .team { padding: 16px 12px; }
-  .team h3 { font-size: 16px; }
+  main {
+    padding: 17px 10px;
+  }
+  header h1 {
+    font-size: 26px;
+  }
+  .teams {
+    gap: 10px;
+  }
+  .team {
+    padding: 16px 12px;
+  }
+  .team h3 {
+    font-size: 16px;
+  }
+  .filter {
+    flex: 1 1 80px;
+  }
 }
 </style>
 </head>
+
 <body>
 
 <header>
@@ -166,28 +226,36 @@ footer {
     </p>
 
     <div class="teams">
-      <a class="team" href="patriots.html" style="--team-colour:#c8102e">
+      <a class="team"
+         href="patriots.html"
+         style="--team-colour:#c8102e">
         <span class="arrow">›</span>
         <span class="tag">NFL</span>
         <h3>New England Patriots</h3>
         <p>American football</p>
       </a>
 
-      <a class="team" href="celtics.html" style="--team-colour:#007a33">
+      <a class="team"
+         href="celtics.html"
+         style="--team-colour:#007a33">
         <span class="arrow">›</span>
         <span class="tag">NBA</span>
         <h3>Boston Celtics</h3>
         <p>Basketball</p>
       </a>
 
-      <a class="team" href="red-sox.html" style="--team-colour:#e0b13d">
+      <a class="team"
+         href="red-sox.html"
+         style="--team-colour:#e0b13d">
         <span class="arrow">›</span>
         <span class="tag">MLB</span>
         <h3>Boston Red Sox</h3>
         <p>Baseball</p>
       </a>
 
-      <a class="team" href="bruins.html" style="--team-colour:#8ab4f8">
+      <a class="team"
+         href="bruins.html"
+         style="--team-colour:#8ab4f8">
         <span class="arrow">›</span>
         <span class="tag">NHL</span>
         <h3>Boston Bruins</h3>
@@ -199,20 +267,61 @@ footer {
   <section id="fixtures">
     <h2>Upcoming fixtures</h2>
     <p class="summary">
-      All four teams in date order. American local time is shown on the left
-      and UK local time on the right, including daylight saving.
+      All four teams in date order. American local time is shown
+      on the left and UK local time on the right,
+      including daylight saving.
     </p>
+
     <button id="refresh">Refresh fixtures</button>
+
     <p id="status" class="summary" aria-live="polite">
       Loading schedules…
     </p>
+
+    <div class="filters"
+         role="group"
+         aria-label="Filter fixtures by sport">
+
+      <button class="filter active"
+              data-league="ALL"
+              aria-pressed="true">
+        All Sports
+      </button>
+
+      <button class="filter"
+              data-league="NFL"
+              aria-pressed="false">
+        NFL
+      </button>
+
+      <button class="filter"
+              data-league="NBA"
+              aria-pressed="false">
+        NBA
+      </button>
+
+      <button class="filter"
+              data-league="MLB"
+              aria-pressed="false">
+        MLB
+      </button>
+
+      <button class="filter"
+              data-league="NHL"
+              aria-pressed="false">
+        NHL
+      </button>
+    </div>
+
     <div id="upcoming">
       <div class="empty">Loading upcoming fixtures…</div>
     </div>
   </section>
 </main>
 
-<footer>Boston Sports Hub · Made for a Boston sports fan in the UK</footer>
+<footer>
+  Boston Sports Hub · Made for a Boston sports fan in the UK
+</footer>
 
 <script>
 "use strict";
@@ -252,6 +361,10 @@ const statusEl = document.getElementById("status");
 const upcomingEl = document.getElementById("upcoming");
 const refreshEl = document.getElementById("refresh");
 
+let allUpcomingGames = [];
+let activeLeague = "ALL";
+let hasLoadedFixtures = false;
+
 function safeText(value) {
   return String(value ?? "").replace(/[&<>"']/g, char => ({
     "&": "&amp;",
@@ -264,7 +377,10 @@ function safeText(value) {
 
 function dateLabel(value) {
   const date = new Date(value);
-  if (!value || Number.isNaN(date.getTime())) return "Date TBC";
+
+  if (!value || Number.isNaN(date.getTime())) {
+    return "Date TBC";
+  }
 
   return new Intl.DateTimeFormat("en-GB", {
     weekday: "short",
@@ -277,7 +393,10 @@ function dateLabel(value) {
 
 function timeLabel(value) {
   const date = new Date(value);
-  if (!value || Number.isNaN(date.getTime())) return "Time TBC";
+
+  if (!value || Number.isNaN(date.getTime())) {
+    return "Time TBC";
+  }
 
   return new Intl.DateTimeFormat("en-GB", {
     hour: "2-digit",
@@ -289,25 +408,33 @@ function timeLabel(value) {
 
 function americanTimeLabel(value, event) {
   const date = new Date(value);
-  if (!value || Number.isNaN(date.getTime())) return "US time TBC";
+
+  if (!value || Number.isNaN(date.getTime())) {
+    return "US time TBC";
+  }
 
   const competition = event?.competitions?.[0];
 
   const venueTimeZone =
+    competition?.venue?.address?.timeZone ||
     competition?.venue?.timeZone ||
-    event?.venue?.timeZone;
+    competition?.venue?.timezone ||
+    event?.venue?.timeZone ||
+    "America/New_York";
 
   try {
     return new Intl.DateTimeFormat("en-US", {
       hour: "numeric",
       minute: "2-digit",
-      timeZone: venueTimeZone || "America/New_York",
+      hour12: true,
+      timeZone: venueTimeZone,
       timeZoneName: "short"
     }).format(date);
   } catch {
     return new Intl.DateTimeFormat("en-US", {
       hour: "numeric",
       minute: "2-digit",
+      hour12: true,
       timeZone: "America/New_York",
       timeZoneName: "short"
     }).format(date);
@@ -322,7 +449,7 @@ function isCompleted(event) {
 
   return status.completed === true ||
     status.state === "post" ||
-    /final|ended|game over/i.test(
+    /final|ended|game over|completed/i.test(
       `${status.description || ""} ${status.detail || ""} ${status.shortDetail || ""}`
     );
 }
@@ -331,11 +458,18 @@ function parseEvent(event, feed) {
   const competition = event.competitions?.[0];
   const competitors = competition?.competitors || [];
 
-  const home = competitors.find(c => c.homeAway === "home");
-  const away = competitors.find(c => c.homeAway === "away");
+  const home = competitors.find(
+    competitor => competitor.homeAway === "home"
+  );
+
+  const away = competitors.find(
+    competitor => competitor.homeAway === "away"
+  );
 
   return {
-    id: `${feed.league}-${event.id || event.date + event.name}`,
+    id:
+      `${feed.league}-${event.id ||
+      event.date + event.name}`,
     league: feed.league,
     team: feed.team,
     date: event.date || competition?.date,
@@ -347,63 +481,271 @@ function parseEvent(event, feed) {
   };
 }
 
-async function loadFeed(feed) {
-  const url =
-    `https://site.api.espn.com/apis/site/v2/sports/${feed.sport}/${feed.path}/teams/${feed.id}/schedule`;
+/*
+  Season identifiers.
 
-  const response = await fetch(url);
-  if (!response.ok) throw new Error(feed.league);
+  NFL and MLB use their starting/calendar year.
+  NBA and NHL use the season's ending year.
+*/
+
+function nflSeasonYear() {
+  const now = new Date();
+  const year = now.getUTCFullYear();
+  const month = now.getUTCMonth();
+
+  return month >= 2 ? year : year - 1;
+}
+
+function nbaSeasonYear() {
+  const now = new Date();
+  const year = now.getUTCFullYear();
+  const month = now.getUTCMonth();
+
+  return month >= 6 ? year + 1 : year;
+}
+
+function nhlSeasonYear() {
+  const now = new Date();
+  const year = now.getUTCFullYear();
+  const month = now.getUTCMonth();
+
+  return month >= 6 ? year + 1 : year;
+}
+
+function scheduleRequests(feed) {
+  const year = new Date().getUTCFullYear();
+
+  if (feed.league === "NFL") {
+    const season = nflSeasonYear();
+
+    return [
+      { season, type: 2 },
+      { season, type: 3 },
+      { season: season + 1, type: 2 }
+    ];
+  }
+
+  if (feed.league === "NBA") {
+    const season = nbaSeasonYear();
+
+    return [
+      { season, type: 2 },
+      { season, type: 3 },
+      { season: season + 1, type: 2 }
+    ];
+  }
+
+  if (feed.league === "MLB") {
+    return [
+      { season: year, type: 2 },
+      { season: year + 1, type: 2 },
+      { season: year, type: 3 }
+    ];
+  }
+
+  if (feed.league === "NHL") {
+    const season = nhlSeasonYear();
+
+    return [
+      { season, type: 2 },
+      { season, type: 3 },
+      { season: season + 1, type: 2 }
+    ];
+  }
+
+  return [];
+}
+
+async function fetchSchedule(feed, request) {
+  const url =
+    `https://site.api.espn.com/apis/site/v2/sports/` +
+    `${feed.sport}/${feed.path}/teams/${feed.id}/schedule` +
+    `?season=${request.season}&seasontype=${request.type}`;
+
+  const response = await fetch(url, {
+    cache: "no-store"
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      `${feed.league} ${request.season}/${request.type}: HTTP ${response.status}`
+    );
+  }
 
   const data = await response.json();
   const events = data.events || data.content?.events || [];
 
+  if (!Array.isArray(events)) {
+    throw new Error("Unexpected schedule response");
+  }
+
   return events
     .map(event => parseEvent(event, feed))
-    .filter(game => game.date);
+    .filter(game =>
+      game.date &&
+      Number.isFinite(new Date(game.date).getTime())
+    );
+}
+
+async function loadFeed(feed) {
+  const requests = scheduleRequests(feed);
+
+  const results = await Promise.allSettled(
+    requests.map(request =>
+      fetchSchedule(feed, request)
+    )
+  );
+
+  const gamesById = new Map();
+  let successful = 0;
+
+  results.forEach((result, index) => {
+    if (result.status === "fulfilled") {
+      successful++;
+
+      result.value.forEach(game => {
+        const previous = gamesById.get(game.id);
+
+        if (
+          !previous ||
+          (game.completed && !previous.completed)
+        ) {
+          gamesById.set(game.id, game);
+        }
+      });
+    } else {
+      console.warn(
+        `${feed.league} schedule request failed:`,
+        requests[index],
+        result.reason
+      );
+    }
+  });
+
+  if (successful === 0) {
+    throw new Error(
+      `All ${feed.league} schedule requests failed`
+    );
+  }
+
+  return {
+    games: [...gamesById.values()],
+    partial: successful < requests.length
+  };
 }
 
 function gameCard(game) {
   const content = `
     <div class="game-top">
-      <span>${safeText(game.league)} · ${safeText(game.team)}</span>
+      <span>
+        ${safeText(game.league)} · ${safeText(game.team)}
+      </span>
       <span>${safeText(dateLabel(game.date))}</span>
     </div>
+
     <div class="matchup">
       ${safeText(game.away)} @ ${safeText(game.home)}
     </div>
+
     <div class="game-bottom">
-      <span>${safeText(americanTimeLabel(game.date, game.event))}</span>
-      <span>UK: ${safeText(timeLabel(game.date))}</span>
-    </div>`;
+      <span>
+        ${safeText(
+          americanTimeLabel(game.date, game.event)
+        )}
+      </span>
+      <span>
+        UK: ${safeText(timeLabel(game.date))}
+      </span>
+    </div>
+  `;
 
   const link = game.link
     ? `<a href="${safeText(game.link)}"
          target="_blank"
          rel="noopener noreferrer"
-         style="color:inherit;text-decoration:none">${content}</a>`
+         style="color:inherit;text-decoration:none">
+         ${content}
+       </a>`
     : content;
 
   return `
     <article class="game ${game.league.toLowerCase()}">
       ${link}
-    </article>`;
+    </article>
+  `;
+}
+
+function renderFixtures() {
+  if (!hasLoadedFixtures) {
+    upcomingEl.innerHTML =
+      '<div class="empty">Loading upcoming fixtures…</div>';
+    return;
+  }
+
+  const games = activeLeague === "ALL"
+    ? allUpcomingGames
+    : allUpcomingGames.filter(
+        game => game.league === activeLeague
+      );
+
+  if (games.length) {
+    upcomingEl.innerHTML =
+      games.map(gameCard).join("");
+    return;
+  }
+
+  const message = activeLeague === "ALL"
+    ? "No upcoming fixtures are currently listed. Try refreshing later."
+    : `No upcoming ${activeLeague} fixtures are currently listed. The team may be in its off-season or its next schedule has not been announced.`;
+
+  upcomingEl.innerHTML =
+    `<div class="empty">${safeText(message)}</div>`;
+}
+
+function setActiveLeague(league) {
+  activeLeague = league;
+
+  document.querySelectorAll(".filter").forEach(
+    button => {
+      const active =
+        button.dataset.league === league;
+
+      button.classList.toggle("active", active);
+      button.setAttribute(
+        "aria-pressed",
+        String(active)
+      );
+    }
+  );
+
+  renderFixtures();
 }
 
 async function loadAll() {
   refreshEl.disabled = true;
-  statusEl.textContent = "Loading schedules from ESPN…";
+  refreshEl.textContent = "Refreshing…";
+  statusEl.textContent =
+    "Loading schedules from ESPN…";
 
   try {
-    const outcomes = await Promise.allSettled(feeds.map(loadFeed));
+    const outcomes = await Promise.allSettled(
+      feeds.map(loadFeed)
+    );
 
     let games = [];
     const errors = [];
+    const partialFeeds = [];
 
     outcomes.forEach((result, index) => {
       if (result.status === "fulfilled") {
-        games.push(...result.value);
+        games.push(...result.value.games);
+
+        if (result.value.partial) {
+          partialFeeds.push(feeds[index].league);
+        }
       } else {
         errors.push(feeds[index].league);
+
         console.error(
           `${feeds[index].league} schedule error:`,
           result.reason
@@ -411,51 +753,100 @@ async function loadAll() {
       }
     });
 
+    if (errors.length === feeds.length) {
+      throw new Error(
+        "All four league schedules failed"
+      );
+    }
+
     games = [
-      ...new Map(games.map(game => [game.id, game])).values()
+      ...new Map(
+        games.map(game => [game.id, game])
+      ).values()
     ];
 
     const now = Date.now();
 
-    const upcoming = games
+    allUpcomingGames = games
       .filter(game =>
         !game.completed &&
         new Date(game.date).getTime() >= now
       )
-      .sort((a, b) => new Date(a.date) - new Date(b.date));
+      .sort(
+        (a, b) =>
+          new Date(a.date) - new Date(b.date)
+      );
 
-    upcomingEl.innerHTML = upcoming.length
-      ? upcoming.map(gameCard).join("")
-      : '<div class="empty">No upcoming fixtures are currently listed. Try refreshing later.</div>';
+    hasLoadedFixtures = true;
+    renderFixtures();
 
     const loaded = feeds.length - errors.length;
-    const updated = timeLabel(new Date().toISOString());
+    const updated = timeLabel(
+      new Date().toISOString()
+    );
 
-    if (loaded === feeds.length) {
+    if (
+      loaded === feeds.length &&
+      partialFeeds.length === 0
+    ) {
       statusEl.textContent =
         `All four league feeds loaded at ${updated}.`;
-    } else if (loaded > 0) {
-      statusEl.textContent =
-        `${loaded} of 4 league feeds loaded at ${updated}. Unavailable: ${errors.join(", ")}.`;
     } else {
+      const warnings = [];
+
+      if (errors.length) {
+        warnings.push(
+          `Unavailable: ${errors.join(", ")}`
+        );
+      }
+
+      if (partialFeeds.length) {
+        warnings.push(
+          `Some schedule requests unavailable: ${partialFeeds.join(", ")}`
+        );
+      }
+
       statusEl.textContent =
-        "The sports feeds could not be loaded. Check your connection and try again.";
+        `${loaded} of 4 league feeds loaded at ${updated}. ` +
+        warnings.join(". ") + ".";
     }
 
   } catch (error) {
     statusEl.textContent =
-      "Unable to load schedules. Please try again.";
+      "Unable to update schedules. Please try again.";
 
-    upcomingEl.innerHTML =
-      '<div class="empty">Fixtures could not be loaded. Check your connection and refresh.</div>';
+    if (!hasLoadedFixtures) {
+      upcomingEl.innerHTML =
+        '<div class="empty">Fixtures could not be loaded. Check your connection and refresh.</div>';
+    }
 
-    console.error("Boston Sports Hub schedule error:", error);
+    console.error(
+      "Boston Sports Hub schedule error:",
+      error
+    );
+
   } finally {
     refreshEl.disabled = false;
+    refreshEl.textContent = "Refresh fixtures";
   }
 }
 
+/* Filter buttons */
+
+document.querySelectorAll(".filter").forEach(
+  button => {
+    button.addEventListener("click", () => {
+      setActiveLeague(button.dataset.league);
+    });
+  }
+);
+
+/* Refresh button */
+
 refreshEl.addEventListener("click", loadAll);
+
+/* Load homepage */
+
 loadAll();
 </script>
 
