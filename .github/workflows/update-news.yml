@@ -1,0 +1,38 @@
+
+name: Update Patriots News
+
+on:
+  schedule:
+    - cron: "17 */3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-news:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Collect latest Patriots news
+        run: python scripts/update_news.py
+
+      - name: Save updated news
+        run: |
+          if [ -f patriots-news.json ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add patriots-news.json
+            if ! git diff --cached --quiet; then
+              git commit -m "Update Patriots news"
+              git push
+            fi
+          fi
