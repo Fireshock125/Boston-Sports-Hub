@@ -139,8 +139,8 @@ def read_feed(source, url, keywords):
             item.findtext("description")
         )
 
-        # ESPN's feeds cover the whole league.
-        # Only keep articles relevant to this team.
+        # ESPN feeds cover the entire league.
+        # Keep only articles about this team.
         if source == "ESPN":
             combined = (
                 title + " " + description
@@ -163,8 +163,8 @@ def read_feed(source, url, keywords):
                 source_element.text
             )
 
-        # Google News often includes the publisher
-        # at the end of the headline.
+        # Google News sometimes adds the publisher
+        # to the end of the headline.
         if (
             source == "Google News"
             and " - " in title
@@ -240,7 +240,7 @@ def update_team(team_key, team):
         reverse=True
     )[:MAX_ARTICLES]
 
-    # Preserve existing news if the feeds fail.
+    # Keep previous news if all feeds fail.
     if not latest:
         print(
             f"No new {team['name']} articles found. "
@@ -276,7 +276,7 @@ def update_team(team_key, team):
 
 def main():
     for team_key, team in TEAMS.items():
-        update_team(team)
+        update_team(team_key, team)
 
 
 if __name__ == "__main__":
