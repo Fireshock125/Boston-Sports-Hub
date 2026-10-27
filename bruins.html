@@ -216,6 +216,40 @@ footer {
     flex: 1 1 100%;
   }
 }
+
+/* Bruins news */
+.news-list { display: grid; gap: 12px; }
+.news-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  padding: 15px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+  border-radius: 10px;
+  color: white;
+  text-decoration: none;
+}
+.news-card:hover { background: #292929; text-decoration: none; }
+.news-image {
+  width: 130px;
+  height: 95px;
+  flex-shrink: 0;
+  object-fit: cover;
+  border-radius: 7px;
+}
+.news-content { min-width: 0; }
+.news-meta { color: var(--muted); font-size: 12px; margin-bottom: 7px; }
+.news-title { font-size: 17px; line-height: 1.35; font-weight: bold; margin: 0 0 7px; }
+.news-description { color: var(--muted); font-size: 13px; line-height: 1.5; margin: 0; }
+.news-read { color: var(--accent); font-size: 12px; margin-top: 9px; }
+@media (max-width: 480px) {
+  .news-card { gap: 10px; padding: 11px; }
+  .news-image { width: 100px; height: 85px; }
+  .news-title { font-size: 15px; }
+  .news-description { font-size: 12px; }
+}
 </style>
 </head>
 
@@ -231,6 +265,7 @@ footer {
   <a href="#fixtures">Fixtures</a>
   <a href="#results">Results</a>
   <a href="#standings">League standings</a>
+  <a href="#news">News</a>
 </nav>
 
 <main>
@@ -297,9 +332,22 @@ footer {
       <div class="empty">Loading NHL standings…</div>
     </div>
   </section>
+
+  <section id="news">
+    <h2>Latest Bruins News</h2>
+    <p class="summary">
+      The latest 10 Boston Bruins headlines from multiple sports publications.
+      Select an article to read the full story.
+    </p>
+    <button id="refresh-news">Refresh news</button>
+    <p id="news-status" class="summary" aria-live="polite">Loading news…</p>
+    <div id="news-list" class="news-list">
+      <div class="empty">Loading Bruins news…</div>
+    </div>
+  </section>
 </main>
 
-<footer>Boston Sports Hub · Data provided by ESPN</footer>
+<footer>Boston Sports Hub · Sports data provided by ESPN · News credited to original publishers</footer>
 
 <script>
 "use strict";
@@ -1186,6 +1234,79 @@ $("refresh-standings").addEventListener(
 
 loadSchedule();
 loadStandings();
+
+/* Latest Bruins news */
+function validNewsUrl(value) {
+  try {
+    const url = new URL(String(value));
+    return ["https:", "http:"].includes(url.protocol) ? url.href : "";
+  } catch {
+    return "";
+  }
+}
+
+function newsDateLabel(value) {
+  const date = new Date(value);
+  if (!value || Number.isNaN(date.getTime())) return "Date unavailable";
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "numeric", month: "short", year: "numeric",
+    timeZone: "Europe/London"
+  }).format(date);
+}
+
+function newsCard(article) {
+  const url = validNewsUrl(article.url);
+  if (!url || !article.title) return "";
+  const image = validNewsUrl(article.image);
+  const imageHtml = image
+    ? `<img class="news-image" src="${safeText(image)}" alt="" loading="lazy" referrerpolicy="no-referrer">`
+    : "";
+  return `
+    <a class="news-card" href="${safeText(url)}" target="_blank" rel="noopener noreferrer">
+      ${imageHtml}
+      <div class="news-content">
+        <div class="news-meta">${safeText(article.source || "Sports news")} · ${safeText(newsDateLabel(article.published))}</div>
+        <h3 class="news-title">${safeText(article.title)}</h3>
+        ${article.description ? `<p class="news-description">${safeText(article.description)}</p>` : ""}
+        <div class="news-read">Read full article ↗</div>
+      </div>
+    </a>`;
+}
+
+async function loadNews() {
+  const button = $("refresh-news");
+  const status = $("news-status");
+  const container = $("news-list");
+  button.disabled = true;
+  button.textContent = "Refreshing…";
+  status.textContent = "Loading latest Bruins headlines…";
+  try {
+    const response = await fetch(`bruins-news.json?updated=${Date.now()}`, { cache: "no-store" });
+    if (!response.ok) throw new Error("News file not available");
+    const data = await response.json();
+    if (!Array.isArray(data.articles)) throw new Error("Invalid news file");
+    const articles = data.articles
+      .filter(article => article && article.title && validNewsUrl(article.url))
+      .sort((a, b) => (Date.parse(b.published) || 0) - (Date.parse(a.published) || 0))
+      .slice(0, 10);
+    container.innerHTML = articles.length
+      ? articles.map(newsCard).join("")
+      : '<div class="empty">No Bruins news is currently available.</div>';
+    status.textContent = data.updated
+      ? `Latest news collection: ${newsDateLabel(data.updated)}.`
+      : "Latest available headlines.";
+  } catch (error) {
+    container.innerHTML = '<div class="empty">Bruins news is not available yet. The automatic news feed still needs to be set up.</div>';
+    status.textContent = "News feed unavailable.";
+    console.error("Bruins news error:", error);
+  } finally {
+    button.disabled = false;
+    button.textContent = "Refresh news";
+  }
+}
+
+$("refresh-news").addEventListener("click", loadNews);
+loadNews();
 </script>
 
 </body>
