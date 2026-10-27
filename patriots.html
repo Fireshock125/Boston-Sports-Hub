@@ -166,6 +166,58 @@ section { margin-bottom: 32px; scroll-margin-top: 80px; }
   font-size: 13px;
   line-height: 1.5;
 }
+
+/* Latest news */
+.news-list {
+  display: grid;
+  gap: 12px;
+}
+.news-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  background: var(--panel);
+  border: 1px solid #354357;
+  border-radius: 10px;
+  padding: 14px;
+  color: white;
+  text-decoration: none;
+}
+.news-card:hover {
+  background: #29394d;
+  border-color: #60738a;
+}
+.news-image {
+  width: 130px;
+  height: 95px;
+  object-fit: cover;
+  flex-shrink: 0;
+  border-radius: 7px;
+  background: #304158;
+}
+.news-content { min-width: 0; }
+.news-meta {
+  color: var(--muted);
+  font-size: 12px;
+  margin-bottom: 7px;
+}
+.news-title {
+  font-size: 17px;
+  line-height: 1.35;
+  font-weight: bold;
+  margin: 0 0 7px;
+}
+.news-description {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0;
+}
+.news-footer {
+  margin-top: 9px;
+  color: #b9d5ff;
+  font-size: 12px;
+}
 footer {
   text-align: center;
   padding: 25px;
@@ -175,6 +227,10 @@ footer {
 @media (max-width: 480px) {
   main { padding: 17px 10px; }
   header h1 { font-size: 26px; }
+  .news-card { gap: 10px; padding: 11px; }
+  .news-image { width: 100px; height: 85px; }
+  .news-title { font-size: 15px; }
+  .news-description { font-size: 12px; }
 }
 </style>
 </head>
@@ -190,6 +246,7 @@ footer {
   <a href="#fixtures">Fixtures</a>
   <a href="#results">Results</a>
   <a href="#leagues">League standings</a>
+  <a href="#news">News</a>
 </nav>
 
 <main>
@@ -240,9 +297,24 @@ footer {
       <div class="empty">Loading NFL standings…</div>
     </div>
   </section>
+
+  <section id="news">
+    <h2>Latest Patriots News</h2>
+    <p class="summary">
+      The latest New England Patriots headlines from multiple sports
+      publications. Select an article to read the full story.
+    </p>
+    <button id="refresh-news">Refresh news</button>
+    <p id="news-status" class="summary" aria-live="polite">
+      Loading news…
+    </p>
+    <div id="news-list" class="news-list">
+      <div class="empty">Loading Patriots news…</div>
+    </div>
+  </section>
 </main>
 
-<footer>Boston Sports Hub · Data provided by ESPN</footer>
+<footer>Boston Sports Hub · Sports data provided by ESPN · News credited to original publishers</footer>
 
 <script>
 "use strict";
@@ -260,25 +332,16 @@ const STANDINGS_BASE =
 
 const $ = id => document.getElementById(id);
 
-/*
-  NFL seasons start in one calendar year and finish
-  in the following January or February.
-
-  Before March, use the previous year's season.
-  From March onwards, use the current year's season.
-*/
 function nflSeasonYear() {
   const now = new Date();
   const year = now.getFullYear();
   const month = now.getMonth();
-
   return month < 2 ? year - 1 : year;
 }
 
 function scheduleRequests() {
   const season = nflSeasonYear();
   const previous = season - 1;
-
   return [
     { year: season, type: 2 },
     { year: season, type: 3 },
@@ -300,7 +363,6 @@ function safeText(value) {
 function dateLabel(value) {
   const date = new Date(value);
   if (!value || Number.isNaN(date.getTime())) return "Date TBC";
-
   return new Intl.DateTimeFormat("en-GB", {
     weekday: "short",
     day: "numeric",
@@ -313,7 +375,6 @@ function dateLabel(value) {
 function timeLabel(value) {
   const date = new Date(value);
   if (!value || Number.isNaN(date.getTime())) return "Time TBC";
-
   return new Intl.DateTimeFormat("en-GB", {
     hour: "2-digit",
     minute: "2-digit",
@@ -325,9 +386,7 @@ function timeLabel(value) {
 function americanTimeLabel(value, event) {
   const date = new Date(value);
   if (!value || Number.isNaN(date.getTime())) return "US time TBC";
-
   const competition = event?.competitions?.[0];
-
   const venueTimeZone =
     competition?.venue?.timeZone ||
     event?.venue?.timeZone ||
@@ -357,7 +416,6 @@ function isCompleted(event) {
     event.status?.type ||
     event.competitions?.[0]?.status?.type ||
     {};
-
   return status.completed === true ||
     status.state === "post" ||
     /final|ended|game over/i.test(
@@ -367,7 +425,6 @@ function isCompleted(event) {
 
 function scoreNumber(value) {
   if (value === null || value === undefined) return null;
-
   if (typeof value === "object") {
     value = value.displayValue ??
       value.value ??
@@ -375,9 +432,7 @@ function scoreNumber(value) {
       value.text ??
       null;
   }
-
   if (value === null || value === undefined || value === "") return null;
-
   const number = Number(value);
   return Number.isFinite(number) ? number : null;
 }
@@ -385,7 +440,6 @@ function scoreNumber(value) {
 function parseEvent(event) {
   const competition = event.competitions?.[0];
   const competitors = competition?.competitors || [];
-
   const home = competitors.find(c => c.homeAway === "home");
   const away = competitors.find(c => c.homeAway === "away");
 
@@ -394,13 +448,10 @@ function parseEvent(event) {
     c.team?.displayName === TEAM_NAME ||
     c.team?.name === "Patriots"
   );
-
   const opponent = competitors.find(c => c !== ownTeam);
   const completed = isCompleted(event);
-
   const ownScore = scoreNumber(ownTeam?.score);
   const opponentScore = scoreNumber(opponent?.score);
-
   let outcome = "";
 
   if (completed && ownScore !== null && opponentScore !== null) {
@@ -466,22 +517,17 @@ function gameCard(game, resultMode = false) {
 async function fetchSchedule(request) {
   const url =
     `${SCHEDULE_BASE}?season=${request.year}&seasontype=${request.type}`;
-
   const response = await fetch(url, { cache: "no-store" });
-
   if (!response.ok) {
     throw new Error(
       `Schedule ${request.year}/${request.type}: HTTP ${response.status}`
     );
   }
-
   const data = await response.json();
   const events = data.events || data.content?.events || [];
-
   if (!Array.isArray(events)) {
     throw new Error("Unexpected schedule response");
   }
-
   return events.map(parseEvent).filter(game =>
     game.date &&
     Number.isFinite(new Date(game.date).getTime())
@@ -498,17 +544,14 @@ async function loadSchedule() {
     const responses = await Promise.allSettled(
       requests.map(fetchSchedule)
     );
-
     const gamesById = new Map();
     let successful = 0;
 
     responses.forEach((result, index) => {
       if (result.status === "fulfilled") {
         successful++;
-
         result.value.forEach(game => {
           const previous = gamesById.get(game.id);
-
           if (!previous ||
               (game.completed && !previous.completed)) {
             gamesById.set(game.id, game);
@@ -529,7 +572,6 @@ async function loadSchedule() {
 
     const games = [...gamesById.values()]
       .sort((a, b) => new Date(a.date) - new Date(b.date));
-
     const now = Date.now();
 
     const upcoming = games.filter(game =>
@@ -560,13 +602,10 @@ async function loadSchedule() {
   } catch (error) {
     $("fixture-status").textContent =
       "Could not load the schedule. Please try again.";
-
     $("fixtures-list").innerHTML =
       '<div class="empty">Fixtures could not be loaded. Check your connection and refresh.</div>';
-
     $("results-list").innerHTML =
       '<div class="empty">Results could not be loaded. Check your connection and refresh.</div>';
-
     console.error("Patriots schedule error:", error);
   } finally {
     button.disabled = false;
@@ -591,7 +630,6 @@ let currentStandingsView = "overall";
 
 function getStatsArray(entry) {
   if (Array.isArray(entry.stats)) return entry.stats;
-
   if (entry.stats && typeof entry.stats === "object") {
     return Object.entries(entry.stats).map(([name, value]) => ({
       name,
@@ -601,7 +639,6 @@ function getStatsArray(entry) {
         : String(value)
     }));
   }
-
   return [];
 }
 
@@ -611,7 +648,6 @@ function statValue(stats, aliases) {
       String(stat.name || "").toLowerCase() === alias.toLowerCase() ||
       String(stat.abbreviation || "").toLowerCase() === alias.toLowerCase()
     );
-
     if (found) return found.displayValue ?? found.value ?? "—";
   }
   return "—";
@@ -623,7 +659,6 @@ function statNumber(stats, aliases) {
       String(stat.name || "").toLowerCase() === alias.toLowerCase() ||
       String(stat.abbreviation || "").toLowerCase() === alias.toLowerCase()
     );
-
     if (found) {
       const number = Number(found.value ?? found.displayValue);
       if (Number.isFinite(number)) return number;
@@ -636,7 +671,6 @@ function normaliseTeam(entry) {
   const team = entry.team || {};
   const stats = getStatsArray(entry);
   const abbreviation = String(team.abbreviation || "").toUpperCase();
-
   return {
     id: String(team.id || ""),
     name: team.displayName || team.name || "Unknown team",
@@ -673,7 +707,6 @@ function isPatriots(team) {
 
 function makeStandingsTable(teams) {
   const ordered = sortStandings(teams);
-
   if (!ordered.length) {
     return '<div class="empty">No teams were found for this table.</div>';
   }
@@ -717,25 +750,21 @@ function renderStandings() {
         Ranked by winning percentage, then wins and losses.
       </p>
       ${makeStandingsTable(standingsData)}`;
-
   } else if (currentStandingsView === "conference") {
     container.innerHTML = ["AFC", "NFC"].map(conference => {
       const teams = standingsData.filter(
         team => team.conference === conference
       );
-
       return `
         <h3 class="standings-heading">${conference}</h3>
         ${makeStandingsTable(teams)}`;
     }).join("");
-
   } else {
     container.innerHTML =
       Object.entries(NFL_DIVISIONS).map(([division, abbreviations]) => {
         const teams = standingsData.filter(team =>
           abbreviations.includes(team.abbreviation)
         );
-
         return `
           <h3 class="standings-heading">${division}</h3>
           ${makeStandingsTable(teams)}`;
@@ -752,7 +781,6 @@ function renderStandings() {
 async function loadStandings() {
   const button = $("refresh-standings");
   const container = $("standings-list");
-
   button.disabled = true;
   button.textContent = "Refreshing…";
 
@@ -763,12 +791,10 @@ async function loadStandings() {
 
   try {
     const season = nflSeasonYear();
-
     const url =
       `${STANDINGS_BASE}?region=us&lang=en&season=${season}&type=2&limit=100`;
 
     const response = await fetch(url, { cache: "no-store" });
-
     if (!response.ok) {
       throw new Error("Standings request failed: " + response.status);
     }
@@ -786,7 +812,6 @@ async function loadStandings() {
 
       for (const entries of groupsToRead) {
         if (!Array.isArray(entries)) continue;
-
         for (const entry of entries) {
           if (entry.team?.abbreviation) {
             found.push(normaliseTeam(entry));
@@ -797,20 +822,17 @@ async function loadStandings() {
       if (Array.isArray(group.children)) {
         group.children.forEach(collect);
       }
-
       if (Array.isArray(group.standings?.children)) {
         group.standings.children.forEach(collect);
       }
     }
 
     collect(data);
-
     const unique = new Map();
 
     found.forEach(team => {
       if (team.abbreviation) {
         const previous = unique.get(team.abbreviation);
-
         if (!previous ||
             team.sortWins >= 0 && previous.sortWins < 0) {
           unique.set(team.abbreviation, team);
@@ -819,7 +841,6 @@ async function loadStandings() {
     });
 
     const teams = [...unique.values()];
-
     if (teams.length !== 32) {
       throw new Error(`Expected 32 teams; found ${teams.length}`);
     }
@@ -829,7 +850,6 @@ async function loadStandings() {
         const team = teams.find(
           item => item.abbreviation === abbreviation
         );
-
         if (team) {
           team.division = division;
           team.conference = division.split(" ")[0];
@@ -845,12 +865,128 @@ async function loadStandings() {
       container.innerHTML =
         '<div class="empty">Could not load NFL standings. Please try refreshing.</div>';
     }
-
     console.error("NFL standings error:", error);
-
   } finally {
     button.disabled = false;
     button.textContent = "Refresh standings";
+  }
+}
+
+/* LATEST PATRIOTS NEWS */
+
+function validHttpUrl(value) {
+  try {
+    const url = new URL(String(value));
+    return url.protocol === "https:" || url.protocol === "http:"
+      ? url.href
+      : "";
+  } catch {
+    return "";
+  }
+}
+
+function newsDateLabel(value) {
+  const date = new Date(value);
+  if (!value || Number.isNaN(date.getTime())) return "Date unavailable";
+
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "Europe/London"
+  }).format(date);
+}
+
+function newsCard(article) {
+  const url = validHttpUrl(article.url);
+  if (!url || !article.title) return "";
+
+  const image = validHttpUrl(article.image);
+
+  const imageHtml = image
+    ? `<img class="news-image"
+            src="${safeText(image)}"
+            alt=""
+            loading="lazy"
+            referrerpolicy="no-referrer"
+            onerror="this.remove()">`
+    : "";
+
+  return `
+    <a class="news-card"
+       href="${safeText(url)}"
+       target="_blank"
+       rel="noopener noreferrer">
+      ${imageHtml}
+      <div class="news-content">
+        <div class="news-meta">
+          ${safeText(article.source || "Sports news")}
+          · ${safeText(newsDateLabel(article.published))}
+        </div>
+        <h3 class="news-title">${safeText(article.title)}</h3>
+        ${article.description
+          ? `<p class="news-description">${safeText(article.description)}</p>`
+          : ""}
+        <div class="news-footer">Read full article ↗</div>
+      </div>
+    </a>`;
+}
+
+async function loadNews() {
+  const button = $("refresh-news");
+  const status = $("news-status");
+  const container = $("news-list");
+
+  button.disabled = true;
+  button.textContent = "Refreshing…";
+  status.textContent = "Loading latest Patriots headlines…";
+
+  try {
+    const response = await fetch(
+      `patriots-news.json?updated=${Date.now()}`,
+      { cache: "no-store" }
+    );
+
+    if (!response.ok) {
+      throw new Error("News file not available");
+    }
+
+    const data = await response.json();
+
+    if (!Array.isArray(data.articles)) {
+      throw new Error("Invalid news file");
+    }
+
+    const articles = data.articles
+      .filter(article =>
+        article &&
+        article.title &&
+        validHttpUrl(article.url)
+      )
+      .sort((a, b) =>
+        (Date.parse(b.published) || 0) -
+        (Date.parse(a.published) || 0)
+      )
+      .slice(0, 10);
+
+    container.innerHTML = articles.length
+      ? articles.map(newsCard).join("")
+      : '<div class="empty">No Patriots news is currently available.</div>';
+
+    status.textContent = data.updated
+      ? `Latest news collection: ${newsDateLabel(data.updated)}.`
+      : "Latest available headlines.";
+
+  } catch (error) {
+    container.innerHTML =
+      '<div class="empty">Patriots news is not available yet. The automatic news feed still needs to be set up.</div>';
+
+    status.textContent = "News feed unavailable.";
+    console.error("Patriots news error:", error);
+
+  } finally {
+    button.disabled = false;
+    button.textContent = "Refresh news";
   }
 }
 
@@ -863,9 +999,11 @@ document.querySelectorAll(".standings-tab").forEach(button => {
 
 $("refresh-fixtures").addEventListener("click", loadSchedule);
 $("refresh-standings").addEventListener("click", loadStandings);
+$("refresh-news").addEventListener("click", loadNews);
 
 loadSchedule();
 loadStandings();
+loadNews();
 </script>
 
 </body>
