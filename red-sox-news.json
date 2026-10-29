@@ -1,68 +1,60 @@
 {
-  "updated": "2026-10-29T18:58:33.853891+00:00",
+  "updated": "2026-10-29T21:51:18.860822+00:00",
   "articles": [
     {
-      "title": "Boston Red Sox Make First Trade of Offseason, Sending Outfielder to Athletics",
-      "description": "Boston Red Sox Make First Trade of Offseason, Sending Outfielder to Athletics roundtable.io",
-      "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxOWjdUX0lrZmt6Z3FPQUpQamZ6Y2hHM1pEVTJJcEdMY1BXRFRvUGFiTlFrV1R4TUhLTkpNc1BYdnFtV1I4Vks1NVRUSGlKRUdfb0dKVUxlejRMUG5ySXNfdTVZampGcWh0SFphaFhlWG9yMlZxSjZabkhudjJiSHVjNnkzbWJiNDdhLTFuck05WDdMN0NKOWNPVVB2bW03VEp1ZEtlV2dVX0lacGFKc09wbzdjblBpQ2ZKZWNUN0daRQ?oc=5",
-      "source": "roundtable.io",
-      "published": "2026-10-29T18:54:13+00:00",
-      "image": ""
-    },
-    {
-      "title": "Red Sox make first trade of 2026 off-season",
-      "description": "Red Sox make first trade of 2026 off-season 98.5 The Sports Hub",
-      "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxNc0ZTQTNZM3Z5R2RGd2NOOVpVMWdlMWt3QzVEa0dyMHpuTkhWMzJPNWh3RVA2Xy12RXJlSnFvZDBPTGprYTV4ODZUWm12RXZHYmFzak84TjJMUklqbHI3bzJYSDZTMl9yTHdGbkJOcnFGMEQtcjd3REkzWnIxSk5iYXlB?oc=5",
-      "source": "98.5 The Sports Hub",
-      "published": "2026-10-29T18:34:40+00:00",
-      "image": ""
-    },
-    {
-      "title": "Boston Red Sox Pull Off First Trade to Begin MLB Offseason",
-      "description": "Boston Red Sox Pull Off First Trade to Begin MLB Offseason Yardbarker",
-      "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxNdnhGN2VRZzJTRElacnJULXdrdDFndnU0T2xjckpxUXZQZ0c0dWRpQUNNMlgyMF9wR1pZQjB2TFZqNENXZW9qQUVIcFR6NmJTa1pfNkdhMEZDUVVDbFUtRHREZ0xiLXlKLVEzeG5iZlFvRjZFTFgyMWhCSmVHM1JZV3F1TzRaR1JQTjkzaGZfUGcwcjBLSDhFQldJa2d5bFl2MERaaGkwcVpib0V0YlZUWUF4YkZ6dDg?oc=5",
-      "source": "Yardbarker",
-      "published": "2026-10-29T18:31:02+00:00",
-      "image": ""
-    },
-    {
-      "title": "Red Sox Trade OF Nate Eaton to Athletics",
-      "description": "Red Sox Trade OF Nate Eaton to Athletics MLB.com",
-      "url": "https://news.google.com/rss/articles/CBMic0FVX3lxTFBjVTJPTlBrSlc1MGxqOHhzU1IxMHFHQndqSmJzRFdfbmZCb0hkT29uVW05akpUREhGZzdzRmJOUzBPU0cyLXFZNHU1akhvY2FTa2NaSEtsaS00UEE2X0NfbXFFZGFjcVd6WGxSNlRBOWxINXfSAYsBQVVfeXFMTzhtR09sX3ZkZE5OdmdvQ1pYeW1nN2ltOGIwbUpuTjRyamRkVEVBN1FXQzlqQTBiM1lSMG1BZFFyY2I3SVRWLWpHV2RLTnlrUWUtM1AzU1BIeUVEVWxmSzFUaVRKemtBT19EZFAtajhhOXBKV1ZKMEhkRnpoMVA0bVF6N1Y2dTJvNDMtcw?oc=5",
-      "source": "MLB.com",
-      "published": "2026-10-29T18:22:13+00:00",
-      "image": ""
-    },
-    {
       "title": "Trade: Boston Red Sox Send 29-Year-Old to Athletics After World Series",
-      "description": "Trade: Boston Red Sox Send 29-Year-Old to Athletics After World Series Heavy.com",
-      "url": "https://news.google.com/rss/articles/CBMigAFBVV95cUxQYnVidnRzYjJ5OGFuVklDMGpPR2hDY1dqQ0dya0Q5Ql9QOUc1VEJaWGRMcUctNU1KOTNGc2NKdjhuZU1CS1FrLUUxUE5iQjRjeGptdTl2UzRVQ2s5WHA0YlV2c2lvaTM5cHhDNVRqNDFWaGpUVml0NXJJR0tTYlppcQ?oc=5",
-      "source": "Heavy.com",
-      "published": "2026-10-29T18:17:34+00:00",
-      "image": ""
-    },
-    {
-      "title": "Source: Red Sox trade outfielder to Athletics in first deal of offseason",
-      "description": "Source: Red Sox trade outfielder to Athletics in first deal of offseason Boston Herald",
-      "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxQSEh0NXdiQV8yLURVOG9VR09GXzItSHVYdG5FcGZ6ejBndTd0YUNYRHJPeUhUNXc0cThqc0FGcHZhQWF0NGRxVmk1VHJCc0UzLWhZRV8yejhGNnJxQ0VCS2Z2eF8tRjdtV2xfOUYzLUVZRzBjN1hGZk5JZmhpXzNEUlVWeHI3UUQ3cFhTWUlmLTdlSDlwTC1LYTFDdjRjS19SNzZIUm4wWTV3NEw1MHBRc2dB?oc=5",
-      "source": "Boston Herald",
-      "published": "2026-10-29T18:10:20+00:00",
-      "image": ""
-    },
-    {
-      "title": "Red Sox make trade, send 29-year-old outfielder to Athletics",
-      "description": "Red Sox make trade, send 29-year-old outfielder to Athletics The Big Lead",
-      "url": "https://news.google.com/rss/articles/CBMib0FVX3lxTFBpaTNsVEQ2ZG1PSnNZcmg1R0d6Vk0za3h5eEJ1LUprN0tzOFcwM1p4Vkg4SU5Xb3RGbFpWYjJEREtWX0FCWTZnTGJQdUJUd08xZjVsUkZqOGVuLUdPUklIMEtlRzlCVm4wTVBwLXJkbw?oc=5",
-      "source": "The Big Lead",
-      "published": "2026-10-29T18:06:10+00:00",
+      "description": "Trade: Boston Red Sox Send 29-Year-Old to Athletics After World Series Yahoo Sports",
+      "url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE9NbHhIUmtqM3lYdEFKcmg4c2IxM3QwcTI1QldYOEFvM3ZfY1Z4TkM0X1pRNzl1ZGZxbFoxcXNFb1pUalZCZHh0clpWYnNUcW1KVm91SlNhOHVZSmdvYm9ET1dhakZyYUZBbWVYcVJoM3ZJX2dCU2pFMnNCay1EWEk?oc=5",
+      "source": "Yahoo Sports",
+      "published": "2026-10-29T20:59:46+00:00",
       "image": ""
     },
     {
       "title": "Trade: Boston Red Sox Send 4-Year MLB Player to Athletics After World Series",
-      "description": "Trade: Boston Red Sox Send 4-Year MLB Player to Athletics After World Series Heavy.com",
-      "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxOb2V3U0JsQllCVkZWSGZlNjNVYWVoQXJ1a0JLSTZtTENTWGZYcU92TXFPNU0xU1ZEeGdNZ3ZRZ3JyRE5DT01Sa3NjV3dKV0NQRGhGdHhncTY1MWFXVV9WN2tLZUozb3k3MEFBZ2p5NUc2bEFSdy1EaUtYbmpxZTc0MTNzVzhZaG1l?oc=5",
-      "source": "Heavy.com",
-      "published": "2026-10-29T18:02:22+00:00",
+      "description": "Trade: Boston Red Sox Send 4-Year MLB Player to Athletics After World Series Yahoo Sports",
+      "url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE1aTldrZ2RFMk1DVkdaTHlJY09sVmZ4OG9HWmVrVHd6QzlBcXp4MERVTW9VMjQ0ZzlBYWhNTlc5MzNBUjRNSW1MaEhtdVZXdUJVTEUwbGtXY0l3MXFWTTNaeWxRbGcwb09GcVh5c0RnLWhkbmRjZWNEeDFvY2hHVTg?oc=5",
+      "source": "Yahoo Sports",
+      "published": "2026-10-29T20:59:46+00:00",
+      "image": ""
+    },
+    {
+      "title": "Red Sox kick off offseason by trading Nate Eaton to A’s amid roster crunch",
+      "description": "Red Sox kick off offseason by trading Nate Eaton to A’s amid roster crunch Boston.com",
+      "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxPcFMzT2ZjOWk2QndoMldkWXJ0MFJBVmctc2RNS0JKNWt4N0dUdV9aQmxnMXhxNVk4YUNBSkhsZnNycVV3THFYdWtqMmlrYmlZNW9PTXVxUHJlNkh2V1BPR0poZkk2TWF5M3FxTE9Xa1JTbHkwNkFJXzRPZjd4TXNtbmVqMmJ0aFZpMEZMeWRLdXcybmU5T2NkTmljMjN3UmYzaXJfaVRWaWdENWNrUGxXTkdZZlA5enpKVVE?oc=5",
+      "source": "Boston.com",
+      "published": "2026-10-29T20:53:00+00:00",
+      "image": ""
+    },
+    {
+      "title": "In first trade of MLB offseason, Red Sox deal Nate Eaton to Athletics",
+      "description": "In first trade of MLB offseason, Red Sox deal Nate Eaton to Athletics The New York Times",
+      "url": "https://news.google.com/rss/articles/CBMikAFBVV95cUxPNTRqTUZEUEU3Rk1GRW1seWlmd2FacEtfeUdaZm4tZGl0cjV1YTNGZWRqanMtVFFXVVg4Q0haTlJDVjVydWNmNldCZ0pFdUFYcUtWV1V3MmpxSF94Ymk1MnJrcTl3eWJaN2JwaXdUbmVmTklQdGFoMXQ3T3N1Z1VRSUhhdXppbkQtWVZJRlROYXU?oc=5",
+      "source": "The New York Times",
+      "published": "2026-10-29T20:39:12+00:00",
+      "image": ""
+    },
+    {
+      "title": "Athletics make a deal, acquire outfielder from Red Sox",
+      "description": "Athletics make a deal, acquire outfielder from Red Sox Las Vegas Review-Journal",
+      "url": "https://news.google.com/rss/articles/CBMi6wJBVV95cUxPbkFNN2hhRTMwZzdMM3I4bEN2bTBDckE3Rk5aRjJxZWFHaExvM2dnd3p1OW5PV0htOTRveU9oM0dGUE1jQkUyRUFlbVZXV0RKYk1Oc2o2aVdCUDQxZVRSNlpleU5BT2RMX0hHR0ZnQnkwUEdoODdLTXE4MXdEU2hHQmJkVDBaVVlqaHRGUk1ka1VsaGxpcWZYUDB3akJJMGNfQWZfbU5ySWRPT2ZIZGs2VnA2LWp1eTlFWjhCakhlWDJxeklLUXBRYkV2LXpTdV9RQldfWmtxMmxjWGZxb01GMHQ0TzJZdzkzR1JiRVFONDBEcU1PTUI0RUVDQnljZEdKMGVHMS16VlF1TmpoRzNBTGlzemJrOEYzOGQ3eGpqb2FEdlREelVYWHRzZkprWjdoXzhGZmIzRzZRaE8zN1M2cm5lbmJKZl9SS3hGcWRiVHJnTHBQOW1lSTBmaTFPUHVGbm01ZE9TcE5lU2s?oc=5",
+      "source": "Las Vegas Review-Journal",
+      "published": "2026-10-29T20:17:00+00:00",
+      "image": ""
+    },
+    {
+      "title": "Boston Red Sox Offseason: Two Players Hit Free Agency",
+      "description": "Boston Red Sox Offseason: Two Players Hit Free Agency Yahoo Sports",
+      "url": "https://news.google.com/rss/articles/CBMigAFBVV95cUxPV3M0Q3haaENWZzF0R3dSYmlUS0VmdkpjUnBrZ3hWa2hwWEtGczlvc293LTdNUENYbXhQX2dQQUlEQjNpSV9zWDh0TFI2SmZMSmR1LUo2LTRJdjR0akwwNHZqNjJmbW1vR29TZ2hqcHdfekJKVDY2TW01ejZ5YTBuVw?oc=5",
+      "source": "Yahoo Sports",
+      "published": "2026-10-29T19:45:03+00:00",
+      "image": ""
+    },
+    {
+      "title": "Red Sox trade .601 OPS outfielder to Athletics for minor league pitcher",
+      "description": "Red Sox trade .601 OPS outfielder to Athletics for minor league pitcher Sporting News",
+      "url": "https://news.google.com/rss/articles/CBMi1AFBVV95cUxObTJ4Qks1R1ZSazdzUXpLalBMX3EzSnktdXo3Q1hxZmdLaE44cUhOWS1VRm1SYXJxa0xsa1hQX0JydzE5S1h6dml3V3JydEdzSmpERGZlUjJGNG1XX2xESXh2aGo2WnVUMmY2T1o1a204MEVXR3ZGZWJhSnJuVHkyUHRBZjc3UjFrejFYck5mVVd1dUxKb2NOMm1JaGJFYmJMeUk3bzlsNEJhd19NMlZzWUVmcmpoUG5DNFRwaTVSc1F5ZG1rTzhBOHJJaTNva3FZOUxsRg?oc=5",
+      "source": "Sporting News",
+      "published": "2026-10-29T19:38:09+00:00",
       "image": ""
     },
     {
@@ -70,15 +62,23 @@
       "description": "Red Sox Make 1st Trade of MLB Offseason, Latest Rumors on Deal with A's After World Series Bleacher Report",
       "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxPYVFxV21xZnhkZDIwbWxMRGRGSDQ2TnZma1J6blJ4a2tyRnF2MWlhLWhhZ0RDaExEdWZTU01lZnBMY1RWU0JkcUFHU3dNazdjR2dseUNUcE5VQmRzRXd2Y2ZPT2JlZjN0TldyblBxZ0ZKNGNQQkctLTMxdU5wck1TcGtHMUx1b2gtdGJuOFVvWHBhVmhsWldHRENTWHVUVHNTczdKWWpmdHU2a0VwelFlNkl2cjhCdVZnZEw0?oc=5",
       "source": "Bleacher Report",
-      "published": "2026-10-29T18:01:58+00:00",
+      "published": "2026-10-29T19:33:07+00:00",
       "image": ""
     },
     {
-      "title": "Instant Reaction: Red Sox-Athletics Swing 1st Trade of MLB Offseason",
-      "description": "Instant Reaction: Red Sox-Athletics Swing 1st Trade of MLB Offseason Sports Illustrated",
-      "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxNOHlnazZJX0hoc0FlaWg3cnM1dnR1YUFLWnlkeWdVX0cwUGJYaXdvaHhUcjNvS3R0Y2wwaW5tTmtWVWhnRFlyQlp2MVdSa0luQi04cUlacktZNG9JSjZ0WmNuN2lfUm03c0ZlTVJfUi00N29hU3RtQ0FSaTNMZHd2T3Q1N3JYQm1fNXNaTTZxYUlJS09iMHRPSEktTHlrY1BoN3ZUQWZnMll5WkpZ?oc=5",
-      "source": "Sports Illustrated",
-      "published": "2026-10-29T17:58:51+00:00",
+      "title": "Red Sox trade outfielder to Athletics in first deal of offseason",
+      "description": "Red Sox trade outfielder to Athletics in first deal of offseason Boston Herald",
+      "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxQSEh0NXdiQV8yLURVOG9VR09GXzItSHVYdG5FcGZ6ejBndTd0YUNYRHJPeUhUNXc0cThqc0FGcHZhQWF0NGRxVmk1VHJCc0UzLWhZRV8yejhGNnJxQ0VCS2Z2eF8tRjdtV2xfOUYzLUVZRzBjN1hGZk5JZmhpXzNEUlVWeHI3UUQ3cFhTWUlmLTdlSDlwTC1LYTFDdjRjS19SNzZIUm4wWTV3NEw1MHBRc2dB?oc=5",
+      "source": "Boston Herald",
+      "published": "2026-10-29T19:28:07+00:00",
+      "image": ""
+    },
+    {
+      "title": "A's trade RHP prospect to Red Sox for outfielder Eaton",
+      "description": "A's trade RHP prospect to Red Sox for outfielder Eaton MLB.com",
+      "url": "https://news.google.com/rss/articles/CBMia0FVX3lxTFBLbmJlUC1xMl9UQUNaemlfV1dYejdESTVRZUhzU1oxejl3NWM3RkhFcmZmNEVrZXlFeUJuNkl6UjBQa3ozdi0tVDFhVFJpdElPb2tETkJ3V0Y2SWJyVVlxSGhabWRzYzVJUFlZ0gF3QVVfeXFMTUkydjdRRVRRVFI2dFhYM1NQTmlSRFBGdlBVZmVMelYybkRybnhhSEJRNTdMdkN6elN0Z0NIQzRSUEdCNUtEMFlFckhiM0Rwb0thOV9yZzRWUUY0ZmRfTWx4ZE9HR2YybllNZUxtVm50WTRYSTJSc2c?oc=5",
+      "source": "MLB.com",
+      "published": "2026-10-29T19:11:31+00:00",
       "image": ""
     }
   ]
