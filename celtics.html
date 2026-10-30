@@ -5,51 +5,313 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Boston Celtics | Boston Sports Hub</title>
+
 <style>
 :root {
   color-scheme: dark;
-  --bg: #101722;
-  --panel: #1c2838;
-  --muted: #bdc8d6;
-  --accent: #007a33;
-  --blue: #071d38;
+  --bg: #0e131c;
+  --surface: #171f2b;
+  --panel: #1e2938;
+  --panel-hover: #29374a;
+  --text: #f1f5fa;
+  --muted: #b1bdcc;
+  --border: #354355;
+  --button: #29384b;
+  --button-hover: #394c63;
+  --accent: #008b46;
+  --gold: #d6b765;
+  --selected: #e8edf5;
+  --selected-text: #101722;
+  --header: #131c29;
+  --shadow: 0 8px 28px rgba(0,0,0,.15);
+  --highlight: rgba(0,137,72,.19);
 }
+
+html[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f1f4f8;
+  --surface: #ffffff;
+  --panel: #ffffff;
+  --panel-hover: #edf2f8;
+  --text: #172333;
+  --muted: #526174;
+  --border: #d5dee8;
+  --button: #e7edf5;
+  --button-hover: #d9e4f0;
+  --selected: #20354d;
+  --selected-text: #ffffff;
+  --header: #ffffff;
+  --shadow: 0 6px 22px rgba(25,42,64,.07);
+  --highlight: rgba(0,122,51,.10);
+}
+
 * { box-sizing: border-box; }
-body { margin: 0; background: var(--bg); color: white; font-family: Arial, sans-serif; }
-header { background: var(--blue); text-align: center; padding: 28px 16px; border-bottom: 4px solid var(--accent); }
-header h1 { margin: 0; font-size: 30px; }
-header p { color: var(--muted); margin-bottom: 0; }
-main { max-width: 1100px; margin: auto; padding: 22px 14px; }
-h2 { margin-top: 0; }
-nav { position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; padding: 12px; background: #080d14; border-bottom: 1px solid #354357; }
-nav a { color: white; text-decoration: none; background: #304158; padding: 9px 13px; border-radius: 8px; font-size: 14px; }
-nav a:hover { background: #405570; }
-.summary { color: var(--muted); font-size: 14px; line-height: 1.5; margin: 10px 0 18px; }
-button { background: #304158; color: white; border: 1px solid #52657b; border-radius: 8px; padding: 11px 13px; font-size: 14px; cursor: pointer; }
-button:hover { background: #405570; }
+
+html { scroll-behavior: auto; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Arial, sans-serif;
+  line-height: 1.5;
+}
+
+button, a { -webkit-tap-highlight-color: transparent; }
+button { font-family: inherit; }
+a { color: inherit; }
+
+button:focus-visible,
+a:focus-visible {
+  outline: 3px solid #72a8ef;
+  outline-offset: 3px;
+}
+
+/* Top header */
+
+.site-header {
+  background: var(--header);
+  border-bottom: 1px solid var(--border);
+}
+
+.header-inner {
+  max-width: 1120px;
+  margin: auto;
+  padding: 13px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.site-brand {
+  color: var(--text);
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: -.3px;
+}
+
+.site-subtitle {
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 2px;
+}
+
+.theme-button {
+  background: var(--button);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 9px 14px;
+  font-size: 13px;
+  font-weight: 650;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.theme-button:hover { background: var(--button-hover); }
+
+/* Celtics hero */
+
+.team-hero {
+  background: linear-gradient(
+    125deg,
+    #063c29,
+    #086b3e 65%,
+    #06402b
+  );
+  color: #ffffff;
+  border-bottom: 4px solid var(--gold);
+  position: relative;
+  overflow: hidden;
+}
+
+.team-hero::after {
+  content: "";
+  position: absolute;
+  right: -100px;
+  top: -150px;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.045);
+  pointer-events: none;
+}
+
+.hero-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1120px;
+  margin: auto;
+  padding: 34px 20px;
+  display: flex;
+  align-items: center;
+  gap: 34px;
+}
+
+.hero-logo {
+  width: 180px;
+  height: 160px;
+  object-fit: contain;
+  flex-shrink: 0;
+  filter: drop-shadow(0 10px 16px rgba(0,0,0,.2));
+}
+
+.hero-kicker {
+  color: #d5f0df;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin: 0 0 10px;
+}
+
+.hero-title {
+  font-size: clamp(30px,5vw,48px);
+  letter-spacing: -1.5px;
+  line-height: 1.1;
+  margin: 0 0 13px;
+}
+
+.hero-description {
+  color: #e2f1e8;
+  font-size: 14px;
+  margin: 0;
+}
+
+/* Navigation */
+
+.team-nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-inner {
+  max-width: 1120px;
+  margin: auto;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.team-nav a {
+  color: var(--text);
+  text-decoration: none;
+  background: var(--button);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 9px 13px;
+  font-size: 13px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.team-nav a:hover { background: var(--button-hover); }
+
+.team-nav a.home-link {
+  border-color: var(--accent);
+}
+
+/* Page layout */
+
+main {
+  max-width: 1120px;
+  margin: auto;
+  padding: 30px 18px 45px;
+}
+
+section {
+  margin-bottom: 45px;
+  scroll-margin-top: 75px;
+}
+
+.section-kicker {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin: 0 0 6px;
+}
+
+h2 {
+  font-size: clamp(23px,4vw,29px);
+  letter-spacing: -.7px;
+  margin: 0 0 8px;
+}
+
+.summary {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 9px 0 18px;
+}
+
+.section-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 0 0 35px;
+}
+
+button {
+  background: var(--button);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 11px 14px;
+  font-size: 13px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+button:hover { background: var(--button-hover); }
 button:disabled { opacity: .6; cursor: wait; }
 
+/* Fixtures and results */
+
 .game {
-  background: var(--panel);
-  border-radius: 10px;
-  padding: 15px;
-  margin: 10px 0;
-  border-left: 4px solid var(--accent);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 5px solid var(--accent);
+  border-radius: 12px;
+  padding: 18px;
+  margin: 11px 0;
+  box-shadow: var(--shadow);
 }
+
+.game a {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.game a:hover .matchup { text-decoration: underline; }
+
 .game-top {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
   gap: 8px;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 12px;
 }
+
 .matchup {
-  font-size: 17px;
-  font-weight: bold;
-  margin: 12px 0 7px;
+  font-size: 18px;
+  font-weight: 800;
+  margin: 13px 0 9px;
+  letter-spacing: -.3px;
   overflow-wrap: anywhere;
 }
+
 .game-bottom {
   display: flex;
   flex-wrap: wrap;
@@ -59,128 +321,461 @@ button:disabled { opacity: .6; cursor: wait; }
   color: var(--muted);
   font-size: 13px;
 }
+
 .game-bottom span:last-child { text-align: right; }
-.score { color: var(--accent); font-size: 14px; font-weight: bold; }
-.status { color: var(--muted); font-size: 13px; }
-.empty { background: var(--panel); border-radius: 10px; padding: 16px; color: var(--muted); line-height: 1.5; }
-.table-wrap { overflow-x: auto; background: var(--panel); border-radius: 10px; border: 1px solid #354357; margin-top: 12px; }
-table { width: 100%; border-collapse: collapse; min-width: 560px; }
-th, td { padding: 11px 12px; text-align: left; border-bottom: 1px solid #354357; white-space: nowrap; }
-th { background: #071d38; color: white; font-size: 13px; }
-td { font-size: 14px; }
-tr:last-child td { border-bottom: 0; }
-tr.boston { background: #183b2b; font-weight: bold; }
-.position { font-weight: bold; width: 60px; }
-.standings-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0; }
-.standings-tabs button { flex: 1 1 150px; }
+
+.score {
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.score.win { color: #38b97a; }
+.score.loss { color: #ee7280; }
+
+.status {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.empty {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 19px;
+  color: var(--muted);
+  line-height: 1.5;
+  font-size: 14px;
+}
+
+/* NBA standings */
+
+.standings-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 20px 0;
+}
+
+.standings-tabs button {
+  flex: 1 1 110px;
+  border-radius: 999px;
+}
+
 .standings-tabs button.active,
 .standings-tabs button[aria-pressed="true"] {
-  background: var(--accent);
-  border-color: #38a169;
-  font-weight: bold;
+  background: var(--selected);
+  color: var(--selected-text);
+  border-color: var(--selected);
+  font-weight: 800;
 }
-section { margin-bottom: 32px; scroll-margin-top: 80px; }
-footer { text-align: center; padding: 25px; color: #94a3b8; font-size: 12px; }
+
+#standings-list h3 {
+  margin: 27px 0 10px;
+  font-size: 19px;
+  letter-spacing: -.3px;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-top: 13px;
+  box-shadow: var(--shadow);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 560px;
+}
+
+th, td {
+  padding: 12px 13px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+th {
+  background: var(--panel);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+td { font-size: 13px; }
+
+tbody tr:last-child td { border-bottom: 0; }
+
+tbody tr:hover { background: var(--panel-hover); }
+
+tr.boston {
+  background: var(--highlight);
+  font-weight: 800;
+}
+
+tr.boston td:first-child {
+  border-left: 3px solid var(--accent);
+}
+
+.position {
+  font-weight: 800;
+  width: 60px;
+}
 
 /* Celtics news */
-.news-list { display: grid; gap: 12px; }
+
+.news-list {
+  display: grid;
+  gap: 13px;
+}
+
 .news-card {
   display: flex;
   align-items: flex-start;
-  gap: 15px;
-  background: var(--panel);
-  border: 1px solid #354357;
-  border-radius: 10px;
-  padding: 14px;
-  color: white;
+  gap: 17px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  padding: 16px;
+  color: var(--text);
   text-decoration: none;
+  box-shadow: var(--shadow);
+  transition: background .15s, transform .15s;
 }
-.news-card:hover { background: #29394d; border-color: #60738a; }
+
+.news-card:hover {
+  background: var(--panel-hover);
+  transform: translateY(-2px);
+}
+
 .news-image {
-  width: 130px;
-  height: 95px;
+  width: 155px;
+  height: 105px;
   object-fit: cover;
   flex-shrink: 0;
-  border-radius: 7px;
-  background: #304158;
+  border-radius: 9px;
+  background: var(--panel);
 }
-.news-content { min-width: 0; }
-.news-meta { color: var(--muted); font-size: 12px; margin-bottom: 7px; }
-.news-title { font-size: 17px; line-height: 1.35; font-weight: bold; margin: 0 0 7px; }
-.news-description { color: var(--muted); font-size: 13px; line-height: 1.5; margin: 0; }
-.news-footer { margin-top: 9px; color: #b9d5ff; font-size: 12px; }
 
-@media (max-width: 480px) {
-  main { padding: 17px 10px; }
-  header h1 { font-size: 26px; }
-  .standings-tabs button { flex: 1 1 100%; }
-  .news-card { gap: 10px; padding: 11px; }
-  .news-image { width: 100px; height: 85px; }
+.news-content { min-width: 0; }
+
+.news-meta {
+  color: var(--muted);
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.news-title {
+  font-size: 18px;
+  line-height: 1.35;
+  font-weight: 800;
+  margin: 0 0 8px;
+  letter-spacing: -.2px;
+}
+
+.news-description {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.news-footer {
+  margin-top: 11px;
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 750;
+}
+
+/* Footer */
+
+footer {
+  border-top: 1px solid var(--border);
+  text-align: center;
+  padding: 25px 15px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* Mobile */
+
+@media (max-width: 600px) {
+  .header-inner { padding: 12px; }
+
+  .hero-inner {
+    padding: 25px 14px;
+    gap: 14px;
+  }
+
+  .hero-logo {
+    width: 105px;
+    height: 105px;
+  }
+
+  .hero-title {
+    font-size: clamp(24px,6vw,32px);
+    letter-spacing: -.8px;
+  }
+
+  .hero-kicker { font-size: 10px; }
+  .hero-description { font-size: 12px; }
+
+  .nav-inner { padding: 9px 10px; }
+
+  .team-nav a {
+    padding: 9px 11px;
+    font-size: 12px;
+  }
+
+  main { padding: 23px 11px 30px; }
+
+  .game { padding: 14px; }
+  .matchup { font-size: 16px; }
+
+  .news-card {
+    padding: 11px;
+    gap: 11px;
+  }
+
+  .news-image {
+    width: 100px;
+    height: 88px;
+  }
+
   .news-title { font-size: 15px; }
   .news-description { font-size: 12px; }
+
+  th, td { padding: 10px 11px; }
+}
+
+@media (max-width: 380px) {
+  .hero-logo {
+    width: 83px;
+    height: 90px;
+  }
+
+  .hero-inner { gap: 10px; }
+
+  .news-image {
+    width: 83px;
+    height: 78px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .news-card { transition: none; }
 }
 </style>
+
+<script>
+(function () {
+  try {
+    const saved = localStorage.getItem("bsh-theme");
+    const preferred = window.matchMedia(
+      "(prefers-color-scheme: light)"
+    ).matches ? "light" : "dark";
+
+    document.documentElement.dataset.theme =
+      saved === "light" || saved === "dark"
+        ? saved
+        : preferred;
+  } catch {
+    document.documentElement.dataset.theme = "dark";
+  }
+})();
+</script>
 </head>
+
 <body>
 
-<header>
-  <h1>Boston Celtics</h1>
-  <p>Boston Sports Hub · National Basketball Association</p>
+<header class="site-header">
+  <div class="header-inner">
+    <div>
+      <a class="site-brand" href="index.html">Boston Sports Hub</a>
+      <div class="site-subtitle">Four teams. One city.</div>
+    </div>
+
+    <button id="theme-toggle" class="theme-button">
+      Change theme
+    </button>
+  </div>
 </header>
 
-<nav>
-  <a href="index.html">Home</a>
-  <a href="#fixtures">Fixtures</a>
-  <a href="#results">Results</a>
-  <a href="#leagues">League standings</a>
-  <a href="#news">News</a>
+<div class="team-hero">
+  <div class="hero-inner">
+    <img
+      class="hero-logo"
+      src="https://a.espncdn.com/i/teamlogos/nba/500/bos.png"
+      alt="Boston Celtics badge"
+      width="180"
+      height="160"
+    >
+
+    <div>
+      <p class="hero-kicker">NBA · Eastern Conference · Atlantic Division</p>
+      <h1 class="hero-title">Boston Celtics</h1>
+      <p class="hero-description">
+        Fixtures · Results · League standings · Latest news
+      </p>
+    </div>
+  </div>
+</div>
+
+<nav class="team-nav" aria-label="Page navigation">
+  <div class="nav-inner">
+    <a class="home-link" href="index.html">Home</a>
+    <a href="#fixtures">Fixtures</a>
+    <a href="#results">Results</a>
+    <a href="#leagues">Standings</a>
+    <a href="#news">News</a>
+  </div>
 </nav>
 
 <main>
-  <section id="fixtures">
-    <h2>Upcoming Fixtures</h2>
-    <p class="summary">Celtics fixtures with American local time and UK local time, including daylight saving.</p>
-    <button id="refresh-fixtures">Refresh fixtures</button>
-    <p id="fixture-status" class="summary" aria-live="polite">Loading fixtures…</p>
-    <div id="fixtures-list"><div class="empty">Loading upcoming fixtures…</div></div>
-  </section>
 
-  <section id="results">
-    <h2>Recent Results</h2>
-    <p class="summary">The latest 10 completed games and final scores.</p>
-    <div id="results-list"><div class="empty">Loading results…</div></div>
-  </section>
+<section id="fixtures">
+  <p class="section-kicker">Game centre</p>
+  <h2>Upcoming Fixtures</h2>
 
-  <section id="leagues">
-    <h2>NBA Standings</h2>
-    <p class="summary">View all 30 NBA teams, both conferences, or all six divisions. The Celtics are highlighted in green.</p>
-    <button id="refresh-standings">Refresh standings</button>
-    <p id="standings-status" class="summary" aria-live="polite">Loading NBA standings…</p>
+  <p class="summary">
+    Celtics fixtures with American local time and UK local time,
+    including daylight saving.
+  </p>
 
-    <div class="standings-tabs" role="group" aria-label="Choose standings table">
-      <button type="button" class="active" data-table="overall" aria-pressed="true">All Teams</button>
-      <button type="button" data-table="conferences" aria-pressed="false">Conferences</button>
-      <button type="button" data-table="divisions" aria-pressed="false">Divisions</button>
-    </div>
+  <button id="refresh-fixtures">Refresh fixtures</button>
 
-    <div id="standings-list"><div class="empty">Loading standings…</div></div>
-  </section>
+  <p id="fixture-status" class="summary" aria-live="polite">
+    Loading fixtures…
+  </p>
 
-  <section id="news">
-    <h2>Latest Celtics News</h2>
-    <p class="summary">The latest 10 Boston Celtics headlines from multiple sports publications. Select an article to read the full story.</p>
-    <button id="refresh-news">Refresh news</button>
-    <p id="news-status" class="summary" aria-live="polite">Loading news…</p>
-    <div id="news-list" class="news-list">
-      <div class="empty">Loading Celtics news…</div>
-    </div>
-  </section>
+  <div id="fixtures-list">
+    <div class="empty">Loading upcoming fixtures…</div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<section id="results">
+  <p class="section-kicker">Previous games</p>
+  <h2>Recent Results</h2>
+
+  <p class="summary">
+    The latest 10 completed games and final scores.
+  </p>
+
+  <div id="results-list">
+    <div class="empty">Loading results…</div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<section id="leagues">
+  <p class="section-kicker">NBA rankings</p>
+  <h2>NBA Standings</h2>
+
+  <p class="summary">
+    View all 30 NBA teams, both conferences, or all six divisions.
+    The Celtics are highlighted in green.
+  </p>
+
+  <button id="refresh-standings">Refresh standings</button>
+
+  <p id="standings-status" class="summary" aria-live="polite">
+    Loading NBA standings…
+  </p>
+
+  <div class="standings-tabs"
+       role="group"
+       aria-label="Choose standings table">
+
+    <button type="button"
+            class="active"
+            data-table="overall"
+            aria-pressed="true">
+      All Teams
+    </button>
+
+    <button type="button"
+            data-table="conferences"
+            aria-pressed="false">
+      Conferences
+    </button>
+
+    <button type="button"
+            data-table="divisions"
+            aria-pressed="false">
+      Divisions
+    </button>
+  </div>
+
+  <div id="standings-list">
+    <div class="empty">Loading standings…</div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<section id="news">
+  <p class="section-kicker">Latest headlines</p>
+  <h2>Celtics News</h2>
+
+  <p class="summary">
+    The latest 10 Boston Celtics headlines from multiple sports
+    publications. Select an article to read the full story.
+  </p>
+
+  <button id="refresh-news">Refresh news</button>
+
+  <p id="news-status" class="summary" aria-live="polite">
+    Loading news…
+  </p>
+
+  <div id="news-list" class="news-list">
+    <div class="empty">Loading Celtics news…</div>
+  </div>
+</section>
+
 </main>
 
-<footer>Boston Sports Hub · Sports data provided by ESPN · News credited to original publishers</footer>
+<footer>
+  Boston Sports Hub · Independent fan website ·
+  Sports data provided by ESPN · News credited to original publishers
+</footer>
 
 <script>
 "use strict";
+
+/* THEME */
+
+const themeButton = document.getElementById("theme-toggle");
+
+function updateThemeButton() {
+  const current = document.documentElement.dataset.theme;
+
+  themeButton.textContent =
+    current === "dark" ? "☀ Light mode" : "☾ Dark mode";
+}
+
+themeButton.addEventListener("click", () => {
+  const current = document.documentElement.dataset.theme;
+  const next = current === "dark" ? "light" : "dark";
+
+  document.documentElement.dataset.theme = next;
+
+  try {
+    localStorage.setItem("bsh-theme", next);
+  } catch {}
+
+  updateThemeButton();
+});
+
+updateThemeButton();
+
+/* CELTICS DATA */
 
 const TEAM_ID = "2";
 const TEAM_NAME = "Boston Celtics";
@@ -197,11 +792,14 @@ const $ = id => document.getElementById(id);
 
 function nbaSeasonYear() {
   const now = new Date();
-  return now.getUTCFullYear() + (now.getUTCMonth() >= 6 ? 1 : 0);
+
+  return now.getUTCFullYear() +
+    (now.getUTCMonth() >= 6 ? 1 : 0);
 }
 
 function scheduleRequests() {
   const current = nbaSeasonYear();
+
   return [
     { season: current, type: 2 },
     { season: current, type: 3 },
@@ -262,16 +860,29 @@ function scoreValue(score) {
   if (score === null || score === undefined) return null;
 
   if (typeof score === "object") {
-    score = score.displayValue ?? score.value ?? score.score ?? null;
+    score = score.displayValue ??
+      score.value ??
+      score.score ??
+      null;
   }
 
-  if (score === null || score === undefined || score === "") return null;
+  if (
+    score === null ||
+    score === undefined ||
+    score === ""
+  ) {
+    return null;
+  }
+
   return String(score);
 }
 
 function dateLabel(value) {
   const date = new Date(value);
-  if (!value || Number.isNaN(date.getTime())) return "Date TBC";
+
+  if (!value || Number.isNaN(date.getTime())) {
+    return "Date TBC";
+  }
 
   return new Intl.DateTimeFormat("en-GB", {
     weekday: "short",
@@ -284,7 +895,10 @@ function dateLabel(value) {
 
 function timeLabel(value) {
   const date = new Date(value);
-  if (!value || Number.isNaN(date.getTime())) return "Time TBC";
+
+  if (!value || Number.isNaN(date.getTime())) {
+    return "Time TBC";
+  }
 
   return new Intl.DateTimeFormat("en-GB", {
     hour: "2-digit",
@@ -296,7 +910,10 @@ function timeLabel(value) {
 
 function americanTimeLabel(value, event) {
   const date = new Date(value);
-  if (!value || Number.isNaN(date.getTime())) return "US time TBC";
+
+  if (!value || Number.isNaN(date.getTime())) {
+    return "US time TBC";
+  }
 
   const competition = event?.competitions?.[0];
 
@@ -313,11 +930,21 @@ function americanTimeLabel(value, event) {
   };
 
   try {
-    options.timeZone = venueTimeZone || "America/New_York";
-    return new Intl.DateTimeFormat("en-US", options).format(date);
+    options.timeZone =
+      venueTimeZone || "America/New_York";
+
+    return new Intl.DateTimeFormat(
+      "en-US",
+      options
+    ).format(date);
+
   } catch {
     options.timeZone = "America/New_York";
-    return new Intl.DateTimeFormat("en-US", options).format(date);
+
+    return new Intl.DateTimeFormat(
+      "en-US",
+      options
+    ).format(date);
   }
 }
 
@@ -338,15 +965,23 @@ function parseEvent(event) {
   const competition = event.competitions?.[0];
   const competitors = competition?.competitors || [];
 
-  const home = competitors.find(c => c.homeAway === "home");
-  const away = competitors.find(c => c.homeAway === "away");
+  const home = competitors.find(c =>
+    c.homeAway === "home"
+  );
+
+  const away = competitors.find(c =>
+    c.homeAway === "away"
+  );
 
   const ownTeam = competitors.find(c =>
     String(c.team?.id) === TEAM_ID ||
     c.team?.displayName === TEAM_NAME
   );
 
-  const opponent = competitors.find(c => c !== ownTeam);
+  const opponent = competitors.find(c =>
+    c !== ownTeam
+  );
+
   const completed = isCompleted(event);
 
   const ownScore = scoreValue(ownTeam?.score);
@@ -354,12 +989,21 @@ function parseEvent(event) {
 
   let outcome = "";
 
-  if (completed && ownScore !== null && opponentScore !== null) {
+  if (
+    completed &&
+    ownScore !== null &&
+    opponentScore !== null
+  ) {
     const a = Number(ownScore);
     const b = Number(opponentScore);
 
-    if (Number.isFinite(a) && Number.isFinite(b)) {
-      outcome = a > b ? "Win" : a < b ? "Loss" : "Tie";
+    if (
+      Number.isFinite(a) &&
+      Number.isFinite(b)
+    ) {
+      outcome =
+        a > b ? "Win" :
+        a < b ? "Loss" : "Tie";
     }
   }
 
@@ -378,9 +1022,13 @@ function parseEvent(event) {
 }
 
 function gameCard(game, resultMode = false) {
+  const scoreClass =
+    game.outcome === "Win" ? "win" :
+    game.outcome === "Loss" ? "loss" : "";
+
   const content = `
     <div class="game-top">
-      <span>NBA · ${TEAM_NAME}</span>
+      <span>NBA · ${safeText(TEAM_NAME)}</span>
       <span>${safeText(dateLabel(game.date))}</span>
     </div>
 
@@ -390,8 +1038,9 @@ function gameCard(game, resultMode = false) {
 
     <div class="game-bottom">
       ${resultMode
-        ? `<span class="score">${
-            game.ownScore !== null && game.opponentScore !== null
+        ? `<span class="score ${scoreClass}">${
+            game.ownScore !== null &&
+            game.opponentScore !== null
               ? `Final · ${safeText(game.ownScore)} – ${safeText(game.opponentScore)}${game.outcome ? " · " + safeText(game.outcome) : ""}`
               : "Final · Score unavailable"
           }</span>
@@ -403,7 +1052,9 @@ function gameCard(game, resultMode = false) {
 
   return `<article class="game">${
     game.link
-      ? `<a href="${safeText(game.link)}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">${content}</a>`
+      ? `<a href="${safeText(game.link)}"
+           target="_blank"
+           rel="noopener noreferrer">${content}</a>`
       : content
   }</article>`;
 }
@@ -412,7 +1063,9 @@ async function fetchSchedule(request) {
   const url =
     `${SCHEDULE_URL}?season=${request.season}&seasontype=${request.type}`;
 
-  const response = await fetch(url, { cache: "no-store" });
+  const response = await fetch(url, {
+    cache: "no-store"
+  });
 
   if (!response.ok) {
     throw new Error(
@@ -421,7 +1074,10 @@ async function fetchSchedule(request) {
   }
 
   const data = await response.json();
-  const events = data.events || data.content?.events || [];
+  const events =
+    data.events ||
+    data.content?.events ||
+    [];
 
   if (!Array.isArray(events)) {
     throw new Error("Unexpected schedule response");
@@ -430,7 +1086,8 @@ async function fetchSchedule(request) {
   return events
     .map(parseEvent)
     .filter(game =>
-      game.date && Number.isFinite(new Date(game.date).getTime())
+      game.date &&
+      Number.isFinite(new Date(game.date).getTime())
     );
 }
 
@@ -438,10 +1095,12 @@ async function loadSchedule() {
   const button = $("refresh-fixtures");
 
   button.disabled = true;
-  $("fixture-status").textContent = "Loading schedules from ESPN…";
+  $("fixture-status").textContent =
+    "Loading schedules from ESPN…";
 
   try {
     const requests = scheduleRequests();
+
     const responses = await Promise.allSettled(
       requests.map(fetchSchedule)
     );
@@ -455,12 +1114,16 @@ async function loadSchedule() {
 
         result.value.forEach(game => {
           const key = String(
-            game.id || `${game.date}-${game.home}-${game.away}`
+            game.id ||
+            `${game.date}-${game.home}-${game.away}`
           );
 
           const previous = gamesById.get(key);
 
-          if (!previous || (game.completed && !previous.completed)) {
+          if (
+            !previous ||
+            (game.completed && !previous.completed)
+          ) {
             gamesById.set(key, game);
           }
         });
@@ -504,7 +1167,9 @@ async function loadSchedule() {
       ? results.map(game => gameCard(game, true)).join("")
       : '<div class="empty">No recent results are currently available.</div>';
 
-    const updated = timeLabel(new Date().toISOString());
+    const updated = timeLabel(
+      new Date().toISOString()
+    );
 
     $("fixture-status").textContent =
       successful === requests.length
@@ -521,11 +1186,17 @@ async function loadSchedule() {
     $("results-list").innerHTML =
       '<div class="empty">Results could not be loaded. Check your connection and refresh.</div>';
 
-    console.error("Celtics schedule error:", error);
+    console.error(
+      "Celtics schedule error:",
+      error
+    );
+
   } finally {
     button.disabled = false;
   }
 }
+
+/* NBA STANDINGS */
 
 function numericStat(entry, aliases) {
   const stats = entry.stats || [];
@@ -539,7 +1210,11 @@ function numericStat(entry, aliases) {
     if (found) {
       const raw = found.value ?? found.displayValue;
 
-      if (raw !== undefined && raw !== null && raw !== "") {
+      if (
+        raw !== undefined &&
+        raw !== null &&
+        raw !== ""
+      ) {
         const number = Number(raw);
 
         if (Number.isFinite(number)) {
@@ -562,7 +1237,9 @@ function displayStat(entry, aliases) {
     );
 
     if (found) {
-      return found.displayValue ?? found.value ?? "—";
+      return found.displayValue ??
+        found.value ??
+        "—";
     }
   }
 
@@ -581,14 +1258,22 @@ function normaliseTeam(entry) {
 
   return {
     id: String(team.id || ""),
-    name: team.displayName || team.name || "Unknown team",
+    name: team.displayName ||
+      team.name ||
+      "Unknown team",
     abbreviation,
     wins: numericStat(entry, ["wins", "w"]),
     losses: numericStat(entry, ["losses", "l"]),
-    pct: numericStat(entry, ["winpercent", "pct", "win percentage"]),
+    pct: numericStat(
+      entry,
+      ["winpercent", "pct", "win percentage"]
+    ),
     gb: displayStat(entry, ["gamesbehind", "gb"]),
     streak: displayStat(entry, ["streak", "strk"]),
-    rawPct: displayStat(entry, ["winpercent", "pct", "win percentage"])
+    rawPct: displayStat(
+      entry,
+      ["winpercent", "pct", "win percentage"]
+    )
   };
 }
 
@@ -598,7 +1283,9 @@ function collectEntries(node, output = []) {
   }
 
   if (Array.isArray(node)) {
-    node.forEach(item => collectEntries(item, output));
+    node.forEach(item =>
+      collectEntries(item, output)
+    );
     return output;
   }
 
@@ -662,6 +1349,7 @@ function renderTable(title, teams) {
 
   return `
     <h3>${safeText(title)}</h3>
+
     <div class="table-wrap">
       <table>
         <thead>
@@ -675,6 +1363,7 @@ function renderTable(title, teams) {
             <th>Streak</th>
           </tr>
         </thead>
+
         <tbody>
           ${ranked.map((team, index) => {
             const isBoston =
@@ -704,17 +1393,24 @@ function showStandingsTable(tableKey) {
   document.querySelectorAll(
     ".standings-tabs button"
   ).forEach(button => {
-    const active = button.dataset.table === tableKey;
+    const active =
+      button.dataset.table === tableKey;
 
     button.classList.toggle("active", active);
-    button.setAttribute("aria-pressed", String(active));
+    button.setAttribute(
+      "aria-pressed",
+      String(active)
+    );
   });
 
   const all = standingsTables.overall || [];
 
   if (tableKey === "overall") {
     $("standings-list").innerHTML =
-      renderTable("NBA Overall — All 30 Teams", all);
+      renderTable(
+        "NBA Overall — All 30 Teams",
+        all
+      );
     return;
   }
 
@@ -742,7 +1438,9 @@ function showStandingsTable(tableKey) {
           renderTable(
             division,
             all.filter(team =>
-              abbreviations.includes(team.abbreviation)
+              abbreviations.includes(
+                team.abbreviation
+              )
             )
           )
         ).join("");
@@ -750,15 +1448,11 @@ function showStandingsTable(tableKey) {
 }
 
 /*
-  Future-proofed NBA standings.
-
-  Try the current season first.
-  If ESPN does not return all 30 teams,
-  automatically try previous seasons.
-
-  Keep previously loaded standings visible
-  if a refresh fails.
+  NBA standings fallback:
+  Check current season first, then previous seasons.
+  Keep existing standings visible if refresh fails.
 */
+
 async function loadStandings() {
   const button = $("refresh-standings");
   const status = $("standings-status");
@@ -867,7 +1561,10 @@ async function loadStandings() {
         '<div class="empty">Could not load NBA standings. Please try refreshing.</div>';
     }
 
-    console.error("NBA standings error:", error);
+    console.error(
+      "NBA standings error:",
+      error
+    );
 
   } finally {
     button.disabled = false;
@@ -875,11 +1572,12 @@ async function loadStandings() {
   }
 }
 
-/* Latest Celtics news */
+/* CELTICS NEWS */
 
 function validNewsUrl(value) {
   try {
     const url = new URL(String(value));
+
     return ["https:", "http:"].includes(url.protocol)
       ? url.href
       : "";
@@ -905,6 +1603,7 @@ function newsDateLabel(value) {
 
 function newsCard(article) {
   const url = validNewsUrl(article.url);
+
   if (!url || !article.title) return "";
 
   const image = validNewsUrl(article.image);
@@ -922,17 +1621,26 @@ function newsCard(article) {
        href="${safeText(url)}"
        target="_blank"
        rel="noopener noreferrer">
+
       ${imageHtml}
+
       <div class="news-content">
         <div class="news-meta">
           ${safeText(article.source || "Sports news")}
           · ${safeText(newsDateLabel(article.published))}
         </div>
-        <h3 class="news-title">${safeText(article.title)}</h3>
+
+        <h3 class="news-title">
+          ${safeText(article.title)}
+        </h3>
+
         ${article.description
           ? `<p class="news-description">${safeText(article.description)}</p>`
           : ""}
-        <div class="news-footer">Read full article ↗</div>
+
+        <div class="news-footer">
+          Read full article ↗
+        </div>
       </div>
     </a>`;
 }
@@ -944,7 +1652,8 @@ async function loadNews() {
 
   button.disabled = true;
   button.textContent = "Refreshing…";
-  status.textContent = "Loading latest Celtics headlines…";
+  status.textContent =
+    "Loading latest Celtics headlines…";
 
   try {
     const response = await fetch(
@@ -984,11 +1693,15 @@ async function loadNews() {
 
   } catch (error) {
     container.innerHTML =
-      '<div class="empty">Celtics news is not available yet. The automatic news feed still needs to be set up.</div>';
+      '<div class="empty">Celtics news is temporarily unavailable. Please try refreshing.</div>';
 
-    status.textContent = "News feed unavailable.";
+    status.textContent =
+      "News feed unavailable.";
 
-    console.error("Celtics news error:", error);
+    console.error(
+      "Celtics news error:",
+      error
+    );
 
   } finally {
     button.disabled = false;
@@ -996,13 +1709,15 @@ async function loadNews() {
   }
 }
 
-/* Buttons and initial loading */
+/* BUTTONS AND INITIAL LOADING */
 
 document.querySelectorAll(
   ".standings-tabs button"
 ).forEach(button => {
   button.addEventListener("click", () =>
-    showStandingsTable(button.dataset.table)
+    showStandingsTable(
+      button.dataset.table
+    )
   );
 });
 
@@ -1025,5 +1740,6 @@ loadSchedule();
 loadStandings();
 loadNews();
 </script>
+
 </body>
 </html>
