@@ -5,95 +5,303 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>New England Patriots | Boston Sports Hub</title>
+
 <style>
 :root {
   color-scheme: dark;
-  --bg: #101722;
-  --panel: #1c2838;
-  --muted: #bdc8d6;
+  --bg: #0e131c;
+  --surface: #171f2b;
+  --panel: #1e2938;
+  --panel-hover: #29374a;
+  --text: #f1f5fa;
+  --muted: #b1bdcc;
+  --border: #354355;
+  --button: #29384b;
+  --button-hover: #394c63;
   --accent: #c8102e;
-  --blue: #071d38;
+  --selected: #e8edf5;
+  --selected-text: #101722;
+  --header: #131c29;
+  --shadow: 0 8px 28px rgba(0,0,0,.15);
+  --highlight: rgba(200,16,46,.17);
 }
+
+html[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f1f4f8;
+  --surface: #ffffff;
+  --panel: #ffffff;
+  --panel-hover: #edf2f8;
+  --text: #172333;
+  --muted: #526174;
+  --border: #d5dee8;
+  --button: #e7edf5;
+  --button-hover: #d9e4f0;
+  --selected: #20354d;
+  --selected-text: #ffffff;
+  --header: #ffffff;
+  --shadow: 0 6px 22px rgba(25,42,64,.07);
+  --highlight: rgba(200,16,46,.09);
+}
+
 * { box-sizing: border-box; }
+
+html { scroll-behavior: auto; }
+
 body {
   margin: 0;
   background: var(--bg);
-  color: white;
-  font-family: Arial, sans-serif;
+  color: var(--text);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Arial, sans-serif;
+  line-height: 1.5;
 }
-header {
-  background: var(--blue);
-  text-align: center;
-  padding: 28px 16px;
+
+button, a { -webkit-tap-highlight-color: transparent; }
+button { font-family: inherit; }
+a { color: inherit; }
+
+button:focus-visible,
+a:focus-visible {
+  outline: 3px solid #72a8ef;
+  outline-offset: 3px;
+}
+
+.site-header {
+  background: var(--header);
+  border-bottom: 1px solid var(--border);
+}
+
+.header-inner {
+  max-width: 1120px;
+  margin: auto;
+  padding: 13px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.site-brand {
+  color: var(--text);
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: -.3px;
+}
+
+.site-subtitle {
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 2px;
+}
+
+.theme-button {
+  background: var(--button);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 9px 14px;
+  font-size: 13px;
+  font-weight: 650;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.theme-button:hover { background: var(--button-hover); }
+
+/* Team identity */
+
+.team-hero {
+  background: linear-gradient(125deg,#081b33,#132e50 65%,#091b32);
+  color: #ffffff;
   border-bottom: 4px solid var(--accent);
+  position: relative;
+  overflow: hidden;
 }
-header h1 { margin: 0; font-size: 30px; }
-header p { color: var(--muted); margin-bottom: 0; }
-nav {
+
+.team-hero::after {
+  content: "";
+  position: absolute;
+  right: -100px;
+  top: -150px;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.035);
+  pointer-events: none;
+}
+
+.hero-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1120px;
+  margin: auto;
+  padding: 34px 20px;
+  display: flex;
+  align-items: center;
+  gap: 34px;
+}
+
+.hero-logo {
+  width: 180px;
+  height: 160px;
+  object-fit: contain;
+  flex-shrink: 0;
+  filter: drop-shadow(0 10px 16px rgba(0,0,0,.2));
+}
+
+.hero-kicker {
+  color: #c2cfdf;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin: 0 0 10px;
+}
+
+.hero-title {
+  font-size: clamp(30px,5vw,48px);
+  letter-spacing: -1.5px;
+  line-height: 1.1;
+  margin: 0 0 13px;
+}
+
+.hero-description {
+  color: #d4deeb;
+  font-size: 14px;
+  margin: 0;
+}
+
+/* Navigation */
+
+.team-nav {
   position: sticky;
   top: 0;
-  z-index: 10;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px;
-  padding: 12px;
-  background: #080d14;
-  border-bottom: 1px solid #354357;
+  z-index: 20;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
 }
-nav a {
-  color: white;
-  text-decoration: none;
-  background: #304158;
-  padding: 9px 13px;
-  border-radius: 8px;
-  font-size: 14px;
-}
-nav a:hover { background: #405570; }
-main {
-  max-width: 1100px;
+
+.nav-inner {
+  max-width: 1120px;
   margin: auto;
-  padding: 22px 14px;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: thin;
 }
-h2 { margin-top: 0; }
+
+.team-nav a {
+  color: var(--text);
+  text-decoration: none;
+  background: var(--button);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 9px 13px;
+  font-size: 13px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.team-nav a:hover { background: var(--button-hover); }
+
+.team-nav a.home-link {
+  border-color: var(--accent);
+}
+
+main {
+  max-width: 1120px;
+  margin: auto;
+  padding: 30px 18px 45px;
+}
+
+section {
+  margin-bottom: 45px;
+  scroll-margin-top: 75px;
+}
+
+.section-kicker {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin: 0 0 6px;
+}
+
+h2 {
+  font-size: clamp(23px,4vw,29px);
+  letter-spacing: -.7px;
+  margin: 0 0 8px;
+}
+
 .summary {
   color: var(--muted);
   font-size: 14px;
-  line-height: 1.5;
-  margin: 10px 0 18px;
+  line-height: 1.6;
+  margin: 9px 0 18px;
 }
+
+.section-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 0 0 35px;
+}
+
 button {
-  background: #304158;
-  color: white;
-  border: 1px solid #52657b;
-  border-radius: 8px;
-  padding: 11px 13px;
-  font-size: 14px;
+  background: var(--button);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 11px 14px;
+  font-size: 13px;
+  font-weight: 650;
   cursor: pointer;
 }
-button:hover { background: #405570; }
+
+button:hover { background: var(--button-hover); }
 button:disabled { opacity: .6; cursor: wait; }
+
+/* Fixtures and results */
+
 .game {
-  background: var(--panel);
-  border-radius: 10px;
-  padding: 15px;
-  margin: 10px 0;
-  border-left: 4px solid var(--accent);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 5px solid var(--accent);
+  border-radius: 12px;
+  padding: 18px;
+  margin: 11px 0;
+  box-shadow: var(--shadow);
 }
+
+.game a {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.game a:hover .matchup { text-decoration: underline; }
+
 .game-top {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
   gap: 8px;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 12px;
 }
+
 .matchup {
-  font-size: 17px;
-  font-weight: bold;
-  margin: 12px 0 7px;
+  font-size: 18px;
+  font-weight: 800;
+  margin: 13px 0 9px;
+  letter-spacing: -.3px;
   overflow-wrap: anywhere;
 }
+
 .game-bottom {
   display: flex;
   flex-wrap: wrap;
@@ -103,221 +311,409 @@ button:disabled { opacity: .6; cursor: wait; }
   color: var(--muted);
   font-size: 13px;
 }
+
 .game-bottom span:last-child { text-align: right; }
+
 .score {
-  color: var(--accent);
+  color: var(--text);
   font-size: 14px;
-  font-weight: bold;
+  font-weight: 800;
 }
-.status { color: var(--muted); font-size: 13px; }
+
+.score.win { color: #38b97a; }
+.score.loss { color: #ee7280; }
+
+.status {
+  color: var(--muted);
+  font-size: 12px;
+}
+
 .empty {
-  background: var(--panel);
-  border-radius: 10px;
-  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 19px;
   color: var(--muted);
   line-height: 1.5;
+  font-size: 14px;
 }
-.table-wrap {
-  overflow-x: auto;
-  background: var(--panel);
-  border-radius: 10px;
-  border: 1px solid #354357;
-  margin-top: 12px;
-}
-table {
-  width: 100%;
-  border-collapse: collapse;
-  min-width: 500px;
-}
-th, td {
-  padding: 11px 12px;
-  text-align: left;
-  border-bottom: 1px solid #354357;
-  white-space: nowrap;
-}
-th {
-  background: #071d38;
-  color: white;
-  font-size: 13px;
-}
-td { font-size: 14px; }
-tr:last-child td { border-bottom: 0; }
-tr.patriots {
-  background: #3b202b;
-  font-weight: bold;
-}
-section { margin-bottom: 32px; scroll-margin-top: 80px; }
+
+/* Standings */
+
 .standings-tabs {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin: 16px 0;
+  margin: 20px 0;
 }
+
+.standings-tab {
+  flex: 1 1 110px;
+  border-radius: 999px;
+}
+
 .standings-tab.active {
-  background: var(--accent);
-  border-color: var(--accent);
+  background: var(--selected);
+  color: var(--selected-text);
+  border-color: var(--selected);
+  font-weight: 800;
 }
+
 .standings-heading {
-  margin: 24px 0 8px;
-  font-size: 18px;
+  margin: 27px 0 8px;
+  font-size: 19px;
+  letter-spacing: -.3px;
 }
+
 .standings-note {
   color: var(--muted);
   font-size: 13px;
   line-height: 1.5;
 }
 
-/* Latest news */
+.table-wrap {
+  overflow-x: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-top: 13px;
+  box-shadow: var(--shadow);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
+}
+
+th, td {
+  padding: 12px 13px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+th {
+  background: var(--panel);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+td { font-size: 13px; }
+
+tbody tr:last-child td { border-bottom: 0; }
+
+tbody tr:hover { background: var(--panel-hover); }
+
+tr.patriots {
+  background: var(--highlight);
+  font-weight: 800;
+}
+
+tr.patriots td:first-child {
+  border-left: 3px solid var(--accent);
+}
+
+/* News */
+
 .news-list {
   display: grid;
-  gap: 12px;
+  gap: 13px;
 }
+
 .news-card {
   display: flex;
   align-items: flex-start;
-  gap: 15px;
-  background: var(--panel);
-  border: 1px solid #354357;
-  border-radius: 10px;
-  padding: 14px;
-  color: white;
+  gap: 17px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  padding: 16px;
+  color: var(--text);
   text-decoration: none;
+  box-shadow: var(--shadow);
+  transition: background .15s, transform .15s;
 }
+
 .news-card:hover {
-  background: #29394d;
-  border-color: #60738a;
+  background: var(--panel-hover);
+  transform: translateY(-2px);
 }
+
 .news-image {
-  width: 130px;
-  height: 95px;
+  width: 155px;
+  height: 105px;
   object-fit: cover;
   flex-shrink: 0;
-  border-radius: 7px;
-  background: #304158;
+  border-radius: 9px;
+  background: var(--panel);
 }
+
 .news-content { min-width: 0; }
+
 .news-meta {
   color: var(--muted);
   font-size: 12px;
-  margin-bottom: 7px;
+  margin-bottom: 8px;
 }
+
 .news-title {
-  font-size: 17px;
+  font-size: 18px;
   line-height: 1.35;
-  font-weight: bold;
-  margin: 0 0 7px;
+  font-weight: 800;
+  margin: 0 0 8px;
+  letter-spacing: -.2px;
 }
+
 .news-description {
   color: var(--muted);
   font-size: 13px;
   line-height: 1.5;
   margin: 0;
 }
+
 .news-footer {
-  margin-top: 9px;
-  color: #b9d5ff;
+  margin-top: 11px;
+  color: var(--text);
   font-size: 12px;
+  font-weight: 750;
 }
+
 footer {
+  border-top: 1px solid var(--border);
   text-align: center;
-  padding: 25px;
-  color: #94a3b8;
+  padding: 25px 15px;
+  color: var(--muted);
   font-size: 12px;
 }
-@media (max-width: 480px) {
-  main { padding: 17px 10px; }
-  header h1 { font-size: 26px; }
-  .news-card { gap: 10px; padding: 11px; }
-  .news-image { width: 100px; height: 85px; }
+
+@media (max-width: 600px) {
+  .header-inner { padding: 12px; }
+  .hero-inner {
+    padding: 25px 14px;
+    gap: 14px;
+  }
+  .hero-logo {
+    width: 105px;
+    height: 105px;
+  }
+  .hero-title {
+    font-size: clamp(24px,6vw,32px);
+    letter-spacing: -.8px;
+  }
+  .hero-kicker { font-size: 10px; }
+  .hero-description { font-size: 12px; }
+  .nav-inner { padding: 9px 10px; }
+  .team-nav a { padding: 9px 11px; font-size: 12px; }
+  main { padding: 23px 11px 30px; }
+  .game { padding: 14px; }
+  .matchup { font-size: 16px; }
+  .news-card { padding: 11px; gap: 11px; }
+  .news-image { width: 100px; height: 88px; }
   .news-title { font-size: 15px; }
   .news-description { font-size: 12px; }
+  th, td { padding: 10px 11px; }
+}
+
+@media (max-width: 380px) {
+  .hero-logo { width: 83px; height: 90px; }
+  .hero-inner { gap: 10px; }
+  .news-image { width: 83px; height: 78px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .news-card { transition: none; }
 }
 </style>
+
+<script>
+(function () {
+  try {
+    const saved = localStorage.getItem("bsh-theme");
+    const preferred = window.matchMedia(
+      "(prefers-color-scheme: light)"
+    ).matches ? "light" : "dark";
+
+    document.documentElement.dataset.theme =
+      saved === "light" || saved === "dark"
+        ? saved
+        : preferred;
+  } catch {
+    document.documentElement.dataset.theme = "dark";
+  }
+})();
+</script>
 </head>
+
 <body>
 
-<header>
-  <h1>New England Patriots</h1>
-  <p>Boston Sports Hub · National Football League</p>
+<header class="site-header">
+  <div class="header-inner">
+    <div>
+      <a class="site-brand" href="index.html">Boston Sports Hub</a>
+      <div class="site-subtitle">Four teams. One city.</div>
+    </div>
+    <button id="theme-toggle" class="theme-button">
+      Change theme
+    </button>
+  </div>
 </header>
 
-<nav>
-  <a href="index.html">Home</a>
-  <a href="#fixtures">Fixtures</a>
-  <a href="#results">Results</a>
-  <a href="#leagues">League standings</a>
-  <a href="#news">News</a>
+<div class="team-hero">
+  <div class="hero-inner">
+    <img
+      class="hero-logo"
+      src="https://a.espncdn.com/i/teamlogos/nfl/500/ne.png"
+      alt="New England Patriots badge"
+      width="180"
+      height="160"
+    >
+    <div>
+      <p class="hero-kicker">NFL · AFC East</p>
+      <h1 class="hero-title">New England Patriots</h1>
+      <p class="hero-description">
+        Fixtures · Results · League standings · Latest news
+      </p>
+    </div>
+  </div>
+</div>
+
+<nav class="team-nav" aria-label="Page navigation">
+  <div class="nav-inner">
+    <a class="home-link" href="index.html">Home</a>
+    <a href="#fixtures">Fixtures</a>
+    <a href="#results">Results</a>
+    <a href="#leagues">Standings</a>
+    <a href="#news">News</a>
+  </div>
 </nav>
 
 <main>
-  <section id="fixtures">
-    <h2>Upcoming Fixtures</h2>
-    <p class="summary">
-      Patriots fixtures showing American local time and UK local time,
-      including daylight saving.
-    </p>
-    <button id="refresh-fixtures">Refresh fixtures</button>
-    <p id="fixture-status" class="summary" aria-live="polite">
-      Loading fixtures…
-    </p>
-    <div id="fixtures-list">
-      <div class="empty">Loading upcoming fixtures…</div>
-    </div>
-  </section>
 
-  <section id="results">
-    <h2>Recent Results</h2>
-    <p class="summary">The latest 10 completed games and final scores.</p>
-    <div id="results-list">
-      <div class="empty">Loading results…</div>
-    </div>
-  </section>
+<section id="fixtures">
+  <p class="section-kicker">Game centre</p>
+  <h2>Upcoming Fixtures</h2>
+  <p class="summary">
+    Patriots fixtures showing American local time and UK local time,
+    including daylight saving.
+  </p>
+  <button id="refresh-fixtures">Refresh fixtures</button>
+  <p id="fixture-status" class="summary" aria-live="polite">
+    Loading fixtures…
+  </p>
+  <div id="fixtures-list">
+    <div class="empty">Loading upcoming fixtures…</div>
+  </div>
+</section>
 
-  <section id="leagues">
-    <h2>NFL Standings</h2>
-    <p class="summary">
-      View all 32 teams, the two conferences, or the eight divisions.
-      The Patriots are highlighted in every view.
-    </p>
-    <button id="refresh-standings">Refresh standings</button>
+<div class="section-divider"></div>
 
-    <div class="standings-tabs" role="group" aria-label="Standings view">
-      <button class="standings-tab active" data-view="overall" aria-pressed="true">
-        All Teams
-      </button>
-      <button class="standings-tab" data-view="conference" aria-pressed="false">
-        Conferences
-      </button>
-      <button class="standings-tab" data-view="division" aria-pressed="false">
-        Divisions
-      </button>
-    </div>
+<section id="results">
+  <p class="section-kicker">Previous games</p>
+  <h2>Recent Results</h2>
+  <p class="summary">
+    The latest 10 completed games and final scores.
+  </p>
+  <div id="results-list">
+    <div class="empty">Loading results…</div>
+  </div>
+</section>
 
-    <div id="standings-list">
-      <div class="empty">Loading NFL standings…</div>
-    </div>
-  </section>
+<div class="section-divider"></div>
 
-  <section id="news">
-    <h2>Latest Patriots News</h2>
-    <p class="summary">
-      The latest New England Patriots headlines from multiple sports
-      publications. Select an article to read the full story.
-    </p>
-    <button id="refresh-news">Refresh news</button>
-    <p id="news-status" class="summary" aria-live="polite">
-      Loading news…
-    </p>
-    <div id="news-list" class="news-list">
-      <div class="empty">Loading Patriots news…</div>
-    </div>
-  </section>
+<section id="leagues">
+  <p class="section-kicker">NFL rankings</p>
+  <h2>NFL Standings</h2>
+  <p class="summary">
+    View all 32 teams, the two conferences, or the eight divisions.
+    The Patriots are highlighted in every view.
+  </p>
+
+  <button id="refresh-standings">Refresh standings</button>
+
+  <div class="standings-tabs"
+       role="group"
+       aria-label="Standings view">
+    <button class="standings-tab active"
+            data-view="overall"
+            aria-pressed="true">
+      All Teams
+    </button>
+    <button class="standings-tab"
+            data-view="conference"
+            aria-pressed="false">
+      Conferences
+    </button>
+    <button class="standings-tab"
+            data-view="division"
+            aria-pressed="false">
+      Divisions
+    </button>
+  </div>
+
+  <div id="standings-list">
+    <div class="empty">Loading NFL standings…</div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<section id="news">
+  <p class="section-kicker">Latest headlines</p>
+  <h2>Patriots News</h2>
+  <p class="summary">
+    The latest New England Patriots headlines from multiple
+    sports publications. Select an article to read the full story.
+  </p>
+
+  <button id="refresh-news">Refresh news</button>
+
+  <p id="news-status" class="summary" aria-live="polite">
+    Loading news…
+  </p>
+
+  <div id="news-list" class="news-list">
+    <div class="empty">Loading Patriots news…</div>
+  </div>
+</section>
+
 </main>
 
-<footer>Boston Sports Hub · Sports data provided by ESPN · News credited to original publishers</footer>
+<footer>
+  Boston Sports Hub · Independent fan website ·
+  Sports data provided by ESPN · News credited to original publishers
+</footer>
 
 <script>
 "use strict";
+
+/* THEME */
+
+const themeButton = document.getElementById("theme-toggle");
+
+function updateThemeButton() {
+  const current = document.documentElement.dataset.theme;
+  themeButton.textContent =
+    current === "dark" ? "☀ Light mode" : "☾ Dark mode";
+}
+
+themeButton.addEventListener("click", () => {
+  const current = document.documentElement.dataset.theme;
+  const next = current === "dark" ? "light" : "dark";
+
+  document.documentElement.dataset.theme = next;
+
+  try {
+    localStorage.setItem("bsh-theme", next);
+  } catch {}
+
+  updateThemeButton();
+});
+
+updateThemeButton();
+
+/* PATRIOTS DATA */
 
 const TEAM_ID = "17";
 const TEAM_NAME = "New England Patriots";
@@ -363,6 +759,7 @@ function safeText(value) {
 function dateLabel(value) {
   const date = new Date(value);
   if (!value || Number.isNaN(date.getTime())) return "Date TBC";
+
   return new Intl.DateTimeFormat("en-GB", {
     weekday: "short",
     day: "numeric",
@@ -375,6 +772,7 @@ function dateLabel(value) {
 function timeLabel(value) {
   const date = new Date(value);
   if (!value || Number.isNaN(date.getTime())) return "Time TBC";
+
   return new Intl.DateTimeFormat("en-GB", {
     hour: "2-digit",
     minute: "2-digit",
@@ -386,7 +784,9 @@ function timeLabel(value) {
 function americanTimeLabel(value, event) {
   const date = new Date(value);
   if (!value || Number.isNaN(date.getTime())) return "US time TBC";
+
   const competition = event?.competitions?.[0];
+
   const venueTimeZone =
     competition?.venue?.timeZone ||
     event?.venue?.timeZone ||
@@ -416,6 +816,7 @@ function isCompleted(event) {
     event.status?.type ||
     event.competitions?.[0]?.status?.type ||
     {};
+
   return status.completed === true ||
     status.state === "post" ||
     /final|ended|game over/i.test(
@@ -425,6 +826,7 @@ function isCompleted(event) {
 
 function scoreNumber(value) {
   if (value === null || value === undefined) return null;
+
   if (typeof value === "object") {
     value = value.displayValue ??
       value.value ??
@@ -432,7 +834,11 @@ function scoreNumber(value) {
       value.text ??
       null;
   }
-  if (value === null || value === undefined || value === "") return null;
+
+  if (value === null || value === undefined || value === "") {
+    return null;
+  }
+
   const number = Number(value);
   return Number.isFinite(number) ? number : null;
 }
@@ -448,14 +854,21 @@ function parseEvent(event) {
     c.team?.displayName === TEAM_NAME ||
     c.team?.name === "Patriots"
   );
+
   const opponent = competitors.find(c => c !== ownTeam);
   const completed = isCompleted(event);
   const ownScore = scoreNumber(ownTeam?.score);
   const opponentScore = scoreNumber(opponent?.score);
+
   let outcome = "";
 
-  if (completed && ownScore !== null && opponentScore !== null) {
-    outcome = ownScore > opponentScore ? "Win" :
+  if (
+    completed &&
+    ownScore !== null &&
+    opponentScore !== null
+  ) {
+    outcome =
+      ownScore > opponentScore ? "Win" :
       ownScore < opponentScore ? "Loss" : "Tie";
   }
 
@@ -474,18 +887,25 @@ function parseEvent(event) {
 }
 
 function gameCard(game, resultMode = false) {
-  const score = game.ownScore === null || game.opponentScore === null
-    ? "Score unavailable"
-    : `${game.ownScore} – ${game.opponentScore}`;
+  const score =
+    game.ownScore === null || game.opponentScore === null
+      ? "Score unavailable"
+      : `${game.ownScore} – ${game.opponentScore}`;
 
   const resultText = game.outcome
     ? `Final · ${score} · ${game.outcome}`
     : `Final · ${score}`;
 
+  const scoreClass =
+    game.outcome === "Win" ? "win" :
+    game.outcome === "Loss" ? "loss" : "";
+
   const bottomRow = resultMode
     ? `
       <div class="game-bottom">
-        <span class="score">${safeText(resultText)}</span>
+        <span class="score ${scoreClass}">
+          ${safeText(resultText)}
+        </span>
         <span class="status">Completed</span>
       </div>`
     : `
@@ -499,17 +919,18 @@ function gameCard(game, resultMode = false) {
       <span>NFL · ${safeText(TEAM_NAME)}</span>
       <span>${safeText(dateLabel(game.date))}</span>
     </div>
+
     <div class="matchup">
       ${safeText(game.away)} @ ${safeText(game.home)}
     </div>
+
     ${bottomRow}`;
 
   return `<article class="game">${
     game.link
       ? `<a href="${safeText(game.link)}"
            target="_blank"
-           rel="noopener noreferrer"
-           style="color:inherit;text-decoration:none">${content}</a>`
+           rel="noopener noreferrer">${content}</a>`
       : content
   }</article>`;
 }
@@ -517,17 +938,24 @@ function gameCard(game, resultMode = false) {
 async function fetchSchedule(request) {
   const url =
     `${SCHEDULE_BASE}?season=${request.year}&seasontype=${request.type}`;
-  const response = await fetch(url, { cache: "no-store" });
+
+  const response = await fetch(url, {
+    cache: "no-store"
+  });
+
   if (!response.ok) {
     throw new Error(
       `Schedule ${request.year}/${request.type}: HTTP ${response.status}`
     );
   }
+
   const data = await response.json();
   const events = data.events || data.content?.events || [];
+
   if (!Array.isArray(events)) {
     throw new Error("Unexpected schedule response");
   }
+
   return events.map(parseEvent).filter(game =>
     game.date &&
     Number.isFinite(new Date(game.date).getTime())
@@ -537,23 +965,30 @@ async function fetchSchedule(request) {
 async function loadSchedule() {
   const button = $("refresh-fixtures");
   button.disabled = true;
-  $("fixture-status").textContent = "Loading schedules from ESPN…";
+  $("fixture-status").textContent =
+    "Loading schedules from ESPN…";
 
   try {
     const requests = scheduleRequests();
+
     const responses = await Promise.allSettled(
       requests.map(fetchSchedule)
     );
+
     const gamesById = new Map();
     let successful = 0;
 
     responses.forEach((result, index) => {
       if (result.status === "fulfilled") {
         successful++;
+
         result.value.forEach(game => {
           const previous = gamesById.get(game.id);
-          if (!previous ||
-              (game.completed && !previous.completed)) {
+
+          if (
+            !previous ||
+            (game.completed && !previous.completed)
+          ) {
             gamesById.set(game.id, game);
           }
         });
@@ -572,6 +1007,7 @@ async function loadSchedule() {
 
     const games = [...gamesById.values()]
       .sort((a, b) => new Date(a.date) - new Date(b.date));
+
     const now = Date.now();
 
     const upcoming = games.filter(game =>
@@ -602,11 +1038,15 @@ async function loadSchedule() {
   } catch (error) {
     $("fixture-status").textContent =
       "Could not load the schedule. Please try again.";
+
     $("fixtures-list").innerHTML =
       '<div class="empty">Fixtures could not be loaded. Check your connection and refresh.</div>';
+
     $("results-list").innerHTML =
       '<div class="empty">Results could not be loaded. Check your connection and refresh.</div>';
+
     console.error("Patriots schedule error:", error);
+
   } finally {
     button.disabled = false;
   }
@@ -630,6 +1070,7 @@ let currentStandingsView = "overall";
 
 function getStatsArray(entry) {
   if (Array.isArray(entry.stats)) return entry.stats;
+
   if (entry.stats && typeof entry.stats === "object") {
     return Object.entries(entry.stats).map(([name, value]) => ({
       name,
@@ -639,6 +1080,7 @@ function getStatsArray(entry) {
         : String(value)
     }));
   }
+
   return [];
 }
 
@@ -648,8 +1090,12 @@ function statValue(stats, aliases) {
       String(stat.name || "").toLowerCase() === alias.toLowerCase() ||
       String(stat.abbreviation || "").toLowerCase() === alias.toLowerCase()
     );
-    if (found) return found.displayValue ?? found.value ?? "—";
+
+    if (found) {
+      return found.displayValue ?? found.value ?? "—";
+    }
   }
+
   return "—";
 }
 
@@ -659,18 +1105,23 @@ function statNumber(stats, aliases) {
       String(stat.name || "").toLowerCase() === alias.toLowerCase() ||
       String(stat.abbreviation || "").toLowerCase() === alias.toLowerCase()
     );
+
     if (found) {
       const number = Number(found.value ?? found.displayValue);
       if (Number.isFinite(number)) return number;
     }
   }
+
   return -1;
 }
 
 function normaliseTeam(entry) {
   const team = entry.team || {};
   const stats = getStatsArray(entry);
-  const abbreviation = String(team.abbreviation || "").toUpperCase();
+  const abbreviation = String(
+    team.abbreviation || ""
+  ).toUpperCase();
+
   return {
     id: String(team.id || ""),
     name: team.displayName || team.name || "Unknown team",
@@ -707,6 +1158,7 @@ function isPatriots(team) {
 
 function makeStandingsTable(teams) {
   const ordered = sortStandings(teams);
+
   if (!ordered.length) {
     return '<div class="empty">No teams were found for this table.</div>';
   }
@@ -716,8 +1168,15 @@ function makeStandingsTable(teams) {
       <table>
         <thead>
           <tr>
-            <th>#</th><th>Team</th><th>W</th><th>L</th>
-            <th>T</th><th>PCT</th><th>PF</th><th>PA</th><th>Streak</th>
+            <th>#</th>
+            <th>Team</th>
+            <th>W</th>
+            <th>L</th>
+            <th>T</th>
+            <th>PCT</th>
+            <th>PF</th>
+            <th>PA</th>
+            <th>Streak</th>
           </tr>
         </thead>
         <tbody>
@@ -741,6 +1200,7 @@ function makeStandingsTable(teams) {
 
 function renderStandings() {
   const container = $("standings-list");
+
   if (!standingsData.length) return;
 
   if (currentStandingsView === "overall") {
@@ -755,6 +1215,7 @@ function renderStandings() {
       const teams = standingsData.filter(
         team => team.conference === conference
       );
+
       return `
         <h3 class="standings-heading">${conference}</h3>
         ${makeStandingsTable(teams)}`;
@@ -765,6 +1226,7 @@ function renderStandings() {
         const teams = standingsData.filter(team =>
           abbreviations.includes(team.abbreviation)
         );
+
         return `
           <h3 class="standings-heading">${division}</h3>
           ${makeStandingsTable(teams)}`;
@@ -772,15 +1234,21 @@ function renderStandings() {
   }
 
   document.querySelectorAll(".standings-tab").forEach(button => {
-    const active = button.dataset.view === currentStandingsView;
+    const active =
+      button.dataset.view === currentStandingsView;
+
     button.classList.toggle("active", active);
-    button.setAttribute("aria-pressed", String(active));
+    button.setAttribute(
+      "aria-pressed",
+      String(active)
+    );
   });
 }
 
 async function loadStandings() {
   const button = $("refresh-standings");
   const container = $("standings-list");
+
   button.disabled = true;
   button.textContent = "Refreshing…";
 
@@ -791,12 +1259,18 @@ async function loadStandings() {
 
   try {
     const season = nflSeasonYear();
+
     const url =
       `${STANDINGS_BASE}?region=us&lang=en&season=${season}&type=2&limit=100`;
 
-    const response = await fetch(url, { cache: "no-store" });
+    const response = await fetch(url, {
+      cache: "no-store"
+    });
+
     if (!response.ok) {
-      throw new Error("Standings request failed: " + response.status);
+      throw new Error(
+        "Standings request failed: " + response.status
+      );
     }
 
     const data = await response.json();
@@ -812,6 +1286,7 @@ async function loadStandings() {
 
       for (const entries of groupsToRead) {
         if (!Array.isArray(entries)) continue;
+
         for (const entry of entries) {
           if (entry.team?.abbreviation) {
             found.push(normaliseTeam(entry));
@@ -822,27 +1297,35 @@ async function loadStandings() {
       if (Array.isArray(group.children)) {
         group.children.forEach(collect);
       }
+
       if (Array.isArray(group.standings?.children)) {
         group.standings.children.forEach(collect);
       }
     }
 
     collect(data);
+
     const unique = new Map();
 
     found.forEach(team => {
       if (team.abbreviation) {
         const previous = unique.get(team.abbreviation);
-        if (!previous ||
-            team.sortWins >= 0 && previous.sortWins < 0) {
+
+        if (
+          !previous ||
+          (team.sortWins >= 0 && previous.sortWins < 0)
+        ) {
           unique.set(team.abbreviation, team);
         }
       }
     });
 
     const teams = [...unique.values()];
+
     if (teams.length !== 32) {
-      throw new Error(`Expected 32 teams; found ${teams.length}`);
+      throw new Error(
+        `Expected 32 teams; found ${teams.length}`
+      );
     }
 
     for (const [division, abbreviations] of Object.entries(NFL_DIVISIONS)) {
@@ -850,6 +1333,7 @@ async function loadStandings() {
         const team = teams.find(
           item => item.abbreviation === abbreviation
         );
+
         if (team) {
           team.division = division;
           team.conference = division.split(" ")[0];
@@ -865,18 +1349,21 @@ async function loadStandings() {
       container.innerHTML =
         '<div class="empty">Could not load NFL standings. Please try refreshing.</div>';
     }
+
     console.error("NFL standings error:", error);
+
   } finally {
     button.disabled = false;
     button.textContent = "Refresh standings";
   }
 }
 
-/* LATEST PATRIOTS NEWS */
+/* PATRIOTS NEWS */
 
 function validHttpUrl(value) {
   try {
     const url = new URL(String(value));
+
     return url.protocol === "https:" || url.protocol === "http:"
       ? url.href
       : "";
@@ -887,7 +1374,10 @@ function validHttpUrl(value) {
 
 function newsDateLabel(value) {
   const date = new Date(value);
-  if (!value || Number.isNaN(date.getTime())) return "Date unavailable";
+
+  if (!value || Number.isNaN(date.getTime())) {
+    return "Date unavailable";
+  }
 
   return new Intl.DateTimeFormat("en-GB", {
     day: "numeric",
@@ -899,6 +1389,7 @@ function newsDateLabel(value) {
 
 function newsCard(article) {
   const url = validHttpUrl(article.url);
+
   if (!url || !article.title) return "";
 
   const image = validHttpUrl(article.image);
@@ -923,11 +1414,18 @@ function newsCard(article) {
           ${safeText(article.source || "Sports news")}
           · ${safeText(newsDateLabel(article.published))}
         </div>
-        <h3 class="news-title">${safeText(article.title)}</h3>
+
+        <h3 class="news-title">
+          ${safeText(article.title)}
+        </h3>
+
         ${article.description
           ? `<p class="news-description">${safeText(article.description)}</p>`
           : ""}
-        <div class="news-footer">Read full article ↗</div>
+
+        <div class="news-footer">
+          Read full article ↗
+        </div>
       </div>
     </a>`;
 }
@@ -939,7 +1437,8 @@ async function loadNews() {
 
   button.disabled = true;
   button.textContent = "Refreshing…";
-  status.textContent = "Loading latest Patriots headlines…";
+  status.textContent =
+    "Loading latest Patriots headlines…";
 
   try {
     const response = await fetch(
@@ -979,9 +1478,10 @@ async function loadNews() {
 
   } catch (error) {
     container.innerHTML =
-      '<div class="empty">Patriots news is not available yet. The automatic news feed still needs to be set up.</div>';
+      '<div class="empty">Patriots news is temporarily unavailable. Please try refreshing.</div>';
 
     status.textContent = "News feed unavailable.";
+
     console.error("Patriots news error:", error);
 
   } finally {
@@ -989,6 +1489,8 @@ async function loadNews() {
     button.textContent = "Refresh news";
   }
 }
+
+/* CONTROLS */
 
 document.querySelectorAll(".standings-tab").forEach(button => {
   button.addEventListener("click", () => {
