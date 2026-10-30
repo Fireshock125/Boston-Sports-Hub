@@ -4,448 +4,842 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Boston Sports Hub</title>
+<title>Boston Sports Hub | Your Boston Teams</title>
 
 <style>
 :root {
   color-scheme: dark;
-  --bg: #101722;
-  --panel: #1c2838;
-  --muted: #bdc8d6;
-  --red: #c8102e;
-  --blue: #071d38;
+  --bg: #0e131c;
+  --surface: #171f2b;
+  --panel: #1e2938;
+  --panel-hover: #29374a;
+  --text: #f1f5fa;
+  --muted: #b1bdcc;
+  --border: #354355;
+  --button: #29384b;
+  --button-hover: #394c63;
+  --accent: #e8edf5;
+  --accent-text: #101722;
+  --header: #131c29;
+  --shadow: 0 8px 28px rgba(0,0,0,.15);
 }
+
+html[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f1f4f8;
+  --surface: #ffffff;
+  --panel: #ffffff;
+  --panel-hover: #edf2f8;
+  --text: #172333;
+  --muted: #526174;
+  --border: #d5dee8;
+  --button: #e7edf5;
+  --button-hover: #d9e4f0;
+  --accent: #20354d;
+  --accent-text: #ffffff;
+  --header: #ffffff;
+  --shadow: 0 6px 22px rgba(25,42,64,.07);
+}
+
 * { box-sizing: border-box; }
+
 body {
   margin: 0;
   background: var(--bg);
-  color: white;
-  font-family: Arial, sans-serif;
+  color: var(--text);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Arial, sans-serif;
+  line-height: 1.5;
 }
-header {
-  background: var(--blue);
-  text-align: center;
-  padding: 28px 16px;
-  border-bottom: 4px solid var(--red);
+
+button, a { -webkit-tap-highlight-color: transparent; }
+button { font-family: inherit; }
+a { color: inherit; }
+
+button:focus-visible,
+a:focus-visible {
+  outline: 3px solid #72a8ef;
+  outline-offset: 3px;
 }
-header h1 { margin: 0; font-size: 30px; }
-header p { color: var(--muted); margin-bottom: 0; }
-main {
-  max-width: 1100px;
+
+.site-header {
+  background: var(--header);
+  border-bottom: 1px solid var(--border);
+}
+
+.header-inner {
+  max-width: 1120px;
   margin: auto;
-  padding: 22px 14px;
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 }
-h2 { margin-top: 0; }
-.teams {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
-  margin: 20px 0 34px;
+
+.site-brand {
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -.3px;
 }
-.team {
-  display: block;
-  color: white;
-  text-decoration: none;
-  background: var(--panel);
-  border: 1px solid #354357;
-  border-top: 4px solid var(--team-colour);
-  border-radius: 10px;
-  padding: 20px 16px;
-  transition: background .15s, transform .15s;
+
+.site-subtitle {
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 2px;
 }
-.team:hover {
-  background: #29394d;
-  transform: translateY(-2px);
+
+.theme-button {
+  background: var(--button);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 9px 14px;
+  font-size: 13px;
+  font-weight: 650;
+  cursor: pointer;
+  white-space: nowrap;
 }
-.team h3 { margin: 0 0 8px; font-size: 18px; }
-.team p { color: var(--muted); margin: 0; font-size: 14px; }
-.tag {
-  display: inline-block;
-  color: #dce7f5;
-  background: #304158;
-  padding: 4px 7px;
-  border-radius: 5px;
-  font-size: 12px;
-  margin-bottom: 12px;
+
+.theme-button:hover { background: var(--button-hover); }
+
+main {
+  max-width: 1120px;
+  margin: auto;
+  padding: 28px 18px 50px;
 }
-.arrow {
-  float: right;
-  color: #bdc8d6;
-  font-size: 22px;
+
+.section-heading { margin-bottom: 19px; }
+
+.section-kicker {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin: 0 0 7px;
 }
+
+h1, h2, h3, p { overflow-wrap: anywhere; }
+
+h1 {
+  font-size: clamp(26px, 5vw, 38px);
+  letter-spacing: -1px;
+  line-height: 1.15;
+  margin: 0 0 9px;
+}
+
+h2 {
+  font-size: clamp(23px, 4vw, 29px);
+  letter-spacing: -.7px;
+  margin: 0 0 7px;
+}
+
 .summary {
   color: var(--muted);
   font-size: 14px;
-  line-height: 1.5;
-  margin: 10px 0 18px;
+  line-height: 1.6;
+  margin: 8px 0 16px;
 }
-button {
-  background: #304158;
-  color: white;
-  border: 1px solid #52657b;
-  border-radius: 8px;
-  padding: 11px 13px;
-  font-size: 14px;
-  cursor: pointer;
+
+.teams {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin: 24px 0 43px;
 }
-button:hover { background: #405570; }
-button:disabled { opacity: .6; cursor: wait; }
-.game {
-  background: var(--panel);
-  border-radius: 10px;
-  padding: 15px;
-  margin: 10px 0;
-  border-left: 4px solid #64748b;
-}
-.game.nfl { border-left-color: #c8102e; }
-.game.nba { border-left-color: #007a33; }
-.game.mlb { border-left-color: #e0b13d; }
-.game.nhl { border-left-color: #8ab4f8; }
-.game.live {
-  border-top: 1px solid #a83c4c;
-  border-right: 1px solid #a83c4c;
-  border-bottom: 1px solid #a83c4c;
-  background: #2a2432;
-}
-.game-top {
+
+.team {
+  position: relative;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 8px;
-  color: var(--muted);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 260px;
+  padding: 23px 16px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  text-decoration: none;
+  text-align: center;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: transform .18s, box-shadow .18s;
+  isolation: isolate;
+}
+
+.team:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(0,0,0,.23);
+}
+
+.team::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(
+    circle at 50% 20%,
+    rgba(255,255,255,.13),
+    transparent 68%
+  );
+}
+
+.team.patriots {
+  background: linear-gradient(145deg,#132b49,#091b32);
+  border-color: #425776;
+  color: #fff;
+}
+
+.team.celtics {
+  background: linear-gradient(145deg,#087b47,#03472c);
+  border-color: #398961;
+  color: #fff;
+}
+
+.team.red-sox {
+  background: linear-gradient(145deg,#142f51,#0a1c34);
+  border-color: #465c79;
+  color: #fff;
+}
+
+.team.bruins {
+  background: linear-gradient(145deg,#302a20,#121314);
+  border-color: #66562f;
+  color: #fff;
+}
+
+.team-league {
+  position: absolute;
+  top: 15px;
+  left: 16px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: rgba(255,255,255,.78);
+}
+
+.team-arrow {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  font-size: 23px;
+  color: rgba(255,255,255,.8);
+}
+
+.team-logo {
+  width: min(45%, 170px);
+  height: 140px;
+  object-fit: contain;
+  margin-bottom: 12px;
+  filter: drop-shadow(0 8px 14px rgba(0,0,0,.18));
+}
+
+.team h3 {
+  margin: 0;
+  font-size: clamp(16px, 2.5vw, 22px);
+  line-height: 1.3;
+  letter-spacing: -.3px;
+}
+
+.team p {
+  margin: 6px 0 0;
+  color: rgba(255,255,255,.72);
   font-size: 13px;
 }
-.matchup {
-  font-size: 17px;
-  font-weight: bold;
-  margin: 12px 0 7px;
-  overflow-wrap: anywhere;
+
+.section-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 0 0 33px;
 }
-.game-bottom {
+
+.fixtures-header {
   display: flex;
-  flex-wrap: wrap;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 8px;
-  color: var(--muted);
-  font-size: 13px;
-}
-.game-bottom span:last-child { text-align: right; }
-.live-indicator {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: #ff7b8d;
-  font-size: 12px;
-  font-weight: bold;
-  letter-spacing: .5px;
-}
-.live-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #ff526c;
-  animation: pulse 1.5s infinite;
-}
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: .35; }
-}
-.empty {
-  background: var(--panel);
-  border-radius: 10px;
-  padding: 16px;
-  color: var(--muted);
-  line-height: 1.5;
-}
-section { margin-bottom: 32px; }
-.filters {
-  display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin: 18px 0;
-}
-.filter { flex: 1 1 100px; }
-.filter.active {
-  background: #e7edf6;
-  color: #101722;
-  border-color: #e7edf6;
-  font-weight: bold;
+  gap: 12px;
 }
 
-/* Weekly calendar */
+button {
+  background: var(--button);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 11px 14px;
+  font-size: 13px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+button:hover { background: var(--button-hover); }
+button:disabled { opacity: .6; cursor: wait; }
+
+.refresh-button { margin-top: 4px; }
 
 .calendar {
-  background: var(--panel);
-  border: 1px solid #354357;
-  border-radius: 12px;
-  padding: 15px;
-  margin: 20px 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  margin: 21px 0;
+  box-shadow: var(--shadow);
 }
+
 .calendar-heading {
   display: flex;
-  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 15px;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 19px;
 }
-.calendar-heading h3 { margin: 0; font-size: 17px; }
+
+.calendar-heading h3 {
+  font-size: 18px;
+  letter-spacing: -.3px;
+  margin: 0;
+}
+
 .calendar-period {
   color: var(--muted);
   font-size: 13px;
-  margin-top: 5px;
+  margin-top: 4px;
 }
+
 .calendar-controls {
   display: flex;
   gap: 6px;
 }
-.calendar-controls button { padding: 8px 11px; }
+
+.calendar-controls button {
+  padding: 8px 12px;
+  min-width: 36px;
+}
+
 .calendar-grid {
   display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 6px;
+  grid-template-columns: repeat(7,minmax(0,1fr));
+  gap: 8px;
 }
+
 .calendar-day {
   min-width: 0;
-  min-height: 94px;
-  padding: 10px 3px;
-  background: #263548;
-  border: 1px solid #3c4c61;
-  border-radius: 8px;
+  min-height: 105px;
+  padding: 12px 4px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  color: var(--text);
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
 }
-.calendar-day:hover { background: #344861; }
-.calendar-day.today { border-color: #cbd5e1; }
+
+.calendar-day:hover { background: var(--panel-hover); }
+.calendar-day.today { border-color: #78a5dd; }
+
 .calendar-day.selected {
-  background: #e7edf6;
-  color: #101722;
-  border-color: #e7edf6;
+  background: var(--accent);
+  color: var(--accent-text);
+  border-color: var(--accent);
 }
+
 .day-name {
+  color: var(--muted);
   font-size: 12px;
-  color: #c0cad8;
 }
+
+.calendar-day.selected .day-name {
+  color: var(--accent-text);
+  opacity: .75;
+}
+
 .day-number {
-  font-size: 18px;
-  font-weight: bold;
+  font-size: 21px;
+  font-weight: 800;
 }
-.calendar-day.selected .day-name { color: #354357; }
+
 .day-dots {
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 4px;
 }
+
 .fixture-dot {
   display: inline-block;
   width: 8px;
   height: 8px;
   border-radius: 50%;
 }
-.fixture-dot.nfl { background: #c8102e; }
-.fixture-dot.nba { background: #00a64b; }
-.fixture-dot.mlb { background: #e0b13d; }
-.fixture-dot.nhl { background: #8ab4f8; }
+
+.fixture-dot.nfl { background: #e34558; }
+.fixture-dot.nba { background: #27ba70; }
+.fixture-dot.mlb { background: #ff6973; }
+.fixture-dot.nhl { background: #f5bd45; }
+
 .calendar-legend {
   display: flex;
   flex-wrap: wrap;
-  gap: 13px;
-  margin-top: 14px;
+  gap: 16px;
+  margin-top: 17px;
   color: var(--muted);
   font-size: 12px;
 }
+
 .legend-item {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
 }
+
 .calendar-note {
   color: var(--muted);
   font-size: 12px;
-  line-height: 1.5;
+  line-height: 1.6;
   margin: 13px 0 0;
 }
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 22px 0;
+}
+
+.filter {
+  flex: 1 1 100px;
+  border-radius: 999px;
+}
+
+.filter.active {
+  background: var(--accent);
+  color: var(--accent-text);
+  border-color: var(--accent);
+  font-weight: 800;
+}
+
 .fixtures-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 26px 0 13px;
+}
+
+.fixtures-heading h3 {
+  margin: 0;
+  font-size: 19px;
+  letter-spacing: -.3px;
+}
+
+.clear-date { font-size: 12px; padding: 8px 11px; }
+[hidden] { display: none !important; }
+
+.game {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 5px solid #64748b;
+  border-radius: 12px;
+  padding: 18px;
+  margin: 10px 0;
+  box-shadow: var(--shadow);
+}
+
+.game.nfl { border-left-color: #c8102e; }
+.game.nba { border-left-color: #007a33; }
+.game.mlb { border-left-color: #bd3039; }
+.game.nhl { border-left-color: #ffb81c; }
+
+.game.live {
+  outline: 1px solid #db5060;
+  background: var(--panel);
+}
+
+.game a {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.game a:hover .matchup { text-decoration: underline; }
+
+.game-top {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.game-league { font-weight: 750; }
+
+.matchup {
+  font-size: 18px;
+  font-weight: 800;
+  margin: 13px 0 9px;
+  letter-spacing: -.3px;
+}
+
+.game-bottom {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.game-bottom span:last-child { text-align: right; }
+
+.live-indicator {
+  display: inline-flex;
   align-items: center;
-  gap: 10px;
-  margin: 22px 0 12px;
+  gap: 6px;
+  color: #ef697c;
+  font-size: 11px;
+  font-weight: 800;
+  margin-left: 7px;
 }
-.fixtures-heading h3 { margin: 0; font-size: 18px; }
-.clear-date {
-  padding: 7px 10px;
-  font-size: 12px;
+
+.live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ef526b;
+  animation: pulse 1.5s infinite;
 }
+
+@keyframes pulse {
+  0%,100% { opacity: 1; }
+  50% { opacity: .35; }
+}
+
+.empty {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
 footer {
+  border-top: 1px solid var(--border);
   text-align: center;
-  padding: 25px;
-  color: #94a3b8;
+  padding: 25px 15px;
+  color: var(--muted);
   font-size: 12px;
 }
-@media (max-width: 480px) {
-  main { padding: 17px 10px; }
-  header h1 { font-size: 26px; }
-  .teams { gap: 10px; }
-  .team { padding: 16px 12px; }
+
+@media (max-width: 600px) {
+  main { padding: 22px 11px 35px; }
+  .header-inner { padding: 13px 12px; }
+  .teams { gap: 10px; margin-bottom: 32px; }
+  .team {
+    min-height: 210px;
+    padding: 20px 8px;
+    border-radius: 13px;
+  }
+  .team-logo {
+    width: 75%;
+    max-width: 125px;
+    height: 105px;
+  }
   .team h3 { font-size: 16px; }
-  .filter { flex: 1 1 80px; }
-  .calendar { padding: 10px; }
-  .calendar-grid { gap: 3px; }
+  .team p { font-size: 11px; }
+  .team-league { top: 10px; left: 11px; }
+  .team-arrow { top: 7px; right: 11px; }
+  .calendar { padding: 11px; }
+  .calendar-grid { gap: 4px; }
   .calendar-day {
     min-height: 83px;
     padding: 9px 2px;
     gap: 7px;
   }
   .day-name { font-size: 10px; }
-  .day-number { font-size: 16px; }
+  .day-number { font-size: 17px; }
   .fixture-dot { width: 7px; height: 7px; }
+  .filter { flex: 1 1 80px; }
+  .game { padding: 14px; }
+  .matchup { font-size: 16px; }
 }
+
 @media (prefers-reduced-motion: reduce) {
   .live-dot { animation: none; }
+  .team { transition: none; }
 }
 </style>
+
+<script>
+(function () {
+  try {
+    const saved = localStorage.getItem("bsh-theme");
+    const preferred = window.matchMedia(
+      "(prefers-color-scheme: light)"
+    ).matches ? "light" : "dark";
+
+    document.documentElement.dataset.theme =
+      saved === "light" || saved === "dark"
+        ? saved
+        : preferred;
+  } catch {
+    document.documentElement.dataset.theme = "dark";
+  }
+})();
+</script>
 </head>
 
 <body>
 
-<header>
-  <h1>Boston Sports Hub</h1>
-  <p>Four teams. One city. All in one place.</p>
+<header class="site-header">
+  <div class="header-inner">
+    <div>
+      <div class="site-brand">Boston Sports Hub</div>
+      <div class="site-subtitle">Four teams. One city.</div>
+    </div>
+    <button id="theme-toggle"
+            class="theme-button"
+            type="button"
+            aria-label="Switch colour theme">
+      Change theme
+    </button>
+  </div>
 </header>
 
 <main>
-  <section>
-    <h2>Your Boston teams</h2>
+
+<section id="teams">
+  <div class="section-heading">
+    <p class="section-kicker">Your teams</p>
+    <h1>Boston. All in one place.</h1>
     <p class="summary">
-      Choose a team to view its fixtures, results and league standings.
+      Follow your four teams. Select a badge for fixtures,
+      results, standings and the latest news.
     </p>
-    <div class="teams">
-      <a class="team" href="patriots.html" style="--team-colour:#c8102e">
-        <span class="arrow">›</span>
-        <span class="tag">NFL</span>
-        <h3>New England Patriots</h3>
-        <p>American football</p>
-      </a>
-      <a class="team" href="celtics.html" style="--team-colour:#007a33">
-        <span class="arrow">›</span>
-        <span class="tag">NBA</span>
-        <h3>Boston Celtics</h3>
-        <p>Basketball</p>
-      </a>
-      <a class="team" href="red-sox.html" style="--team-colour:#e0b13d">
-        <span class="arrow">›</span>
-        <span class="tag">MLB</span>
-        <h3>Boston Red Sox</h3>
-        <p>Baseball</p>
-      </a>
-      <a class="team" href="bruins.html" style="--team-colour:#8ab4f8">
-        <span class="arrow">›</span>
-        <span class="tag">NHL</span>
-        <h3>Boston Bruins</h3>
-        <p>Ice hockey</p>
-      </a>
-    </div>
-  </section>
+  </div>
 
-  <section id="fixtures">
-    <h2>Upcoming fixtures</h2>
-    <p class="summary">
-      All four teams in date order. American local time is shown
-      on the left and UK local time on the right,
-      including daylight saving.
-    </p>
+  <div class="teams">
 
-    <button id="refresh">Refresh fixtures</button>
+    <a class="team patriots" href="patriots.html">
+      <span class="team-league">NFL</span>
+      <span class="team-arrow" aria-hidden="true">›</span>
+      <img class="team-logo"
+           src="https://a.espncdn.com/i/teamlogos/nfl/500/ne.png"
+           alt="New England Patriots badge"
+           loading="lazy">
+      <h3>New England Patriots</h3>
+      <p>American football</p>
+    </a>
 
-    <p id="status" class="summary" aria-live="polite">
-      Loading schedules…
-    </p>
+    <a class="team celtics" href="celtics.html">
+      <span class="team-league">NBA</span>
+      <span class="team-arrow" aria-hidden="true">›</span>
+      <img class="team-logo"
+           src="https://a.espncdn.com/i/teamlogos/nba/500/bos.png"
+           alt="Boston Celtics badge"
+           loading="lazy">
+      <h3>Boston Celtics</h3>
+      <p>Basketball</p>
+    </a>
 
-    <div class="calendar">
-      <div class="calendar-heading">
-        <div>
-          <h3>Weekly calendar</h3>
-          <div id="calendar-period" class="calendar-period">
-            Loading week…
-          </div>
-        </div>
-        <div class="calendar-controls">
-          <button id="previous-week" aria-label="Previous week" title="Previous week">‹</button>
-          <button id="today-week">Today</button>
-          <button id="next-week" aria-label="Next week" title="Next week">›</button>
-        </div>
-      </div>
+    <a class="team red-sox" href="red-sox.html">
+      <span class="team-league">MLB</span>
+      <span class="team-arrow" aria-hidden="true">›</span>
+      <img class="team-logo"
+           src="https://a.espncdn.com/i/teamlogos/mlb/500/bos.png"
+           alt="Boston Red Sox badge"
+           loading="lazy">
+      <h3>Boston Red Sox</h3>
+      <p>Baseball</p>
+    </a>
 
-      <div id="calendar-grid"
-           class="calendar-grid"
-           aria-label="Weekly fixtures calendar">
-      </div>
+    <a class="team bruins" href="bruins.html">
+      <span class="team-league">NHL</span>
+      <span class="team-arrow" aria-hidden="true">›</span>
+      <img class="team-logo"
+           src="https://a.espncdn.com/i/teamlogos/nhl/500/bos.png"
+           alt="Boston Bruins badge"
+           loading="lazy">
+      <h3>Boston Bruins</h3>
+      <p>Ice hockey</p>
+    </a>
 
-      <div class="calendar-legend">
-        <span class="legend-item">
-          <span class="fixture-dot nfl"></span> NFL
-        </span>
-        <span class="legend-item">
-          <span class="fixture-dot nba"></span> NBA
-        </span>
-        <span class="legend-item">
-          <span class="fixture-dot mlb"></span> MLB
-        </span>
-        <span class="legend-item">
-          <span class="fixture-dot nhl"></span> NHL
-        </span>
-      </div>
+  </div>
+</section>
 
-      <p class="calendar-note">
-        Dates use UK time. Select a day to show its fixtures.
-        Select the same day again to show all fixtures.
+<div class="section-divider"></div>
+
+<section id="fixtures">
+  <div class="fixtures-header">
+    <div>
+      <p class="section-kicker">Game centre</p>
+      <h2>Upcoming fixtures</h2>
+      <p class="summary">
+        All four teams in date order. American local time
+        and UK time are shown, including daylight saving.
       </p>
     </div>
+    <button id="refresh" class="refresh-button">
+      Refresh fixtures
+    </button>
+  </div>
 
-    <div class="filters"
-         role="group"
-         aria-label="Filter fixtures by sport">
-      <button class="filter active" data-league="ALL" aria-pressed="true">
-        All Sports
-      </button>
-      <button class="filter" data-league="NFL" aria-pressed="false">NFL</button>
-      <button class="filter" data-league="NBA" aria-pressed="false">NBA</button>
-      <button class="filter" data-league="MLB" aria-pressed="false">MLB</button>
-      <button class="filter" data-league="NHL" aria-pressed="false">NHL</button>
+  <p id="status" class="summary" aria-live="polite">
+    Loading schedules…
+  </p>
+
+  <div class="calendar">
+    <div class="calendar-heading">
+      <div>
+        <h3>Weekly calendar</h3>
+        <div id="calendar-period" class="calendar-period">
+          Loading week…
+        </div>
+      </div>
+      <div class="calendar-controls">
+        <button id="previous-week"
+                aria-label="Previous week"
+                title="Previous week">‹</button>
+        <button id="today-week">Today</button>
+        <button id="next-week"
+                aria-label="Next week"
+                title="Next week">›</button>
+      </div>
     </div>
 
-    <div class="fixtures-heading">
-      <h3 id="fixtures-title">All upcoming fixtures</h3>
-      <button id="clear-date" class="clear-date" hidden>
-        Show all dates
-      </button>
+    <div id="calendar-grid"
+         class="calendar-grid"
+         aria-label="Weekly fixtures calendar">
     </div>
 
-    <div id="upcoming">
-      <div class="empty">Loading upcoming fixtures…</div>
+    <div class="calendar-legend">
+      <span class="legend-item">
+        <span class="fixture-dot nfl"></span> NFL
+      </span>
+      <span class="legend-item">
+        <span class="fixture-dot nba"></span> NBA
+      </span>
+      <span class="legend-item">
+        <span class="fixture-dot mlb"></span> MLB
+      </span>
+      <span class="legend-item">
+        <span class="fixture-dot nhl"></span> NHL
+      </span>
     </div>
-  </section>
+
+    <p class="calendar-note">
+      Dates use UK time. Select a day to show its fixtures.
+      Select the same day again to show all fixtures.
+    </p>
+  </div>
+
+  <div class="filters"
+       role="group"
+       aria-label="Filter fixtures by sport">
+    <button class="filter active"
+            data-league="ALL"
+            aria-pressed="true">All Sports</button>
+    <button class="filter"
+            data-league="NFL"
+            aria-pressed="false">NFL</button>
+    <button class="filter"
+            data-league="NBA"
+            aria-pressed="false">NBA</button>
+    <button class="filter"
+            data-league="MLB"
+            aria-pressed="false">MLB</button>
+    <button class="filter"
+            data-league="NHL"
+            aria-pressed="false">NHL</button>
+  </div>
+
+  <div class="fixtures-heading">
+    <h3 id="fixtures-title">All upcoming fixtures</h3>
+    <button id="clear-date"
+            class="clear-date"
+            hidden>Show all dates</button>
+  </div>
+
+  <div id="upcoming">
+    <div class="empty">Loading upcoming fixtures…</div>
+  </div>
+</section>
+
 </main>
 
 <footer>
-  Boston Sports Hub · Made for a Boston sports fan in the UK
+  Boston Sports Hub · Independent fan website ·
+  Not affiliated with the NFL, NBA, MLB, NHL or their teams
 </footer>
 
 <script>
 "use strict";
 
+/* Colour theme */
+
+const themeButton = document.getElementById("theme-toggle");
+
+function updateThemeButton() {
+  const current = document.documentElement.dataset.theme;
+  themeButton.textContent =
+    current === "dark" ? "☀ Light mode" : "☾ Dark mode";
+}
+
+themeButton.addEventListener("click", () => {
+  const current = document.documentElement.dataset.theme;
+  const next = current === "dark" ? "light" : "dark";
+
+  document.documentElement.dataset.theme = next;
+
+  try {
+    localStorage.setItem("bsh-theme", next);
+  } catch {}
+
+  updateThemeButton();
+});
+
+updateThemeButton();
+
+/* ESPN schedule feeds */
+
 const feeds = [
-  { league: "NFL", team: "New England Patriots", id: "17", sport: "football", path: "nfl" },
-  { league: "NBA", team: "Boston Celtics", id: "2", sport: "basketball", path: "nba" },
-  { league: "MLB", team: "Boston Red Sox", id: "2", sport: "baseball", path: "mlb" },
-  { league: "NHL", team: "Boston Bruins", id: "1", sport: "hockey", path: "nhl" }
+  {
+    league: "NFL",
+    team: "New England Patriots",
+    id: "17",
+    sport: "football",
+    path: "nfl"
+  },
+  {
+    league: "NBA",
+    team: "Boston Celtics",
+    id: "2",
+    sport: "basketball",
+    path: "nba"
+  },
+  {
+    league: "MLB",
+    team: "Boston Red Sox",
+    id: "2",
+    sport: "baseball",
+    path: "mlb"
+  },
+  {
+    league: "NHL",
+    team: "Boston Bruins",
+    id: "1",
+    sport: "hockey",
+    path: "nhl"
+  }
 ];
 
 const statusEl = document.getElementById("status");
@@ -475,7 +869,10 @@ function safeText(value) {
 
 function dateLabel(value) {
   const date = new Date(value);
-  if (!value || Number.isNaN(date.getTime())) return "Date TBC";
+
+  if (!value || Number.isNaN(date.getTime())) {
+    return "Date TBC";
+  }
 
   return new Intl.DateTimeFormat("en-GB", {
     weekday: "short",
@@ -488,7 +885,10 @@ function dateLabel(value) {
 
 function timeLabel(value) {
   const date = new Date(value);
-  if (!value || Number.isNaN(date.getTime())) return "Time TBC";
+
+  if (!value || Number.isNaN(date.getTime())) {
+    return "Time TBC";
+  }
 
   return new Intl.DateTimeFormat("en-GB", {
     hour: "2-digit",
@@ -500,9 +900,13 @@ function timeLabel(value) {
 
 function americanTimeLabel(value, event) {
   const date = new Date(value);
-  if (!value || Number.isNaN(date.getTime())) return "US time TBC";
+
+  if (!value || Number.isNaN(date.getTime())) {
+    return "US time TBC";
+  }
 
   const competition = event?.competitions?.[0];
+
   const venueTimeZone =
     competition?.venue?.address?.timeZone ||
     competition?.venue?.timeZone ||
@@ -531,6 +935,7 @@ function americanTimeLabel(value, event) {
 
 function ukDateKey(value) {
   const date = new Date(value);
+
   if (Number.isNaN(date.getTime())) return "";
 
   const parts = new Intl.DateTimeFormat("en-GB", {
@@ -541,6 +946,7 @@ function ukDateKey(value) {
   }).formatToParts(date);
 
   const values = {};
+
   parts.forEach(part => {
     values[part.type] = part.value;
   });
@@ -558,6 +964,7 @@ function mondayOfWeek(dateKey) {
   const daysFromMonday = (weekday + 6) % 7;
 
   date.setUTCDate(date.getUTCDate() - daysFromMonday);
+
   return date;
 }
 
@@ -629,6 +1036,7 @@ function nflSeasonYear() {
   const now = new Date();
   const year = now.getUTCFullYear();
   const month = now.getUTCMonth();
+
   return month >= 2 ? year : year - 1;
 }
 
@@ -636,6 +1044,7 @@ function nbaSeasonYear() {
   const now = new Date();
   const year = now.getUTCFullYear();
   const month = now.getUTCMonth();
+
   return month >= 6 ? year + 1 : year;
 }
 
@@ -643,6 +1052,7 @@ function nhlSeasonYear() {
   const now = new Date();
   const year = now.getUTCFullYear();
   const month = now.getUTCMonth();
+
   return month >= 6 ? year + 1 : year;
 }
 
@@ -651,6 +1061,7 @@ function scheduleRequests(feed) {
 
   if (feed.league === "NFL") {
     const season = nflSeasonYear();
+
     return [
       { season, type: 2 },
       { season, type: 3 },
@@ -660,6 +1071,7 @@ function scheduleRequests(feed) {
 
   if (feed.league === "NBA") {
     const season = nbaSeasonYear();
+
     return [
       { season, type: 2 },
       { season, type: 3 },
@@ -677,6 +1089,7 @@ function scheduleRequests(feed) {
 
   if (feed.league === "NHL") {
     const season = nhlSeasonYear();
+
     return [
       { season, type: 2 },
       { season, type: 3 },
@@ -693,7 +1106,9 @@ async function fetchSchedule(feed, request) {
     `${feed.sport}/${feed.path}/teams/${feed.id}/schedule` +
     `?season=${request.season}&seasontype=${request.type}`;
 
-  const response = await fetch(url, { cache: "no-store" });
+  const response = await fetch(url, {
+    cache: "no-store"
+  });
 
   if (!response.ok) {
     throw new Error(
@@ -718,6 +1133,7 @@ async function fetchSchedule(feed, request) {
 
 async function loadFeed(feed) {
   const requests = scheduleRequests(feed);
+
   const results = await Promise.allSettled(
     requests.map(request => fetchSchedule(feed, request))
   );
@@ -732,9 +1148,11 @@ async function loadFeed(feed) {
       result.value.forEach(game => {
         const previous = gamesById.get(game.id);
 
-        if (!previous ||
-            (game.live && !previous.live) ||
-            (game.completed && !previous.completed)) {
+        if (
+          !previous ||
+          (game.live && !previous.live) ||
+          (game.completed && !previous.completed)
+        ) {
           gamesById.set(game.id, game);
         }
       });
@@ -748,7 +1166,9 @@ async function loadFeed(feed) {
   });
 
   if (successful === 0) {
-    throw new Error(`All ${feed.league} schedule requests failed`);
+    throw new Error(
+      `All ${feed.league} schedule requests failed`
+    );
   }
 
   return {
@@ -767,7 +1187,7 @@ function gameCard(game) {
 
   const content = `
     <div class="game-top">
-      <span>
+      <span class="game-league">
         ${safeText(game.league)} · ${safeText(game.team)}
         ${liveLabel}
       </span>
@@ -786,18 +1206,22 @@ function gameCard(game) {
   const link = game.link
     ? `<a href="${safeText(game.link)}"
          target="_blank"
-         rel="noopener noreferrer"
-         style="color:inherit;text-decoration:none">${content}</a>`
+         rel="noopener noreferrer">${content}</a>`
     : content;
 
-  return `<article class="game ${game.league.toLowerCase()} ${game.live ? "live" : ""}">${link}</article>`;
+  return `
+    <article class="game ${game.league.toLowerCase()} ${game.live ? "live" : ""}">
+      ${link}
+    </article>`;
 }
 
 function filteredGames() {
   let games = allUpcomingGames;
 
   if (activeLeague !== "ALL") {
-    games = games.filter(game => game.league === activeLeague);
+    games = games.filter(
+      game => game.league === activeLeague
+    );
   }
 
   if (selectedDate) {
@@ -835,7 +1259,8 @@ function renderFixtures() {
   }
 
   if (games.length) {
-    upcomingEl.innerHTML = games.map(gameCard).join("");
+    upcomingEl.innerHTML =
+      games.map(gameCard).join("");
     return;
   }
 
@@ -877,7 +1302,8 @@ function renderCalendar() {
     { day: "numeric", month: "short", year: "numeric" }
   );
 
-  calendarPeriodEl.textContent = `${startLabel} – ${endLabel}`;
+  calendarPeriodEl.textContent =
+    `${startLabel} – ${endLabel}`;
 
   const days = [];
 
@@ -931,7 +1357,9 @@ function renderCalendar() {
 
   calendarGridEl.innerHTML = days.join("");
 
-  calendarGridEl.querySelectorAll(".calendar-day").forEach(button => {
+  calendarGridEl.querySelectorAll(
+    ".calendar-day"
+  ).forEach(button => {
     button.addEventListener("click", () => {
       const date = button.dataset.date;
 
@@ -951,7 +1379,10 @@ function setActiveLeague(league) {
     const active = button.dataset.league === league;
 
     button.classList.toggle("active", active);
-    button.setAttribute("aria-pressed", String(active));
+    button.setAttribute(
+      "aria-pressed",
+      String(active)
+    );
   });
 
   renderFixtures();
@@ -983,6 +1414,7 @@ async function loadAll() {
         }
       } else {
         errors.push(feeds[index].league);
+
         console.error(
           `${feeds[index].league} schedule error:`,
           result.reason
@@ -991,7 +1423,9 @@ async function loadAll() {
     });
 
     if (errors.length === feeds.length) {
-      throw new Error("All four league schedules failed");
+      throw new Error(
+        "All four league schedules failed"
+      );
     }
 
     games = [
@@ -1006,12 +1440,14 @@ async function loadAll() {
       .filter(game => {
         if (game.completed) return false;
         if (game.live) return true;
+
         return new Date(game.date).getTime() >= now;
       })
       .sort((a, b) => {
         if (a.live !== b.live) {
           return a.live ? -1 : 1;
         }
+
         return new Date(a.date) - new Date(b.date);
       });
 
@@ -1022,14 +1458,19 @@ async function loadAll() {
     const loaded = feeds.length - errors.length;
     const updated = timeLabel(new Date().toISOString());
 
-    if (loaded === feeds.length && partialFeeds.length === 0) {
+    if (
+      loaded === feeds.length &&
+      partialFeeds.length === 0
+    ) {
       statusEl.textContent =
         `All four league feeds loaded at ${updated}.`;
     } else {
       const warnings = [];
 
       if (errors.length) {
-        warnings.push(`Unavailable: ${errors.join(", ")}`);
+        warnings.push(
+          `Unavailable: ${errors.join(", ")}`
+        );
       }
 
       if (partialFeeds.length) {
@@ -1052,7 +1493,10 @@ async function loadAll() {
         '<div class="empty">Fixtures could not be loaded. Check your connection and refresh.</div>';
     }
 
-    console.error("Boston Sports Hub schedule error:", error);
+    console.error(
+      "Boston Sports Hub schedule error:",
+      error
+    );
 
   } finally {
     loading = false;
@@ -1061,32 +1505,37 @@ async function loadAll() {
   }
 }
 
+/* Controls */
+
 document.querySelectorAll(".filter").forEach(button => {
   button.addEventListener("click", () => {
     setActiveLeague(button.dataset.league);
   });
 });
 
-document.getElementById("previous-week").addEventListener("click", () => {
-  weekOffset--;
-  selectedDate = null;
-  renderCalendar();
-  renderFixtures();
-});
+document.getElementById("previous-week")
+  .addEventListener("click", () => {
+    weekOffset--;
+    selectedDate = null;
+    renderCalendar();
+    renderFixtures();
+  });
 
-document.getElementById("next-week").addEventListener("click", () => {
-  weekOffset++;
-  selectedDate = null;
-  renderCalendar();
-  renderFixtures();
-});
+document.getElementById("next-week")
+  .addEventListener("click", () => {
+    weekOffset++;
+    selectedDate = null;
+    renderCalendar();
+    renderFixtures();
+  });
 
-document.getElementById("today-week").addEventListener("click", () => {
-  weekOffset = 0;
-  selectedDate = null;
-  renderCalendar();
-  renderFixtures();
-});
+document.getElementById("today-week")
+  .addEventListener("click", () => {
+    weekOffset = 0;
+    selectedDate = null;
+    renderCalendar();
+    renderFixtures();
+  });
 
 clearDateEl.addEventListener("click", () => {
   selectedDate = null;
