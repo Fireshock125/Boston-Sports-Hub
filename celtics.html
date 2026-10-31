@@ -46,7 +46,6 @@ html[data-theme="light"] {
 }
 
 * { box-sizing: border-box; }
-
 html { scroll-behavior: auto; }
 
 body {
@@ -215,10 +214,7 @@ a:focus-visible {
 }
 
 .team-nav a:hover { background: var(--button-hover); }
-
-.team-nav a.home-link {
-  border-color: var(--accent);
-}
+.team-nav a.home-link { border-color: var(--accent); }
 
 /* Page layout */
 
@@ -332,11 +328,7 @@ button:disabled { opacity: .6; cursor: wait; }
 
 .score.win { color: #38b97a; }
 .score.loss { color: #ee7280; }
-
-.status {
-  color: var(--muted);
-  font-size: 12px;
-}
+.status { color: var(--muted); font-size: 12px; }
 
 .empty {
   background: var(--surface);
@@ -406,9 +398,7 @@ th {
 }
 
 td { font-size: 13px; }
-
 tbody tr:last-child td { border-bottom: 0; }
-
 tbody tr:hover { background: var(--panel-hover); }
 
 tr.boston {
@@ -427,10 +417,7 @@ tr.boston td:first-child {
 
 /* Celtics news */
 
-.news-list {
-  display: grid;
-  gap: 13px;
-}
+.news-list { display: grid; gap: 13px; }
 
 .news-card {
   display: flex;
@@ -522,7 +509,6 @@ footer {
 
   .hero-kicker { font-size: 10px; }
   .hero-description { font-size: 12px; }
-
   .nav-inner { padding: 9px 10px; }
 
   .team-nav a {
@@ -531,7 +517,6 @@ footer {
   }
 
   main { padding: 23px 11px 30px; }
-
   .game { padding: 14px; }
   .matchup { font-size: 16px; }
 
@@ -547,22 +532,13 @@ footer {
 
   .news-title { font-size: 15px; }
   .news-description { font-size: 12px; }
-
   th, td { padding: 10px 11px; }
 }
 
 @media (max-width: 380px) {
-  .hero-logo {
-    width: 83px;
-    height: 90px;
-  }
-
+  .hero-logo { width: 83px; height: 90px; }
   .hero-inner { gap: 10px; }
-
-  .news-image {
-    width: 83px;
-    height: 78px;
-  }
+  .news-image { width: 83px; height: 78px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1256,14 +1232,23 @@ function normaliseTeam(entry) {
     ABBREVIATION_ALIASES[originalAbbreviation] ||
     originalAbbreviation;
 
+  const wins = numericStat(entry, ["wins", "w"]);
+  const losses = numericStat(entry, ["losses", "l"]);
+
+  const gamesPlayed =
+    wins !== null && losses !== null
+      ? wins + losses
+      : null;
+
   return {
     id: String(team.id || ""),
     name: team.displayName ||
       team.name ||
       "Unknown team",
     abbreviation,
-    wins: numericStat(entry, ["wins", "w"]),
-    losses: numericStat(entry, ["losses", "l"]),
+    gamesPlayed,
+    wins,
+    losses,
     pct: numericStat(
       entry,
       ["winpercent", "pct", "win percentage"]
@@ -1356,6 +1341,7 @@ function renderTable(title, teams) {
           <tr>
             <th class="position">Pos.</th>
             <th>Team</th>
+            <th>GP</th>
             <th>W</th>
             <th>L</th>
             <th>PCT</th>
@@ -1375,6 +1361,7 @@ function renderTable(title, teams) {
               <tr class="${isBoston ? "boston" : ""}">
                 <td class="position">${index + 1}</td>
                 <td>${safeText(team.name)}</td>
+                <td>${safeText(team.gamesPlayed ?? "—")}</td>
                 <td>${safeText(team.wins ?? "—")}</td>
                 <td>${safeText(team.losses ?? "—")}</td>
                 <td>${safeText(team.rawPct)}</td>
