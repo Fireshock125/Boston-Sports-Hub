@@ -67,7 +67,7 @@ a:focus-visible {
   outline-offset: 3px;
 }
 
-/* Top header */
+/* HEADER */
 
 .site-header {
   background: var(--header);
@@ -112,7 +112,7 @@ a:focus-visible {
 
 .theme-button:hover { background: var(--button-hover); }
 
-/* Celtics hero */
+/* CELTICS HERO */
 
 .team-hero {
   background: linear-gradient(
@@ -180,7 +180,7 @@ a:focus-visible {
   margin: 0;
 }
 
-/* Navigation */
+/* NAVIGATION */
 
 .team-nav {
   position: sticky;
@@ -216,7 +216,7 @@ a:focus-visible {
 .team-nav a:hover { background: var(--button-hover); }
 .team-nav a.home-link { border-color: var(--accent); }
 
-/* Page layout */
+/* PAGE LAYOUT */
 
 main {
   max-width: 1120px;
@@ -271,7 +271,7 @@ button {
 button:hover { background: var(--button-hover); }
 button:disabled { opacity: .6; cursor: wait; }
 
-/* Fixtures and results */
+/* FIXTURES AND RESULTS */
 
 .game {
   background: var(--surface);
@@ -283,13 +283,15 @@ button:disabled { opacity: .6; cursor: wait; }
   box-shadow: var(--shadow);
 }
 
-.game a {
+.game a.game-link {
   display: block;
   color: inherit;
   text-decoration: none;
 }
 
-.game a:hover .matchup { text-decoration: underline; }
+.game a.game-link:hover .matchup {
+  text-decoration: underline;
+}
 
 .game-top {
   display: flex;
@@ -340,7 +342,94 @@ button:disabled { opacity: .6; cursor: wait; }
   font-size: 14px;
 }
 
-/* NBA standings */
+/* SPOILER-FREE RESULTS */
+
+.results-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 17px 0;
+}
+
+.spoiler-status {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.spoiler-status::before {
+  content: "●";
+  color: var(--accent);
+  margin-right: 7px;
+}
+
+.results-controls button {
+  border-radius: 999px;
+}
+
+.result-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.result-actions button {
+  padding: 9px 13px;
+  font-size: 12px;
+}
+
+.result-actions .watch-button {
+  border-color: var(--accent);
+}
+
+.score-hidden {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.highlight-player {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid var(--border);
+}
+
+.video-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #000;
+  border-radius: 10px;
+}
+
+.video-frame iframe,
+.video-frame video {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border: 0;
+}
+
+.highlight-note {
+  margin: 9px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.highlight-note a {
+  color: var(--text);
+  text-decoration: underline;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+/* NBA STANDINGS */
 
 .standings-tabs {
   display: flex;
@@ -415,7 +504,7 @@ tr.boston td:first-child {
   width: 60px;
 }
 
-/* Celtics news */
+/* CELTICS NEWS */
 
 .news-list { display: grid; gap: 13px; }
 
@@ -477,7 +566,7 @@ tr.boston td:first-child {
   font-weight: 750;
 }
 
-/* Footer */
+/* FOOTER */
 
 footer {
   border-top: 1px solid var(--border);
@@ -487,7 +576,7 @@ footer {
   font-size: 12px;
 }
 
-/* Mobile */
+/* MOBILE */
 
 @media (max-width: 600px) {
   .header-inner { padding: 12px; }
@@ -533,6 +622,10 @@ footer {
   .news-title { font-size: 15px; }
   .news-description { font-size: 12px; }
   th, td { padding: 10px 11px; }
+
+  .results-controls {
+    align-items: flex-start;
+  }
 }
 
 @media (max-width: 380px) {
@@ -594,7 +687,7 @@ footer {
       <p class="hero-kicker">NBA · Eastern Conference · Atlantic Division</p>
       <h1 class="hero-title">Boston Celtics</h1>
       <p class="hero-description">
-        Fixtures · Results · League standings · Latest news
+        Fixtures · Results · Highlights · League standings · Latest news
       </p>
     </div>
   </div>
@@ -639,8 +732,23 @@ footer {
   <h2>Recent Results</h2>
 
   <p class="summary">
-    The latest 10 completed games and final scores.
+    The latest 10 completed Celtics games.
+    Scores are hidden initially so you can enjoy
+    the highlights without knowing the result.
   </p>
+
+  <div class="results-controls">
+    <span id="spoiler-status" class="spoiler-status">
+      Spoiler-free mode on
+    </span>
+
+    <button
+      id="toggle-all-scores"
+      type="button"
+      aria-pressed="false">
+      Show All Scores
+    </button>
+  </div>
 
   <div id="results-list">
     <div class="empty">Loading results…</div>
@@ -702,6 +810,7 @@ footer {
   <p class="summary">
     The latest 10 Boston Celtics headlines from multiple sports
     publications. Select an article to read the full story.
+    Headlines may contain spoilers.
   </p>
 
   <button id="refresh-news">Refresh news</button>
@@ -764,7 +873,100 @@ const SCHEDULE_URL =
 const STANDINGS_URL =
   `https://site.api.espn.com/apis/v2/sports/${SPORT}/${LEAGUE}/standings`;
 
+const SUMMARY_URL =
+  `https://site.api.espn.com/apis/site/v2/sports/${SPORT}/${LEAGUE}/summary`;
+
 const $ = id => document.getElementById(id);
+
+/* SPOILER-FREE SETTINGS */
+
+const SPOILER_STORAGE_KEY = "bsh-hide-scores";
+
+let hideAllScores = true;
+const individuallyRevealed = new Set();
+const highlightsByGame = new Map();
+
+try {
+  const saved = localStorage.getItem(SPOILER_STORAGE_KEY);
+
+  if (saved === "false") {
+    hideAllScores = false;
+  }
+} catch {}
+
+function saveSpoilerPreference() {
+  try {
+    localStorage.setItem(
+      SPOILER_STORAGE_KEY,
+      String(hideAllScores)
+    );
+  } catch {}
+}
+
+function isScoreVisible(gameId) {
+  return !hideAllScores ||
+    individuallyRevealed.has(String(gameId));
+}
+
+function updateSpoilerControls() {
+  const button = $("toggle-all-scores");
+  const status = $("spoiler-status");
+
+  button.textContent = hideAllScores
+    ? "Show All Scores"
+    : "Hide All Scores";
+
+  button.setAttribute(
+    "aria-pressed",
+    String(!hideAllScores)
+  );
+
+  status.textContent = hideAllScores
+    ? "Spoiler-free mode on"
+    : "All scores visible";
+}
+
+function updateResultScores() {
+  document.querySelectorAll(
+    "#results-list .game[data-game-id]"
+  ).forEach(card => {
+    const id = card.dataset.gameId;
+    const visible = isScoreVisible(id);
+
+    const score = card.querySelector(".result-score");
+    const hiddenMessage = card.querySelector(".score-hidden");
+    const revealButton = card.querySelector(".reveal-button");
+
+    if (score) score.hidden = !visible;
+    if (hiddenMessage) hiddenMessage.hidden = visible;
+
+    if (revealButton) {
+      revealButton.hidden = !hideAllScores;
+
+      revealButton.textContent =
+        individuallyRevealed.has(id)
+          ? "Hide Score"
+          : "Reveal Score";
+
+      revealButton.setAttribute(
+        "aria-pressed",
+        String(individuallyRevealed.has(id))
+      );
+    }
+  });
+
+  updateSpoilerControls();
+}
+
+$("toggle-all-scores").addEventListener("click", () => {
+  hideAllScores = !hideAllScores;
+
+  individuallyRevealed.clear();
+  saveSpoilerPreference();
+  updateResultScores();
+});
+
+/* DATE AND SCHEDULE HELPERS */
 
 function nbaSeasonYear() {
   const now = new Date();
@@ -997,12 +1199,16 @@ function parseEvent(event) {
   };
 }
 
+/* GAME CARDS */
+
 function gameCard(game, resultMode = false) {
   const scoreClass =
     game.outcome === "Win" ? "win" :
     game.outcome === "Loss" ? "loss" : "";
 
-  const content = `
+  const id = String(game.id || "");
+
+  const header = `
     <div class="game-top">
       <span>NBA · ${safeText(TEAM_NAME)}</span>
       <span>${safeText(dateLabel(game.date))}</span>
@@ -1010,30 +1216,400 @@ function gameCard(game, resultMode = false) {
 
     <div class="matchup">
       ${safeText(game.away)} @ ${safeText(game.home)}
-    </div>
-
-    <div class="game-bottom">
-      ${resultMode
-        ? `<span class="score ${scoreClass}">${
-            game.ownScore !== null &&
-            game.opponentScore !== null
-              ? `Final · ${safeText(game.ownScore)} – ${safeText(game.opponentScore)}${game.outcome ? " · " + safeText(game.outcome) : ""}`
-              : "Final · Score unavailable"
-          }</span>
-          <span class="status">Completed</span>`
-        : `<span>${safeText(americanTimeLabel(game.date, game.event))}</span>
-           <span>UK: ${safeText(timeLabel(game.date))}</span>`
-      }
     </div>`;
 
-  return `<article class="game">${
-    game.link
-      ? `<a href="${safeText(game.link)}"
-           target="_blank"
-           rel="noopener noreferrer">${content}</a>`
-      : content
-  }</article>`;
+  if (!resultMode) {
+    const content = `
+      ${header}
+      <div class="game-bottom">
+        <span>${safeText(americanTimeLabel(game.date, game.event))}</span>
+        <span>UK: ${safeText(timeLabel(game.date))}</span>
+      </div>`;
+
+    return `<article class="game">${
+      game.link
+        ? `<a class="game-link"
+             href="${safeText(game.link)}"
+             target="_blank"
+             rel="noopener noreferrer">${content}</a>`
+        : content
+    }</article>`;
+  }
+
+  const scoreText =
+    game.ownScore !== null &&
+    game.opponentScore !== null
+      ? `Final · ${safeText(game.ownScore)} – ${safeText(game.opponentScore)}${
+          game.outcome
+            ? " · " + safeText(game.outcome)
+            : ""
+        }`
+      : "Final · Score unavailable";
+
+  return `
+    <article class="game" data-game-id="${safeText(id)}">
+      ${header}
+
+      <div class="game-bottom">
+        <span class="score result-score ${scoreClass}" hidden>
+          ${scoreText}
+        </span>
+
+        <span class="score-hidden">
+          Final score hidden
+        </span>
+
+        <span class="status">Completed</span>
+      </div>
+
+      <div class="result-actions">
+        <button
+          type="button"
+          class="reveal-button"
+          data-action="reveal"
+          aria-pressed="false">
+          Reveal Score
+        </button>
+
+        <button
+          type="button"
+          class="watch-button"
+          data-action="highlights"
+          aria-expanded="false"
+          hidden>
+          Watch Highlights
+        </button>
+      </div>
+
+      <div class="highlight-player" hidden></div>
+    </article>`;
 }
+
+/* HIGHLIGHTS */
+
+/*
+  Videos are associated with ESPN event IDs.
+
+  Optional additional file:
+  celtics-highlights.json
+
+  Example structure:
+
+  {
+    "games": {
+      "401234567": {
+        "source": "NBA",
+        "youtubeId": "EXAMPLE_VIDEO_ID"
+      }
+    }
+  }
+
+  The example ID above is not a real game or video.
+  No additional file is required for ESPN discovery.
+*/
+
+let extraHighlights = {};
+
+function validHttpUrl(value) {
+  try {
+    const url = new URL(String(value));
+    return ["https:", "http:"].includes(url.protocol)
+      ? url.href
+      : "";
+  } catch {
+    return "";
+  }
+}
+
+function validEmbedUrl(value) {
+  try {
+    const url = new URL(String(value));
+
+    if (url.protocol !== "https:") return "";
+
+    const host = url.hostname.toLowerCase();
+
+    if (
+      host === "www.youtube-nocookie.com" &&
+      /^\/embed\/[\w-]{11}$/.test(url.pathname)
+    ) {
+      return url.href;
+    }
+
+    if (
+      host === "www.espn.com" &&
+      url.pathname === "/core/video/iframe" &&
+      /^\d+$/.test(url.searchParams.get("id") || "")
+    ) {
+      return url.href;
+    }
+
+    return "";
+  } catch {
+    return "";
+  }
+}
+
+function validYouTubeId(value) {
+  const id = String(value || "");
+
+  return /^[a-zA-Z0-9_-]{11}$/.test(id)
+    ? id
+    : "";
+}
+
+function videoFromExtra(record) {
+  if (!record || typeof record !== "object") {
+    return null;
+  }
+
+  const youtubeId = validYouTubeId(record.youtubeId);
+
+  if (youtubeId) {
+    return {
+      source: String(record.source || "YouTube"),
+      type: "iframe",
+      url: `https://www.youtube-nocookie.com/embed/${youtubeId}?rel=0`
+    };
+  }
+
+  const embed = validEmbedUrl(record.embedUrl);
+
+  if (embed) {
+    return {
+      source: String(record.source || "Highlights"),
+      type: "iframe",
+      url: embed
+    };
+  }
+
+  return null;
+}
+
+async function loadExtraHighlights() {
+  try {
+    const response = await fetch(
+      `celtics-highlights.json?updated=${Date.now()}`,
+      { cache: "no-store" }
+    );
+
+    if (!response.ok) return;
+
+    const data = await response.json();
+
+    if (data.games && typeof data.games === "object") {
+      extraHighlights = data.games;
+    }
+  } catch {
+    // Optional file. ESPN highlights still work without it.
+  }
+}
+
+function findESPNHighlight(data) {
+  const videos = Array.isArray(data.videos)
+    ? data.videos
+    : [];
+
+  const candidates = videos.filter(video => {
+    const description = [
+      video.headline,
+      video.title,
+      video.description,
+      video.caption
+    ].filter(Boolean).join(" ");
+
+    return /highlight|recap|game summary/i.test(description);
+  });
+
+  const ordered = [...candidates].sort((a, b) => {
+    const duration = item => {
+      const raw = item.duration;
+
+      if (typeof raw === "number") return raw;
+
+      if (typeof raw === "string") {
+        const parts = raw.split(":").map(Number);
+
+        if (parts.every(Number.isFinite)) {
+          return parts.reduce((total, part) =>
+            total * 60 + part, 0
+          );
+        }
+      }
+
+      return 0;
+    };
+
+    return duration(b) - duration(a);
+  });
+
+  for (const video of ordered) {
+    const id = String(video.id || "");
+
+    if (/^\d+$/.test(id)) {
+      return {
+        source: "ESPN",
+        type: "iframe",
+        url: `https://www.espn.com/core/video/iframe?id=${id}`
+      };
+    }
+  }
+
+  return null;
+}
+
+async function fetchGameHighlights(game) {
+  const id = String(game.id || "");
+
+  if (!/^\d+$/.test(id)) return null;
+
+  const extra = videoFromExtra(extraHighlights[id]);
+
+  if (extra) return extra;
+
+  try {
+    const response = await fetch(
+      `${SUMMARY_URL}?event=${encodeURIComponent(id)}`,
+      { cache: "no-store" }
+    );
+
+    if (!response.ok) return null;
+
+    const data = await response.json();
+
+    return findESPNHighlight(data);
+  } catch (error) {
+    console.warn(
+      "Highlights unavailable for game:",
+      id,
+      error
+    );
+
+    return null;
+  }
+}
+
+async function discoverHighlights(games) {
+  await loadExtraHighlights();
+
+  await Promise.allSettled(
+    games.map(async game => {
+      const id = String(game.id || "");
+      const video = await fetchGameHighlights(game);
+
+      if (!video) return;
+
+      highlightsByGame.set(id, video);
+
+      const card = [...document.querySelectorAll(
+        "#results-list .game[data-game-id]"
+      )].find(item => item.dataset.gameId === id);
+
+      if (!card) return;
+
+      const button = card.querySelector(".watch-button");
+
+      if (button) button.hidden = false;
+    })
+  );
+}
+
+function closeHighlights(card) {
+  const player = card.querySelector(".highlight-player");
+  const button = card.querySelector(".watch-button");
+
+  if (!player || !button) return;
+
+  player.replaceChildren();
+  player.hidden = true;
+
+  button.textContent = "Watch Highlights";
+  button.setAttribute("aria-expanded", "false");
+}
+
+function openHighlights(card, video) {
+  const player = card.querySelector(".highlight-player");
+  const button = card.querySelector(".watch-button");
+
+  if (!player || !button) return;
+
+  player.replaceChildren();
+
+  const frame = document.createElement("div");
+  frame.className = "video-frame";
+
+  if (video.type === "iframe") {
+    const iframe = document.createElement("iframe");
+
+    iframe.src = video.url;
+    iframe.title = "Game highlights";
+    iframe.loading = "lazy";
+    iframe.allow =
+      "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen";
+    iframe.allowFullscreen = true;
+    iframe.referrerPolicy = "strict-origin-when-cross-origin";
+
+    frame.appendChild(iframe);
+  } else {
+    return;
+  }
+
+  player.appendChild(frame);
+
+  const note = document.createElement("p");
+  note.className = "highlight-note";
+  note.textContent =
+    `Video provided by ${video.source}. The video itself may contain spoilers.`;
+
+  player.appendChild(note);
+  player.hidden = false;
+
+  button.textContent = "Hide Highlights";
+  button.setAttribute("aria-expanded", "true");
+}
+
+/* RESULT BUTTON EVENTS */
+
+$("results-list").addEventListener("click", event => {
+  const button = event.target.closest(
+    "button[data-action]"
+  );
+
+  if (!button) return;
+
+  const card = button.closest(".game[data-game-id]");
+
+  if (!card) return;
+
+  const id = card.dataset.gameId;
+
+  if (button.dataset.action === "reveal") {
+    if (individuallyRevealed.has(id)) {
+      individuallyRevealed.delete(id);
+    } else {
+      individuallyRevealed.add(id);
+    }
+
+    updateResultScores();
+    return;
+  }
+
+  if (button.dataset.action === "highlights") {
+    const video = highlightsByGame.get(id);
+
+    if (!video) return;
+
+    const player = card.querySelector(".highlight-player");
+
+    if (!player.hidden) {
+      closeHighlights(card);
+    } else {
+      openHighlights(card, video);
+    }
+  }
+});
+
+/* FETCH SCHEDULE */
 
 async function fetchSchedule(request) {
   const url =
@@ -1067,8 +1643,11 @@ async function fetchSchedule(request) {
     );
 }
 
+let scheduleLoadNumber = 0;
+
 async function loadSchedule() {
   const button = $("refresh-fixtures");
+  const loadNumber = ++scheduleLoadNumber;
 
   button.disabled = true;
   $("fixture-status").textContent =
@@ -1080,6 +1659,8 @@ async function loadSchedule() {
     const responses = await Promise.allSettled(
       requests.map(fetchSchedule)
     );
+
+    if (loadNumber !== scheduleLoadNumber) return;
 
     const gamesById = new Map();
     let successful = 0;
@@ -1143,6 +1724,16 @@ async function loadSchedule() {
       ? results.map(game => gameCard(game, true)).join("")
       : '<div class="empty">No recent results are currently available.</div>';
 
+    individuallyRevealed.clear();
+    highlightsByGame.clear();
+    updateResultScores();
+
+    if (results.length) {
+      discoverHighlights(results).catch(error => {
+        console.warn("Highlights discovery failed:", error);
+      });
+    }
+
     const updated = timeLabel(
       new Date().toISOString()
     );
@@ -1153,6 +1744,8 @@ async function loadSchedule() {
         : `Schedule partially updated at ${updated}. Some ESPN feeds were unavailable.`;
 
   } catch (error) {
+    if (loadNumber !== scheduleLoadNumber) return;
+
     $("fixture-status").textContent =
       "Could not load the schedule. Please try again.";
 
@@ -1168,7 +1761,9 @@ async function loadSchedule() {
     );
 
   } finally {
-    button.disabled = false;
+    if (loadNumber === scheduleLoadNumber) {
+      button.disabled = false;
+    }
   }
 }
 
@@ -1722,6 +2317,8 @@ $("refresh-news").addEventListener(
   "click",
   loadNews
 );
+
+updateSpoilerControls();
 
 loadSchedule();
 loadStandings();
