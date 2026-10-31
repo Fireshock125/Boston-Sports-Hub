@@ -1208,15 +1208,26 @@ function normalizeAbbreviation(abbreviation) {
   return ABBREVIATION_ALIASES[original] || original;
 }
 
+/* GP added: games played = wins + losses */
+
 function normaliseTeam(entry) {
   const team = entry.team || {};
+
+  const wins = numericStat(entry, ["wins", "w"]);
+  const losses = numericStat(entry, ["losses", "l"]);
+
+  const gamesPlayed =
+    wins !== null && losses !== null
+      ? wins + losses
+      : null;
 
   return {
     id: String(team.id || ""),
     name: team.displayName || team.name || "Unknown team",
     abbreviation: normalizeAbbreviation(team.abbreviation),
-    wins: numericStat(entry, ["wins", "w"]),
-    losses: numericStat(entry, ["losses", "l"]),
+    gamesPlayed,
+    wins,
+    losses,
     pct: numericStat(entry, ["winpercent", "pct", "win_pct"]),
     rawPct: getStat(entry, ["winpercent", "pct", "win_pct"]) ?? "—",
     gb: getStat(entry, ["gamesbehind", "gb"]) ?? "—",
@@ -1281,6 +1292,8 @@ function rankTeams(teams) {
   });
 }
 
+/* GP column added to every standings table */
+
 function renderTable(title, teams) {
   if (!teams.length) {
     return `
@@ -1299,6 +1312,7 @@ function renderTable(title, teams) {
         <thead>
           <tr>
             <th>Team</th>
+            <th>GP</th>
             <th>W</th>
             <th>L</th>
             <th>PCT</th>
@@ -1319,6 +1333,7 @@ function renderTable(title, teams) {
                 <td class="position">
                   ${index + 1}. ${safeText(team.name)}
                 </td>
+                <td>${safeText(team.gamesPlayed ?? "—")}</td>
                 <td>${safeText(team.wins ?? "—")}</td>
                 <td>${safeText(team.losses ?? "—")}</td>
                 <td>${safeText(team.rawPct)}</td>
