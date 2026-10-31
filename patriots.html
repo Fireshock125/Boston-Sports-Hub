@@ -1122,10 +1122,23 @@ function normaliseTeam(entry) {
     team.abbreviation || ""
   ).toUpperCase();
 
+  // Games played = wins + losses + ties.
+  // Treat missing ties as zero, but don't invent a total
+  // when wins or losses are unavailable.
+  const winsNumber = statNumber(stats, ["wins", "w"]);
+  const lossesNumber = statNumber(stats, ["losses", "l"]);
+  const tiesNumber = statNumber(stats, ["ties", "t"]);
+
+  const gamesPlayed =
+    winsNumber >= 0 && lossesNumber >= 0
+      ? winsNumber + lossesNumber + Math.max(0, tiesNumber)
+      : "—";
+
   return {
     id: String(team.id || ""),
     name: team.displayName || team.name || "Unknown team",
     abbreviation,
+    gamesPlayed,
     wins: statValue(stats, ["wins", "w"]),
     losses: statValue(stats, ["losses", "l"]),
     ties: statValue(stats, ["ties", "t"]),
@@ -1170,6 +1183,7 @@ function makeStandingsTable(teams) {
           <tr>
             <th>#</th>
             <th>Team</th>
+            <th>GP</th>
             <th>W</th>
             <th>L</th>
             <th>T</th>
@@ -1184,6 +1198,7 @@ function makeStandingsTable(teams) {
             <tr class="${isPatriots(team) ? "patriots" : ""}">
               <td>${index + 1}</td>
               <td>${safeText(team.name)}</td>
+              <td>${safeText(team.gamesPlayed)}</td>
               <td>${safeText(team.wins)}</td>
               <td>${safeText(team.losses)}</td>
               <td>${safeText(team.ties)}</td>
