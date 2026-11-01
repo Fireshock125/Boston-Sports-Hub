@@ -1133,9 +1133,8 @@ const SUMMARY_URL = "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/
 function gameCard(game, resultMode = false) {
  const header = `<div class="game-top"><span>MLB · Boston Red Sox</span><span>${safeText(dateLabel(game.date))}</span></div><div class="matchup">${safeText(game.away)} @ ${safeText(game.home)}</div>`;
  if(!resultMode) return `<article class="game">${header}<div class="game-bottom"><span>${safeText(americanTimeLabel(game.date,game.event))}</span><span>UK: ${safeText(timeLabel(game.date))}</span></div></article>`;
- const score = game.ownScore == null || game.opponentScore == null ? "Score unavailable" : `${game.ownScore} – ${game.opponentScore}`;
- const outcome = game.outcome || "";
- return `<article class="game" data-game-id="${safeText(game.id)}">${header}<div class="game-bottom"><span class="score result-score" hidden>Final · ${safeText(score)} · ${safeText(outcome)}</span><span class="score-hidden">Final score hidden</span><span class="status">Completed</span></div><div class="result-actions"><button type="button" class="reveal-button" data-action="reveal">Reveal Score</button><button type="button" class="watch-button" data-action="highlights" aria-expanded="false" hidden>Watch Highlights</button></div><div class="highlight-player" hidden></div></article>`;
+ const resultText = getResult(game);
+ return `<article class="game" data-game-id="${safeText(game.id)}">${header}<div class="game-bottom"><span class="score result-score" hidden>${safeText(resultText)}</span><span class="score-hidden">Final score hidden</span><span class="status">Completed</span></div><div class="result-actions"><button type="button" class="reveal-button" data-action="reveal">Reveal Score</button><button type="button" class="watch-button" data-action="highlights" aria-expanded="false" hidden>Watch Highlights</button></div><div class="highlight-player" hidden></div></article>`;
 }
 
 let extraHighlights = {};
