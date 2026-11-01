@@ -525,6 +525,188 @@ footer {
 @media (prefers-reduced-motion: reduce) {
   .news-card { transition: none; }
 }
+/* SPOILER-FREE RESULTS */
+
+.results-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 17px 0;
+}
+
+.spoiler-status {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.spoiler-status::before {
+  content: "●";
+  color: var(--accent);
+  margin-right: 7px;
+}
+
+.results-controls button {
+  border-radius: 999px;
+}
+
+.result-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.result-actions button {
+  padding: 9px 13px;
+  font-size: 12px;
+}
+
+.result-actions .watch-button {
+  border-color: var(--accent);
+}
+
+.score-hidden {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.highlight-player {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid var(--border);
+}
+
+.video-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #000;
+  border-radius: 10px;
+}
+
+.video-frame iframe,
+.video-frame video {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border: 0;
+}
+
+.highlight-note {
+  margin: 9px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.highlight-note a {
+  color: var(--text);
+  text-decoration: underline;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+/* NBA STANDINGS */
+
+.standings-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 20px 0;
+}
+
+.standings-tabs button {
+  flex: 1 1 110px;
+  border-radius: 999px;
+}
+
+.standings-tabs button.active,
+.standings-tabs button[aria-pressed="true"] {
+  background: var(--selected);
+  color: var(--selected-text);
+  border-color: var(--selected);
+  font-weight: 800;
+}
+
+#standings-list h3 {
+  margin: 27px 0 10px;
+  font-size: 19px;
+  letter-spacing: -.3px;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-top: 13px;
+  box-shadow: var(--shadow);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 560px;
+}
+
+th, td {
+  padding: 12px 13px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+th {
+  background: var(--panel);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+td { font-size: 13px; }
+tbody tr:last-child td { border-bottom: 0; }
+tbody tr:hover { background: var(--panel-hover); }
+
+tr.boston {
+  background: var(--highlight);
+  font-weight: 800;
+}
+
+tr.boston td:first-child {
+  border-left: 3px solid var(--accent);
+}
+
+.position {
+  font-weight: 800;
+  width: 60px;
+}
+
+/* CELTICS NEWS */
+
+.news-list { display: grid; gap: 13px; }
+
+.news-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 17px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  padding: 16px;
+  color: var(--text);
+  text-decoration: none;
+  box-shadow: var(--shadow);
+  transition: background .15s, transform .15s;
+}
+
+.news-card:hover {
+  background: var(--pan
 </style>
 
 <script>
@@ -615,7 +797,9 @@ footer {
   <p class="summary">
     The latest 10 completed games and final scores.
   </p>
-  <div id="results-list">
+  
+<div class="results-controls"><span id="spoiler-status" class="spoiler-status">Spoiler-free mode on</span><button id="toggle-all-scores" type="button" aria-pressed="false">Show All Scores</button></div>
+<div id="results-list">
     <div class="empty">Loading results…</div>
   </div>
 </section>
@@ -886,54 +1070,305 @@ function parseEvent(event) {
   };
 }
 
-function gameCard(game, resultMode = false) {
-  const score =
-    game.ownScore === null || game.opponentScore === null
-      ? "Score unavailable"
-      : `${game.ownScore} – ${game.opponentScore}`;
 
-  const resultText = game.outcome
-    ? `Final · ${score} · ${game.outcome}`
-    : `Final · ${score}`;
-
-  const scoreClass =
-    game.outcome === "Win" ? "win" :
-    game.outcome === "Loss" ? "loss" : "";
-
-  const bottomRow = resultMode
-    ? `
-      <div class="game-bottom">
-        <span class="score ${scoreClass}">
-          ${safeText(resultText)}
-        </span>
-        <span class="status">Completed</span>
-      </div>`
-    : `
-      <div class="game-bottom">
-        <span>${safeText(americanTimeLabel(game.date, game.event))}</span>
-        <span>UK: ${safeText(timeLabel(game.date))}</span>
-      </div>`;
-
-  const content = `
-    <div class="game-top">
-      <span>NFL · ${safeText(TEAM_NAME)}</span>
-      <span>${safeText(dateLabel(game.date))}</span>
-    </div>
-
-    <div class="matchup">
-      ${safeText(game.away)} @ ${safeText(game.home)}
-    </div>
-
-    ${bottomRow}`;
-
-  return `<article class="game">${
-    game.link
-      ? `<a href="${safeText(game.link)}"
-           target="_blank"
-           rel="noopener noreferrer">${content}</a>`
-      : content
-  }</article>`;
+const SPOILER_STORAGE_KEY = "bsh-hide-scores";
+let hideAllScores = true;
+const individuallyRevealed = new Set();
+const highlightsByGame = new Map();
+try { if (localStorage.getItem(SPOILER_STORAGE_KEY) === "false") hideAllScores = false; } catch {}
+function isScoreVisible(id) { return !hideAllScores || individuallyRevealed.has(String(id)); }
+function updateResultScores() {
+ document.querySelectorAll("#results-list .game[data-game-id]").forEach(card => {
+  const id = card.dataset.gameId, visible = isScoreVisible(id);
+  const score = card.querySelector(".result-score"), hidden = card.querySelector(".score-hidden"), reveal = card.querySelector(".reveal-button");
+  if(score) score.hidden = !visible;
+  if(hidden) hidden.hidden = visible;
+  if(reveal) {reveal.hidden = !hideAllScores; reveal.textContent = individuallyRevealed.has(id) ? "Hide Score" : "Reveal Score"; reveal.setAttribute("aria-pressed", String(individuallyRevealed.has(id)));}
+ });
+ $("toggle-all-scores").textContent = hideAllScores ? "Show All Scores" : "Hide All Scores";
+ $("toggle-all-scores").setAttribute("aria-pressed",String(!hideAllScores));
+ $("spoiler-status").textContent = hideAllScores ? "Spoiler-free mode on" : "All scores visible";
 }
+$("toggle-all-scores").addEventListener("click",()=>{hideAllScores=!hideAllScores; individuallyRevealed.clear(); try{localStorage.setItem(SPOILER_STORAGE_KEY,String(hideAllScores))}catch{} updateResultScores();});
+const SUMMARY_URL = "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary";
+function gameCard(game, resultMode = false) {
+ const header = `<div class="game-top"><span>NFL · New England Patriots</span><span>${safeText(dateLabel(game.date))}</span></div><div class="matchup">${safeText(game.away)} @ ${safeText(game.home)}</div>`;
+ if(!resultMode) return `<article class="game">${header}<div class="game-bottom"><span>${safeText(americanTimeLabel(game.date,game.event))}</span><span>UK: ${safeText(timeLabel(game.date))}</span></div></article>`;
+ const score = game.ownScore == null || game.opponentScore == null ? "Score unavailable" : `${game.ownScore} – ${game.opponentScore}`;
+ const outcome = game.outcome || "";
+ return `<article class="game" data-game-id="${safeText(game.id)}">${header}<div class="game-bottom"><span class="score result-score" hidden>Final · ${safeText(score)} · ${safeText(outcome)}</span><span class="score-hidden">Final score hidden</span><span class="status">Completed</span></div><div class="result-actions"><button type="button" class="reveal-button" data-action="reveal">Reveal Score</button><button type="button" class="watch-button" data-action="highlights" aria-expanded="false" hidden>Watch Highlights</button></div><div class="highlight-player" hidden></div></article>`;
+}
+
+let extraHighlights = {};
+
+function validHttpUrl(value) {
+  try {
+    const url = new URL(String(value));
+    return ["https:", "http:"].includes(url.protocol)
+      ? url.href
+      : "";
+  } catch {
+    return "";
+  }
+}
+
+function validEmbedUrl(value) {
+  try {
+    const url = new URL(String(value));
+
+    if (url.protocol !== "https:") return "";
+
+    const host = url.hostname.toLowerCase();
+
+    if (
+      host === "www.youtube-nocookie.com" &&
+      /^\/embed\/[\w-]{11}$/.test(url.pathname)
+    ) {
+      return url.href;
+    }
+
+    if (
+      host === "www.espn.com" &&
+      url.pathname === "/core/video/iframe" &&
+      /^\d+$/.test(url.searchParams.get("id") || "")
+    ) {
+      return url.href;
+    }
+
+    return "";
+  } catch {
+    return "";
+  }
+}
+
+function validYouTubeId(value) {
+  const id = String(value || "");
+
+  return /^[a-zA-Z0-9_-]{11}$/.test(id)
+    ? id
+    : "";
+}
+
+function videoFromExtra(record) {
+  // Existing single-video records remain supported; multiple videos can be supplied as an array.
+  const records = Array.isArray(record) ? record :
+    Array.isArray(record?.videos) ? record.videos : record ? [record] : [];
+  return records.map(item => {
+    if (!item || typeof item !== "object") return null;
+    const youtubeId = validYouTubeId(item.youtubeId);
+    const embed = youtubeId
+      ? `https://www.youtube-nocookie.com/embed/${youtubeId}?rel=0`
+      : validEmbedUrl(item.embedUrl);
+    if (!embed) return null;
+    const espnId = embed.includes("espn.com/core/video/iframe")
+      ? new URL(embed).searchParams.get("id") : "";
+    return {
+      source: String(item.source || (youtubeId ? "YouTube" : "Highlights")),
+      type: "iframe", url: embed,
+      providerUrl: youtubeId
+        ? `https://www.youtube.com/watch?v=${youtubeId}`
+        : validHttpUrl(item.providerUrl) ||
+          (espnId ? `https://www.espn.com/video/clip/_/id/${espnId}` : ""),
+      category: String(item.category || "standard").toLowerCase(),
+      duration: Number(item.durationSeconds) || 0
+    };
+  }).filter(Boolean);
+}
+
+function highlightPriority(video) {
+  return ({ standard: 1, full: 2, extended: 3, short: 4 })[video.category] || 4;
+}
+
+function rankHighlights(videos) {
+  const seen = new Set();
+  return videos.filter(video => {
+    if (seen.has(video.url)) return false;
+    seen.add(video.url);
+    return true;
+  }).sort((a, b) =>
+    highlightPriority(a) - highlightPriority(b) ||
+    (b.duration || 0) - (a.duration || 0)
+  );
+}
+
+async function loadExtraHighlights() {
+  try {
+    const response = await fetch(
+      `patriots-highlights.json?updated=${Date.now()}`,
+      { cache: "no-store" }
+    );
+
+    if (!response.ok) return;
+
+    const data = await response.json();
+
+    if (data.games && typeof data.games === "object") {
+      extraHighlights = data.games;
+    }
+  } catch {
+    // Optional file. ESPN highlights still work without it.
+  }
+}
+
+
+function findESPNHighlights(data) {
+  const videos = Array.isArray(data.videos) ? data.videos : [];
+
+  function durationSeconds(video) {
+    const raw = video.duration;
+    if (typeof raw === "number" && Number.isFinite(raw)) return raw;
+    if (typeof raw === "string") {
+      const parts = raw.split(":").map(Number);
+      if (parts.length >= 2 && parts.length <= 3 && parts.every(Number.isFinite)) {
+        return parts.reduce((total, part) => total * 60 + part, 0);
+      }
+      const numeric = Number(raw);
+      if (Number.isFinite(numeric)) return numeric;
+    }
+    return 0;
+  }
+
+  function categoryFor(video) {
+    const title = [video.headline, video.title, video.description, video.caption]
+      .filter(Boolean).join(" ").toLowerCase();
+    if (/interview|press conference|postgame reaction|analysis|preview|trailer|top plays|best plays|dunk|three.pointer|buzzer.beater|individual highlights|player highlights/i.test(title)) return null;
+    if (/full game highlights|full highlights|full game recap/i.test(title)) return "full";
+    if (/extended highlights|extended recap/i.test(title)) return "extended";
+    if (/(?:game|match|nba)\s+highlights|highlights\s*:/i.test(title)) return "standard";
+    if (/game recap|game summary|full recap/i.test(title)) return "full";
+    if (/highlights/i.test(title)) return durationSeconds(video) >= 180 ? "standard" : "short";
+    if (/recap/i.test(title)) return "short";
+    return null;
+  }
+
+  return videos.filter(video => /^\d+$/.test(String(video.id || "")))
+    .map(video => {
+      const category = categoryFor(video);
+      if (!category) return null;
+      return {
+        source: "ESPN", type: "iframe",
+        url: `https://www.espn.com/core/video/iframe?id=${video.id}`,
+        providerUrl: `https://www.espn.com/video/clip/_/id/${video.id}`,
+        category, duration: durationSeconds(video)
+      };
+    }).filter(Boolean);
+}
+
+async function fetchGameHighlights(game) {
+  const id = String(game.id || "");
+  if (!/^\d+$/.test(id)) return [];
+  const extras = videoFromExtra(extraHighlights[id]);
+  try {
+    const response = await fetch(
+      `${SUMMARY_URL}?event=${encodeURIComponent(id)}`,
+      { cache: "no-store" }
+    );
+    if (!response.ok) return rankHighlights(extras);
+    const data = await response.json();
+    return rankHighlights([...extras, ...findESPNHighlights(data)]);
+  } catch (error) {
+    console.warn("ESPN highlights unavailable:", id, error);
+    return rankHighlights(extras);
+  }
+}
+
+async function discoverHighlights(games) {
+  await loadExtraHighlights();
+  await Promise.allSettled(games.map(async game => {
+    const id = String(game.id || "");
+    const videos = await fetchGameHighlights(game);
+    if (!videos.length) return;
+    highlightsByGame.set(id, videos);
+    const card = [...document.querySelectorAll(
+      "#results-list .game[data-game-id]"
+    )].find(item => item.dataset.gameId === id);
+    const button = card?.querySelector(".watch-button");
+    if (button) button.hidden = false;
+  }));
+}
+
+function closeHighlights(card) {
+  const player = card.querySelector(".highlight-player");
+  const button = card.querySelector(".watch-button");
+  if (!player || !button) return;
+  player.replaceChildren();
+  player.hidden = true;
+  button.textContent = "Watch Highlights";
+  button.setAttribute("aria-expanded", "false");
+}
+
+function openHighlights(card, videos, index = 0) {
+  const player = card.querySelector(".highlight-player");
+  const button = card.querySelector(".watch-button");
+  const video = videos[index];
+  if (!player || !button || !video) return;
+  player.replaceChildren();
+  const frame = document.createElement("div");
+  frame.className = "video-frame";
+  const iframe = document.createElement("iframe");
+  iframe.src = video.url;
+  iframe.title = "Game highlights";
+  iframe.loading = "lazy";
+  iframe.allow = "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen";
+  iframe.allowFullscreen = true;
+  iframe.referrerPolicy = "strict-origin-when-cross-origin";
+  frame.appendChild(iframe);
+  player.appendChild(frame);
+
+  const note = document.createElement("p");
+  note.className = "highlight-note";
+  note.textContent =
+    `Video ${index + 1} of ${videos.length} · ${video.source} · ${video.category}. Videos may contain spoilers.`;
+  player.appendChild(note);
+
+  const actions = document.createElement("div");
+  actions.className = "highlight-actions";
+  if (videos.length > 1) {
+    const next = document.createElement("button");
+    next.type = "button";
+    next.textContent = "Try Another Video";
+    next.addEventListener("click", () =>
+      openHighlights(card, videos, (index + 1) % videos.length)
+    );
+    actions.appendChild(next);
+  }
+  if (video.providerUrl) {
+    const link = document.createElement("a");
+    link.href = video.providerUrl;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.textContent = "Open on Provider";
+    actions.appendChild(link);
+  }
+  player.appendChild(actions);
+  player.hidden = false;
+  button.textContent = "Hide Highlights";
+  button.setAttribute("aria-expanded", "true");
+}
+
+/* RESULT BUTTON EVENTS */
+
+$("results-list").addEventListener("click", event => {
+  const button = event.target.closest("button[data-action]");
+  if (!button) return;
+  const card = button.closest(".game[data-game-id]");
+  if (!card) return;
+  const id = card.dataset.gameId;
+  if (button.dataset.action === "reveal") {
+    if (individuallyRevealed.has(id)) individuallyRevealed.delete(id);
+    else individuallyRevealed.add(id);
+    updateResultScores();
+    return;
+  }
+  if (button.dataset.action === "highlights") {
+    const videos = highlightsByGame.get(id);
+    if (!videos?.length) return;
+    const player = card.querySelector(".highlight-player");
+    if (!player.hidden) closeHighlights(card);
+    else openHighlights(card, videos);
+  }
+});
+
 
 async function fetchSchedule(request) {
   const url =
@@ -1027,6 +1462,9 @@ async function loadSchedule() {
     $("results-list").innerHTML = results.length
       ? results.map(game => gameCard(game, true)).join("")
       : '<div class="empty">No recent results are currently available.</div>';
+    updateResultScores();
+    discoverHighlights(results);
+
 
     const updated = timeLabel(new Date().toISOString());
 
