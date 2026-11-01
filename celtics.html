@@ -1405,57 +1405,133 @@ async function loadExtraHighlights() {
   }
 }
 
+
 function findESPNHighlight(data) {
   const videos = Array.isArray(data.videos)
     ? data.videos
     : [];
 
-  const candidates = videos.filter(video => {
-    const description = [
+  function durationSeconds(video) {
+    const raw = video.duration;
+
+    if (typeof raw === "number" && Number.isFinite(raw)) {
+      return raw;
+    }
+
+    if (typeof raw === "string") {
+      const parts = raw.split(":").map(Number);
+
+      if (
+        parts.length >= 2 &&
+        parts.length <= 3 &&
+        parts.every(Number.isFinite)
+      ) {
+        return parts.reduce(
+          (total, part) => total * 60 + part,
+          0
+        );
+      }
+
+      const numeric = Number(raw);
+
+      if (Number.isFinite(numeric)) {
+        return numeric;
+      }
+    }
+
+    return 0;
+  }
+
+  function videoPriority(video) {
+    const title = [
       video.headline,
       video.title,
       video.description,
       video.caption
-    ].filter(Boolean).join(" ");
+    ].filter(Boolean).join(" ").toLowerCase();
 
-    return /highlight|recap|game summary/i.test(description);
-  });
+    const duration = durationSeconds(video);
 
-  const ordered = [...candidates].sort((a, b) => {
-    const duration = item => {
-      const raw = item.duration;
-
-      if (typeof raw === "number") return raw;
-
-      if (typeof raw === "string") {
-        const parts = raw.split(":").map(Number);
-
-        if (parts.every(Number.isFinite)) {
-          return parts.reduce((total, part) =>
-            total * 60 + part, 0
-          );
-        }
-      }
-
-      return 0;
-    };
-
-    return duration(b) - duration(a);
-  });
-
-  for (const video of ordered) {
-    const id = String(video.id || "");
-
-    if (/^\d+$/.test(id)) {
-      return {
-        source: "ESPN",
-        type: "iframe",
-        url: `https://www.espn.com/core/video/iframe?id=${id}`
-      };
+    // Avoid interviews, individual plays and player-only clips.
+    if (
+      /interview|press conference|postgame reaction|analysis|preview|trailer|top plays|best plays|dunk|three.pointer|buzzer.beater|individual highlights|player highlights/i.test(title)
+    ) {
+      return 99;
     }
+
+    // First choice: standard game highlights.
+    if (
+      /(?:game|match|nba)\s+highlights|highlights\s*:/i.test(title) &&
+      !/extended|full game|full highlights/i.test(title)
+    ) {
+      return 1;
+    }
+
+    // Second choice: full game highlights.
+    if (
+      /full game highlights|full highlights|full game recap/i.test(title)
+    ) {
+      return 2;
+    }
+
+    // Third choice: extended game highlights.
+    if (/extended highlights|extended recap/i.test(title)) {
+      return 3;
+    }
+
+    // General game recap.
+    if (/game recap|game summary|full recap/i.test(title)) {
+      return 2;
+    }
+
+    // Other highlights, if clearly labelled.
+    if (/highlights/i.test(title)) {
+      return duration >= 180 ? 1 : 4;
+    }
+
+    // Last resort: short game recap clips.
+    if (/recap/i.test(title)) {
+      return 4;
+    }
+
+    return 99;
   }
 
-  return null;
+  const candidates = videos
+    .filter(video => /^\d+$/.test(String(video.id || "")))
+    .map(video => ({
+      video,
+      priority: videoPriority(video),
+      duration: durationSeconds(video)
+    }))
+    .filter(item => item.priority < 99);
+
+  candidates.sort((a, b) => {
+    if (a.priority !== b.priority) {
+      return a.priority - b.priority;
+    }
+
+    return b.duration - a.duration;
+  });
+
+  const best = candidates[0];
+
+  if (!best) return null;
+
+  console.info("Selected Celtics highlights:", {
+    title: best.video.headline ||
+      best.video.title ||
+      "Game highlights",
+    priority: best.priority,
+    durationSeconds: best.duration
+  });
+
+  return {
+    source: "ESPN",
+    type: "iframe",
+    url:
+      `https://www.espn.com/core/video/iframe?id=${best.video.id}`
+  };
 }
 
 async function fetchGameHighlights(game) {
