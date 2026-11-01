@@ -101,8 +101,8 @@ def youtube_search(when, opponent):
         snippet = item.get("snippet", {})
         title = snippet.get("title", "")
         video_id = item.get("id", {}).get("videoId", "")
-        if not (re.search(r"\\bceltics\\b", title, re.I)
-                and re.search(r"\\b" + re.escape(opponent) + r"\\b", title, re.I)
+        if not (re.search(r"\bceltics\b", title, re.I)
+                and re.search(r"\b" + re.escape(opponent) + r"\b", title, re.I)
                 and category(title)
                 and re.fullmatch(r"[A-Za-z0-9_-]{11}", video_id)):
             continue
