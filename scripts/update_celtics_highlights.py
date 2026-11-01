@@ -14,7 +14,7 @@ import urllib.request
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 OUT = ROOT / "celtics-highlights.json"
 API_KEY = os.environ.get("YOUTUBE_API_KEY", "")
-NBA_CHANNEL = "UCWJ2lWNubArHWmf3FIHbfcQ"  # Official NBA channel
+NBA_CHANNEL = "UCMfT9dr6xC_RIWoA9hI0meQ"  # Official Boston Celtics channel (test)
 TEAM_NAMES = {
     "ATL": "Hawks", "BKN": "Nets", "BOS": "Celtics", "CHA": "Hornets",
     "CHI": "Bulls", "CLE": "Cavaliers", "DAL": "Mavericks", "DEN": "Nuggets",
@@ -90,7 +90,7 @@ def youtube_search(when, opponent):
     params = urllib.parse.urlencode({
         "part": "snippet", "channelId": NBA_CHANNEL, "type": "video",
         "videoEmbeddable": "true", "maxResults": 25,
-        "q": f"Boston Celtics {opponent} game highlights",
+        "q": f"Celtics {opponent}",
         "publishedAfter": (when + dt.timedelta(hours=1)).isoformat().replace("+00:00", "Z"),
         "publishedBefore": (when + dt.timedelta(days=2)).isoformat().replace("+00:00", "Z"),
         "key": API_KEY,
