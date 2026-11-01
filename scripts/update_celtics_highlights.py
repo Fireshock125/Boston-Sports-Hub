@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Match official NBA YouTube highlights to completed Celtics ESPN games.
+"""Find UK-accessible Celtics game highlights across YouTube.
 
 Requires YOUTUBE_API_KEY in GitHub Actions secrets. No credentials enter the website.
 """
@@ -14,7 +14,8 @@ import urllib.request
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 OUT = ROOT / "celtics-highlights.json"
 API_KEY = os.environ.get("YOUTUBE_API_KEY", "")
-NBA_CHANNEL = "UCMfT9dr6xC_RIWoA9hI0meQ"  # Official Boston Celtics channel (test)
+CELTICS_CHANNEL = "UCMfT9dr6xC_RIWoA9hI0meQ"
+NBA_CHANNEL = "UCWJ2lWNubArHWmf3FIHbfcQ"
 TEAM_NAMES = {
     "ATL": "Hawks", "BKN": "Nets", "BOS": "Celtics", "CHA": "Hornets",
     "CHI": "Bulls", "CLE": "Cavaliers", "DAL": "Mavericks", "DEN": "Nuggets",
@@ -72,87 +73,110 @@ def completed_games():
     return events
 
 
-def category(title):
+def category(title, duration):
     t = title.lower()
-    if not ("highlight" in t or "recap" in t):
+    if re.search(r"preview|reaction|interview|analysis|press conference|podcast|shorts|live stream|watch party|top plays", t):
         return None
-    if re.search(r"preview|reaction|interview|analysis|player highlights|top plays", t):
+    if duration < 180 or duration > 1800:
         return None
     if "extended" in t:
         return "extended"
-    if "full game" in t or "full highlights" in t:
+    if "full game highlights" in t or "full highlights" in t:
         return "full"
     return "standard"
 
 
 def youtube_search(when, opponent):
-    # Search results alone do not establish that a video is public or playable.
+    # Search globally, not by channel. Restrict publication to shortly after the
+    # game so an older meeting between the same teams is unlikely to match.
+    after = when + dt.timedelta(hours=1)
+    before = when + dt.timedelta(days=2)
     params = urllib.parse.urlencode({
-        "part": "snippet", "channelId": NBA_CHANNEL, "type": "video",
-        "videoEmbeddable": "true", "maxResults": 25,
-        "q": f"Celtics {opponent}",
-        "publishedAfter": (when + dt.timedelta(hours=1)).isoformat().replace("+00:00", "Z"),
-        "publishedBefore": (when + dt.timedelta(days=2)).isoformat().replace("+00:00", "Z"),
+        "part": "snippet", "type": "video", "videoEmbeddable": "true",
+        "maxResults": 50, "order": "relevance",
+        "q": f"Boston Celtics {opponent} highlights {when.strftime('%B %d %Y')}",
+        "publishedAfter": after.isoformat().replace("+00:00", "Z"),
+        "publishedBefore": before.isoformat().replace("+00:00", "Z"),
         "key": API_KEY,
     })
     data = get_json("https://www.googleapis.com/youtube/v3/search?" + params)
-    items = data.get("items", [])
-    print(f"YouTube search vs {opponent}: {len(items)} results")
+    results = data.get("items", [])
     candidates = []
-    for item in items:
+    for item in results:
         snippet = item.get("snippet", {})
         title = snippet.get("title", "")
+        description = snippet.get("description", "")
         video_id = item.get("id", {}).get("videoId", "")
+        # Require both teams in title; descriptions alone are too unreliable.
         if not (re.search(r"\bceltics\b", title, re.I)
                 and re.search(r"\b" + re.escape(opponent) + r"\b", title, re.I)
-                and category(title)
                 and re.fullmatch(r"[A-Za-z0-9_-]{11}", video_id)):
-            print(f"  REJECT title: {title[:120]!r}")
+            continue
+        if re.search(r"preview|reaction|interview|podcast|shorts|live stream|watch party", title, re.I):
             continue
         try:
             published = dt.datetime.fromisoformat(snippet["publishedAt"].replace("Z", "+00:00"))
         except (ValueError, KeyError):
             continue
-        if when + dt.timedelta(hours=1) <= published <= when + dt.timedelta(days=2):
-            candidates.append((video_id, title, published))
-            print(f"  CANDIDATE {video_id}: {title[:120]!r}")
-        else:
-            print(f"  REJECT date: {title[:120]!r}")
+        if not after <= published <= before:
+            continue
+        candidates.append((video_id, title, description, published))
+    print(f"Search vs {opponent}: {len(results)} results, {len(candidates)} team/date candidates")
     if not candidates:
-        print(f"  No matching candidates vs {opponent}")
         return []
 
-    # videos.list exposes current visibility, embedding and geographic restrictions.
     details = get_json("https://www.googleapis.com/youtube/v3/videos?" +
         urllib.parse.urlencode({
             "part": "status,contentDetails,snippet",
-            "id": ",".join(item[0] for item in candidates),
+            "id": ",".join(x[0] for x in candidates),
             "key": API_KEY,
         }))
     valid = {}
     for item in details.get("items", []):
         status = item.get("status", {})
-        restriction = item.get("contentDetails", {}).get("regionRestriction", {})
+        content = item.get("contentDetails", {})
+        region = content.get("regionRestriction", {})
         if (status.get("privacyStatus") != "public"
                 or status.get("embeddable") is not True
                 or status.get("uploadStatus") not in (None, "processed")
-                or "GB" in restriction.get("blocked", [])
-                or ("allowed" in restriction and "GB" not in restriction["allowed"])):
-            print(f"  REJECT availability {item.get('id')}: privacy={status.get('privacyStatus')}, embeddable={status.get('embeddable')}, upload={status.get('uploadStatus')}, region={restriction}")
+                or "GB" in region.get("blocked", [])
+                or ("allowed" in region and "GB" not in region["allowed"])):
             continue
-        valid[item["id"]] = item
+        duration = content.get("duration", "")
+        match = re.fullmatch(r"P(?:\d+D)?T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?", duration)
+        if not match:
+            continue
+        seconds = sum(int(n or 0) * scale for n, scale in zip(match.groups(), (3600, 60, 1)))
+        kind = category(item.get("snippet", {}).get("title", ""), seconds)
+        if kind is None:
+            continue
+        valid[item["id"]] = (seconds, kind, item.get("snippet", {}).get("channelId", ""))
+    print(f"  {len(valid)} UK-accessible, embeddable videos between 3 and 30 minutes")
 
-    print(f"  YouTube details returned {len(details.get('items', []))}/{len(candidates)} videos; {len(valid)} passed availability")
     matches = []
-    for video_id, title, published in candidates:
+    for video_id, title, description, published in candidates:
         if video_id not in valid:
             continue
+        seconds, kind, channel_id = valid[video_id]
+        # Longer footage and explicit game highlights outrank player-centric clips.
+        explicit = bool(re.search(r"game highlights|extended highlights|full highlights|game recap", title, re.I))
+        player_focus = bool(re.search(r"\b(points|pts|triple.double|career.high|highlights of|goes off|explodes)\b", title, re.I))
+        official = channel_id in (CELTICS_CHANNEL, NBA_CHANNEL)
+        score = (100 if explicit else 0) + (25 if official else 0)
+        score += min(seconds, 900) / 30
+        if player_focus:
+            score -= 45
         matches.append({
-            "youtubeId": video_id, "source": "NBA on YouTube",
-            "category": category(title),
+            "youtubeId": video_id,
+            "source": "YouTube highlights",
+            "category": kind,
+            "durationSeconds": seconds,
             "providerUrl": f"https://www.youtube.com/watch?v={video_id}",
             "_published": published,
+            "_score": score,
         })
+    matches.sort(key=lambda v: v["_score"], reverse=True)
+    print(f"  Selected {min(len(matches), 4)} of {len(matches)} suitable videos")
     return matches[:4]
 
 
@@ -178,7 +202,7 @@ def main():
     for game_id, record in old_games.items():
         if isinstance(record, dict):
             manual = [v for v in record.get("videos", [])
-                      if isinstance(v, dict) and v.get("source") != "NBA on YouTube"]
+                      if isinstance(v, dict) and v.get("source") not in ("NBA on YouTube", "YouTube highlights")]
             if manual:
                 games[game_id] = {"videos": manual}
 
@@ -208,10 +232,10 @@ def main():
         for video in videos:
             if owners[video["youtubeId"]][1] != game_id:
                 continue
-            selected.append({k: v for k, v in video.items() if k != "_published"})
+            selected.append({k: v for k, v in video.items() if not k.startswith("_")})
         if selected:
             games.setdefault(game_id, {"videos": []})["videos"].extend(selected)
-            print(f"{game_id} vs {events[game_id][1]}: {len(selected)} validated official NBA videos")
+            print(f"{game_id} vs {events[game_id][1]}: {len(selected)} validated YouTube videos")
     print(f"Saved highlights for {len(games)} games; ESPN remains the website fallback.")
     OUT.write_text(json.dumps({"games": games}, indent=2) + "\n", encoding="utf-8")
 
