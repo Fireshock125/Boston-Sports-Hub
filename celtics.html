@@ -637,6 +637,27 @@ footer {
 @media (prefers-reduced-motion: reduce) {
   .news-card { transition: none; }
 }
+.highlight-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 12px;
+}
+.highlight-actions button {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--button);
+  color: var(--text);
+  cursor: pointer;
+}
+.highlight-actions a {
+  color: var(--text);
+  text-decoration: underline;
+  font-size: 13px;
+}
+
 </style>
 
 <script>
@@ -1359,31 +1380,45 @@ function validYouTubeId(value) {
 }
 
 function videoFromExtra(record) {
-  if (!record || typeof record !== "object") {
-    return null;
-  }
-
-  const youtubeId = validYouTubeId(record.youtubeId);
-
-  if (youtubeId) {
+  // Existing single-video records remain supported; multiple videos can be supplied as an array.
+  const records = Array.isArray(record) ? record :
+    Array.isArray(record?.videos) ? record.videos : record ? [record] : [];
+  return records.map(item => {
+    if (!item || typeof item !== "object") return null;
+    const youtubeId = validYouTubeId(item.youtubeId);
+    const embed = youtubeId
+      ? `https://www.youtube-nocookie.com/embed/${youtubeId}?rel=0`
+      : validEmbedUrl(item.embedUrl);
+    if (!embed) return null;
+    const espnId = embed.includes("espn.com/core/video/iframe")
+      ? new URL(embed).searchParams.get("id") : "";
     return {
-      source: String(record.source || "YouTube"),
-      type: "iframe",
-      url: `https://www.youtube-nocookie.com/embed/${youtubeId}?rel=0`
+      source: String(item.source || (youtubeId ? "YouTube" : "Highlights")),
+      type: "iframe", url: embed,
+      providerUrl: youtubeId
+        ? `https://www.youtube.com/watch?v=${youtubeId}`
+        : validHttpUrl(item.providerUrl) ||
+          (espnId ? `https://www.espn.com/video/clip/_/id/${espnId}` : ""),
+      category: String(item.category || "standard").toLowerCase(),
+      duration: Number(item.durationSeconds) || 0
     };
-  }
+  }).filter(Boolean);
+}
 
-  const embed = validEmbedUrl(record.embedUrl);
+function highlightPriority(video) {
+  return ({ standard: 1, full: 2, extended: 3, short: 4 })[video.category] || 4;
+}
 
-  if (embed) {
-    return {
-      source: String(record.source || "Highlights"),
-      type: "iframe",
-      url: embed
-    };
-  }
-
-  return null;
+function rankHighlights(videos) {
+  const seen = new Set();
+  return videos.filter(video => {
+    if (seen.has(video.url)) return false;
+    seen.add(video.url);
+    return true;
+  }).sort((a, b) =>
+    highlightPriority(a) - highlightPriority(b) ||
+    (b.duration || 0) - (a.duration || 0)
+  );
 }
 
 async function loadExtraHighlights() {
@@ -1406,240 +1441,137 @@ async function loadExtraHighlights() {
 }
 
 
-function findESPNHighlight(data) {
-  const videos = Array.isArray(data.videos)
-    ? data.videos
-    : [];
+function findESPNHighlights(data) {
+  const videos = Array.isArray(data.videos) ? data.videos : [];
 
   function durationSeconds(video) {
     const raw = video.duration;
-
-    if (typeof raw === "number" && Number.isFinite(raw)) {
-      return raw;
-    }
-
+    if (typeof raw === "number" && Number.isFinite(raw)) return raw;
     if (typeof raw === "string") {
       const parts = raw.split(":").map(Number);
-
-      if (
-        parts.length >= 2 &&
-        parts.length <= 3 &&
-        parts.every(Number.isFinite)
-      ) {
-        return parts.reduce(
-          (total, part) => total * 60 + part,
-          0
-        );
+      if (parts.length >= 2 && parts.length <= 3 && parts.every(Number.isFinite)) {
+        return parts.reduce((total, part) => total * 60 + part, 0);
       }
-
       const numeric = Number(raw);
-
-      if (Number.isFinite(numeric)) {
-        return numeric;
-      }
+      if (Number.isFinite(numeric)) return numeric;
     }
-
     return 0;
   }
 
-  function videoPriority(video) {
-    const title = [
-      video.headline,
-      video.title,
-      video.description,
-      video.caption
-    ].filter(Boolean).join(" ").toLowerCase();
-
-    const duration = durationSeconds(video);
-
-    // Avoid interviews, individual plays and player-only clips.
-    if (
-      /interview|press conference|postgame reaction|analysis|preview|trailer|top plays|best plays|dunk|three.pointer|buzzer.beater|individual highlights|player highlights/i.test(title)
-    ) {
-      return 99;
-    }
-
-    // First choice: standard game highlights.
-    if (
-      /(?:game|match|nba)\s+highlights|highlights\s*:/i.test(title) &&
-      !/extended|full game|full highlights/i.test(title)
-    ) {
-      return 1;
-    }
-
-    // Second choice: full game highlights.
-    if (
-      /full game highlights|full highlights|full game recap/i.test(title)
-    ) {
-      return 2;
-    }
-
-    // Third choice: extended game highlights.
-    if (/extended highlights|extended recap/i.test(title)) {
-      return 3;
-    }
-
-    // General game recap.
-    if (/game recap|game summary|full recap/i.test(title)) {
-      return 2;
-    }
-
-    // Other highlights, if clearly labelled.
-    if (/highlights/i.test(title)) {
-      return duration >= 180 ? 1 : 4;
-    }
-
-    // Last resort: short game recap clips.
-    if (/recap/i.test(title)) {
-      return 4;
-    }
-
-    return 99;
+  function categoryFor(video) {
+    const title = [video.headline, video.title, video.description, video.caption]
+      .filter(Boolean).join(" ").toLowerCase();
+    if (/interview|press conference|postgame reaction|analysis|preview|trailer|top plays|best plays|dunk|three.pointer|buzzer.beater|individual highlights|player highlights/i.test(title)) return null;
+    if (/full game highlights|full highlights|full game recap/i.test(title)) return "full";
+    if (/extended highlights|extended recap/i.test(title)) return "extended";
+    if (/(?:game|match|nba)\s+highlights|highlights\s*:/i.test(title)) return "standard";
+    if (/game recap|game summary|full recap/i.test(title)) return "full";
+    if (/highlights/i.test(title)) return durationSeconds(video) >= 180 ? "standard" : "short";
+    if (/recap/i.test(title)) return "short";
+    return null;
   }
 
-  const candidates = videos
-    .filter(video => /^\d+$/.test(String(video.id || "")))
-    .map(video => ({
-      video,
-      priority: videoPriority(video),
-      duration: durationSeconds(video)
-    }))
-    .filter(item => item.priority < 99);
-
-  candidates.sort((a, b) => {
-    if (a.priority !== b.priority) {
-      return a.priority - b.priority;
-    }
-
-    return b.duration - a.duration;
-  });
-
-  const best = candidates[0];
-
-  if (!best) return null;
-
-  console.info("Selected Celtics highlights:", {
-    title: best.video.headline ||
-      best.video.title ||
-      "Game highlights",
-    priority: best.priority,
-    durationSeconds: best.duration
-  });
-
-  return {
-    source: "ESPN",
-    type: "iframe",
-    url:
-      `https://www.espn.com/core/video/iframe?id=${best.video.id}`
-  };
+  return videos.filter(video => /^\d+$/.test(String(video.id || "")))
+    .map(video => {
+      const category = categoryFor(video);
+      if (!category) return null;
+      return {
+        source: "ESPN", type: "iframe",
+        url: `https://www.espn.com/core/video/iframe?id=${video.id}`,
+        providerUrl: `https://www.espn.com/video/clip/_/id/${video.id}`,
+        category, duration: durationSeconds(video)
+      };
+    }).filter(Boolean);
 }
 
 async function fetchGameHighlights(game) {
   const id = String(game.id || "");
-
-  if (!/^\d+$/.test(id)) return null;
-
-  const extra = videoFromExtra(extraHighlights[id]);
-
-  if (extra) return extra;
-
+  if (!/^\d+$/.test(id)) return [];
+  const extras = videoFromExtra(extraHighlights[id]);
   try {
     const response = await fetch(
       `${SUMMARY_URL}?event=${encodeURIComponent(id)}`,
       { cache: "no-store" }
     );
-
-    if (!response.ok) return null;
-
+    if (!response.ok) return rankHighlights(extras);
     const data = await response.json();
-
-    return findESPNHighlight(data);
+    return rankHighlights([...extras, ...findESPNHighlights(data)]);
   } catch (error) {
-    console.warn(
-      "Highlights unavailable for game:",
-      id,
-      error
-    );
-
-    return null;
+    console.warn("ESPN highlights unavailable:", id, error);
+    return rankHighlights(extras);
   }
 }
 
 async function discoverHighlights(games) {
   await loadExtraHighlights();
-
-  await Promise.allSettled(
-    games.map(async game => {
-      const id = String(game.id || "");
-      const video = await fetchGameHighlights(game);
-
-      if (!video) return;
-
-      highlightsByGame.set(id, video);
-
-      const card = [...document.querySelectorAll(
-        "#results-list .game[data-game-id]"
-      )].find(item => item.dataset.gameId === id);
-
-      if (!card) return;
-
-      const button = card.querySelector(".watch-button");
-
-      if (button) button.hidden = false;
-    })
-  );
+  await Promise.allSettled(games.map(async game => {
+    const id = String(game.id || "");
+    const videos = await fetchGameHighlights(game);
+    if (!videos.length) return;
+    highlightsByGame.set(id, videos);
+    const card = [...document.querySelectorAll(
+      "#results-list .game[data-game-id]"
+    )].find(item => item.dataset.gameId === id);
+    const button = card?.querySelector(".watch-button");
+    if (button) button.hidden = false;
+  }));
 }
 
 function closeHighlights(card) {
   const player = card.querySelector(".highlight-player");
   const button = card.querySelector(".watch-button");
-
   if (!player || !button) return;
-
   player.replaceChildren();
   player.hidden = true;
-
   button.textContent = "Watch Highlights";
   button.setAttribute("aria-expanded", "false");
 }
 
-function openHighlights(card, video) {
+function openHighlights(card, videos, index = 0) {
   const player = card.querySelector(".highlight-player");
   const button = card.querySelector(".watch-button");
-
-  if (!player || !button) return;
-
+  const video = videos[index];
+  if (!player || !button || !video) return;
   player.replaceChildren();
-
   const frame = document.createElement("div");
   frame.className = "video-frame";
-
-  if (video.type === "iframe") {
-    const iframe = document.createElement("iframe");
-
-    iframe.src = video.url;
-    iframe.title = "Game highlights";
-    iframe.loading = "lazy";
-    iframe.allow =
-      "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen";
-    iframe.allowFullscreen = true;
-    iframe.referrerPolicy = "strict-origin-when-cross-origin";
-
-    frame.appendChild(iframe);
-  } else {
-    return;
-  }
-
+  const iframe = document.createElement("iframe");
+  iframe.src = video.url;
+  iframe.title = "Game highlights";
+  iframe.loading = "lazy";
+  iframe.allow = "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen";
+  iframe.allowFullscreen = true;
+  iframe.referrerPolicy = "strict-origin-when-cross-origin";
+  frame.appendChild(iframe);
   player.appendChild(frame);
 
   const note = document.createElement("p");
   note.className = "highlight-note";
   note.textContent =
-    `Video provided by ${video.source}. The video itself may contain spoilers.`;
-
+    `Video ${index + 1} of ${videos.length} · ${video.source} · ${video.category}. Videos may contain spoilers.`;
   player.appendChild(note);
-  player.hidden = false;
 
+  const actions = document.createElement("div");
+  actions.className = "highlight-actions";
+  if (videos.length > 1) {
+    const next = document.createElement("button");
+    next.type = "button";
+    next.textContent = "Try Another Video";
+    next.addEventListener("click", () =>
+      openHighlights(card, videos, (index + 1) % videos.length)
+    );
+    actions.appendChild(next);
+  }
+  if (video.providerUrl) {
+    const link = document.createElement("a");
+    link.href = video.providerUrl;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.textContent = "Open on Provider";
+    actions.appendChild(link);
+  }
+  player.appendChild(actions);
+  player.hidden = false;
   button.textContent = "Hide Highlights";
   button.setAttribute("aria-expanded", "true");
 }
@@ -1647,41 +1579,23 @@ function openHighlights(card, video) {
 /* RESULT BUTTON EVENTS */
 
 $("results-list").addEventListener("click", event => {
-  const button = event.target.closest(
-    "button[data-action]"
-  );
-
+  const button = event.target.closest("button[data-action]");
   if (!button) return;
-
   const card = button.closest(".game[data-game-id]");
-
   if (!card) return;
-
   const id = card.dataset.gameId;
-
   if (button.dataset.action === "reveal") {
-    if (individuallyRevealed.has(id)) {
-      individuallyRevealed.delete(id);
-    } else {
-      individuallyRevealed.add(id);
-    }
-
+    if (individuallyRevealed.has(id)) individuallyRevealed.delete(id);
+    else individuallyRevealed.add(id);
     updateResultScores();
     return;
   }
-
   if (button.dataset.action === "highlights") {
-    const video = highlightsByGame.get(id);
-
-    if (!video) return;
-
+    const videos = highlightsByGame.get(id);
+    if (!videos?.length) return;
     const player = card.querySelector(".highlight-player");
-
-    if (!player.hidden) {
-      closeHighlights(card);
-    } else {
-      openHighlights(card, video);
-    }
+    if (!player.hidden) closeHighlights(card);
+    else openHighlights(card, videos);
   }
 });
 
