@@ -96,8 +96,10 @@ def youtube_search(when, opponent):
         "key": API_KEY,
     })
     data = get_json("https://www.googleapis.com/youtube/v3/search?" + params)
+    items = data.get("items", [])
+    print(f"YouTube search vs {opponent}: {len(items)} results")
     candidates = []
-    for item in data.get("items", []):
+    for item in items:
         snippet = item.get("snippet", {})
         title = snippet.get("title", "")
         video_id = item.get("id", {}).get("videoId", "")
@@ -105,6 +107,7 @@ def youtube_search(when, opponent):
                 and re.search(r"\b" + re.escape(opponent) + r"\b", title, re.I)
                 and category(title)
                 and re.fullmatch(r"[A-Za-z0-9_-]{11}", video_id)):
+            print(f"  REJECT title: {title[:120]!r}")
             continue
         try:
             published = dt.datetime.fromisoformat(snippet["publishedAt"].replace("Z", "+00:00"))
@@ -112,7 +115,11 @@ def youtube_search(when, opponent):
             continue
         if when + dt.timedelta(hours=1) <= published <= when + dt.timedelta(days=2):
             candidates.append((video_id, title, published))
+            print(f"  CANDIDATE {video_id}: {title[:120]!r}")
+        else:
+            print(f"  REJECT date: {title[:120]!r}")
     if not candidates:
+        print(f"  No matching candidates vs {opponent}")
         return []
 
     # videos.list exposes current visibility, embedding and geographic restrictions.
@@ -131,9 +138,11 @@ def youtube_search(when, opponent):
                 or status.get("uploadStatus") not in (None, "processed")
                 or "GB" in restriction.get("blocked", [])
                 or ("allowed" in restriction and "GB" not in restriction["allowed"])):
+            print(f"  REJECT availability {item.get('id')}: privacy={status.get('privacyStatus')}, embeddable={status.get('embeddable')}, upload={status.get('uploadStatus')}, region={restriction}")
             continue
         valid[item["id"]] = item
 
+    print(f"  YouTube details returned {len(details.get('items', []))}/{len(candidates)} videos; {len(valid)} passed availability")
     matches = []
     for video_id, title, published in candidates:
         if video_id not in valid:
