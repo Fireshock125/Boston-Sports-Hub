@@ -15,7 +15,7 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 OUT = ROOT / f"{os.environ.get('HIGHLIGHTS_TEAM', 'patriots')}-highlights.json"
 TEAM = os.environ.get("HIGHLIGHTS_TEAM", "patriots")
 CONFIG = {
-    "patriots": ("football", "nfl", "18", "Patriots", "New England Patriots", 8, 3),
+    "patriots": ("football", "nfl", "17", "Patriots", "New England Patriots", 13, 2),
     "bruins": ("hockey", "nhl", "1", "Bruins", "Boston Bruins", 7, 2),
     "red-sox": ("baseball", "mlb", "2", "Red Sox", "Boston Red Sox", 3, 2),
 }
@@ -47,8 +47,8 @@ def get_json(url):
 
 def completed_games():
     today = dt.datetime.now(dt.timezone.utc)
-    season = today.year + 1 if today.month >= SEASON_START_MONTH else today.year
-    # ESPN identifies the 2026-27 NBA season as season=2027.
+    season = today.year + (1 if TEAM == "bruins" and today.month >= SEASON_START_MONTH else 0)
+    # NHL uses its ending year; NFL and MLB use their starting/calendar year.
     events = {}
     for year in (season, season - 1):
         for season_type in ((2, 3) if TEAM == "bruins" else (SEASON_TYPE,)):
