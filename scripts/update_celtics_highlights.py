@@ -125,7 +125,8 @@ def main():
         games = {}
     events = completed_games()
     if not events:
-        raise SystemExit("No eligible completed Celtics games found; leaving data unchanged.")
+        print("No eligible completed Celtics games found; nothing to update.")
+        return
     for game_id, (when, opponent) in sorted(events.items(), key=lambda x: x[1][0], reverse=True):
         try:
             videos = youtube_search(when, opponent)
