@@ -331,6 +331,7 @@ button:disabled { opacity: .6; cursor: wait; }
 
 .score.win { color: #38b97a; }
 .score.loss { color: #ee7280; }
+.score.tie { color: #e5bd59; }
 
 .status {
   color: var(--muted);
@@ -1134,7 +1135,8 @@ function gameCard(game, resultMode = false) {
  const header = `<div class="game-top"><span>MLB · Boston Red Sox</span><span>${safeText(dateLabel(game.date))}</span></div><div class="matchup">${safeText(game.away)} @ ${safeText(game.home)}</div>`;
  if(!resultMode) return `<article class="game">${header}<div class="game-bottom"><span>${safeText(americanTimeLabel(game.date,game.event))}</span><span>UK: ${safeText(timeLabel(game.date))}</span></div></article>`;
  const resultText = getResult(game);
- return `<article class="game" data-game-id="${safeText(game.id)}">${header}<div class="game-bottom"><span class="score result-score" hidden>${safeText(resultText)}</span><span class="score-hidden">Final score hidden</span><span class="status">Completed</span></div><div class="result-actions"><button type="button" class="reveal-button" data-action="reveal">Reveal Score</button><button type="button" class="watch-button" data-action="highlights" aria-expanded="false" hidden>Watch Highlights</button></div><div class="highlight-player" hidden></div></article>`;
+ const scoreClass = resultText.endsWith("· Win") ? "win" : resultText.endsWith("· Loss") ? "loss" : resultText.endsWith("· Tie") ? "tie" : "";
+ return `<article class="game" data-game-id="${safeText(game.id)}">${header}<div class="game-bottom"><span class="score result-score ${scoreClass}" hidden>${safeText(resultText)}</span><span class="score-hidden">Final score hidden</span><span class="status">Completed</span></div><div class="result-actions"><button type="button" class="reveal-button" data-action="reveal">Reveal Score</button><button type="button" class="watch-button" data-action="highlights" aria-expanded="false" hidden>Watch Highlights</button></div><div class="highlight-player" hidden></div></article>`;
 }
 
 let extraHighlights = {};
