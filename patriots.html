@@ -320,8 +320,9 @@ button:disabled { opacity: .6; cursor: wait; }
   font-weight: 800;
 }
 
-.score.win { color: #38b97a; }
-.score.loss { color: #ee7280; }
+.score.win, .result-score.win { color: #38b97a; }
+.score.loss, .result-score.loss { color: #ee7280; }
+.score.tie, .result-score.tie { color: #e5bd59; }
 
 .status {
   color: var(--muted);
@@ -1030,7 +1031,7 @@ function validEmbedUrl(value) {
     const host = url.hostname.toLowerCase();
 
     if (
-      host === "www.youtube-nocookie.com" &&
+      (host === "www.youtube-nocookie.com" || host === "www.youtube.com") &&
       /^\/embed\/[\w-]{11}$/.test(url.pathname)
     ) {
       return url.href;
@@ -1066,7 +1067,7 @@ function videoFromExtra(record) {
     if (!item || typeof item !== "object") return null;
     const youtubeId = validYouTubeId(item.youtubeId);
     const embed = youtubeId
-      ? `https://www.youtube-nocookie.com/embed/${youtubeId}?rel=0`
+      ? `https://www.youtube.com/embed/${youtubeId}?rel=0`
       : validEmbedUrl(item.embedUrl);
     if (!embed) return null;
     const espnId = embed.includes("espn.com/core/video/iframe")
@@ -1247,10 +1248,16 @@ function openHighlights(card, videos, index = 0) {
     link.href = video.providerUrl;
     link.target = "_blank";
     link.rel = "noopener noreferrer";
-    link.textContent = "Open on Provider";
+    link.textContent = video.providerUrl.includes("youtube.com") ? "Watch on YouTube (if player unavailable)" : "Open on Provider (if player unavailable)";
     actions.appendChild(link);
   }
   player.appendChild(actions);
+  if (video.providerUrl) {
+    const help = document.createElement("p");
+    help.className = "highlight-note";
+    help.textContent = "If this video says unavailable, use the provider link above. Some publishers restrict playback on other websites.";
+    player.appendChild(help);
+  }
   player.hidden = false;
   button.textContent = "Hide Highlights";
   button.setAttribute("aria-expanded", "true");
