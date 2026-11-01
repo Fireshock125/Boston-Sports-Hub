@@ -1387,7 +1387,7 @@ function openHighlights(card, videos, index = 0) {
 
 /* RESULT BUTTON EVENTS */
 
-$("results-list").addEventListener("click", event => {
+$("resultGames").addEventListener("click", event => {
   const button = event.target.closest("button[data-action]");
   if (!button) return;
   const card = button.closest(".game[data-game-id]");
