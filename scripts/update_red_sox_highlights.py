@@ -51,7 +51,7 @@ def completed_games():
     # NHL uses its ending year; NFL and MLB use their starting/calendar year.
     events = {}
     for year in (season, season - 1):
-        for season_type in ((2, 3) if TEAM == "bruins" else (SEASON_TYPE,)):
+        for season_type in (2, 3):
             url = ("https://site.api.espn.com/apis/site/v2/sports/"
                    f"{SPORT}/{LEAGUE}/teams/{TEAM_ID}/schedule?season={year}&seasontype={season_type}")
             try:
