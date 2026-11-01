@@ -37,7 +37,8 @@ def get_json(url):
 
 def completed_games():
     today = dt.datetime.now(dt.timezone.utc)
-    season = today.year if today.month >= 8 else today.year - 1
+    season = today.year + 1 if today.month >= 8 else today.year
+    # ESPN identifies the 2026-27 NBA season as season=2027.
     events = {}
     for year in (season, season - 1):
         for season_type in (2, 3):
@@ -67,6 +68,7 @@ def completed_games():
                 if not name:
                     continue
                 events[str(event["id"])] = (when, name)
+    print(f"Found {len(events)} eligible Celtics games in ESPN season(s) {season} and {season - 1}.")
     return events
 
 
