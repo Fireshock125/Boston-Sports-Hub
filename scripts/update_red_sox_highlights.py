@@ -12,7 +12,7 @@ import urllib.parse
 import urllib.request
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-OUT = ROOT / f"{os.environ.get('HIGHLIGHTS_TEAM', 'patriots')}-highlights.json"
+OUT = ROOT / "red-sox-highlights.json"
 TEAM = "red-sox"
 CONFIG = {
     "patriots": ("football", "nfl", "17", "Patriots", "New England Patriots", 13, 2),
