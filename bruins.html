@@ -1339,6 +1339,8 @@ async function fetchGameHighlights(game) {
 
 async function discoverHighlights(games) {
   await loadExtraHighlights();
+  const matched = games.filter(game => videoFromExtra(extraHighlights[String(game.id || "")]).length > 0);
+  console.info(`Bruins highlights: ${Object.keys(extraHighlights).length} games in feed, ${matched.length} matching displayed results.`);
   await Promise.allSettled(games.map(async game => {
     const id = String(game.id || "");
     const videos = await fetchGameHighlights(game);
@@ -1530,7 +1532,7 @@ async function loadSchedule() {
       .sort((a, b) =>
         new Date(b.date) - new Date(a.date)
       )
-      .slice(0, 10);
+      .slice(0, 25);
 
     $("fixtures-list").innerHTML = upcoming.length
       ? upcoming.map(game => gameCard(game)).join("")
