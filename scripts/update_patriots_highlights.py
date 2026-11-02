@@ -215,7 +215,7 @@ def main():
 
     # Preserve previously collected clips until the full official-only scan
     # succeeds; a rate-limited run must never erase the working feed.
-    games = {}
+    games = {game_id: {"videos": [v for v in record.get("videos", []) if v.get("source") in ("Official Patriots YouTube", "Official NFL YouTube")]} for game_id, record in old_games.items() if isinstance(record, dict)}
 
     candidates = {}
     rate_limited = False
@@ -258,7 +258,9 @@ def main():
                 continue
             selected.append({k: v for k, v in video.items() if not k.startswith("_")})
         if selected:
-            games.setdefault(game_id, {"videos": []})["videos"].extend(selected)
+            existing_videos = games.setdefault(game_id, {"videos": []})["videos"]
+            unique = {v["youtubeId"]: v for v in existing_videos + selected if v.get("youtubeId")}
+            games[game_id]["videos"] = sorted(unique.values(), key=lambda v: (v.get("category") != "extended", v.get("source") != "Official NFL YouTube", -v.get("durationSeconds", 0)))
             print(f"{game_id} vs {events[game_id][1]}: {len(selected)} validated YouTube videos")
     if rate_limited:
         print("Partial search due to YouTube rate limiting; saving validated official results.")
