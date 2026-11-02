@@ -100,14 +100,14 @@ def category(title, duration):
 PATRIOTS_CHANNEL = "UCMm_V8YjmnZRhToXIqDYDuw"  # Official @patriots channel
 NFL_CHANNEL = "UCDVYQ4Zhbm3S2dlz7P1GBDg"  # Official @NFL channel
 
-def youtube_search(when, opponent):
+def youtube_search(when, opponent, channel_id):
     # Search globally, not by channel. Restrict publication to shortly after the
     # game so an older meeting between the same teams is unlikely to match.
     after = when + dt.timedelta(hours=1)
     before = when + dt.timedelta(days=2)
     params = urllib.parse.urlencode({
         "part": "snippet", "type": "video", "videoEmbeddable": "true",
-        "channelId": PATRIOTS_CHANNEL,
+        "channelId": channel_id,
         "maxResults": 50, "order": "relevance",
         "q": f"{FULL_NAME} {opponent} game highlights {when.strftime('%B %d %Y')}",
         "publishedAfter": after.isoformat().replace("+00:00", "Z"),
@@ -151,7 +151,7 @@ def youtube_search(when, opponent):
         status = item.get("status", {})
         content = item.get("contentDetails", {})
         region = content.get("regionRestriction", {})
-        if (item.get("snippet", {}).get("channelId") != PATRIOTS_CHANNEL
+        if (item.get("snippet", {}).get("channelId") != channel_id
                 or status.get("privacyStatus") != "public"
                 or status.get("embeddable") is not True
                 or status.get("uploadStatus") not in (None, "processed")
@@ -184,7 +184,7 @@ def youtube_search(when, opponent):
             score -= 45
         matches.append({
             "youtubeId": video_id,
-            "source": "Official Patriots YouTube",
+            "source": "Official NFL YouTube" if channel_id == NFL_CHANNEL else "Official Patriots YouTube",
             "category": kind,
             "durationSeconds": seconds,
             "providerUrl": f"https://www.youtube.com/watch?v={video_id}",
