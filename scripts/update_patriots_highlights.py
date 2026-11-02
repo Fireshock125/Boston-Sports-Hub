@@ -10,6 +10,8 @@ import pathlib
 import re
 import urllib.parse
 import urllib.request
+import urllib.error
+import time
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 OUT = ROOT / "patriots-highlights.json"
@@ -210,20 +212,24 @@ def main():
         print("No eligible completed Patriots games found; nothing to update.")
         return
 
-    # Rebuild the feed from official Patriots uploads only; never retain
-    # previously found third-party NFL videos.
+    # Preserve previously collected clips until the full official-only scan
+    # succeeds; a rate-limited run must never erase the working feed.
     games = {}
 
     candidates = {}
-    failed = False
+    rate_limited = False
     for game_id, (when, opponent) in events.items():
         try:
             candidates[game_id] = youtube_search(when, opponent)
+        except urllib.error.HTTPError as exc:
+            print(f"YouTube lookup failed for {game_id}: HTTP {exc.code}")
+            if exc.code == 429:
+                rate_limited = True
+                print("YouTube rate limit reached; stopping further searches and retaining previous highlights.")
+                break
         except Exception as exc:
             print(f"YouTube lookup failed for {game_id}: {exc}")
-            failed = True
-    if failed:
-        raise SystemExit("Some YouTube lookups failed; preserving previous data for retry.")
+
 
     # Assign each YouTube video to just one game, nearest its publication time.
     owners = {}
@@ -244,6 +250,8 @@ def main():
         if selected:
             games.setdefault(game_id, {"videos": []})["videos"].extend(selected)
             print(f"{game_id} vs {events[game_id][1]}: {len(selected)} validated YouTube videos")
+    if rate_limited:
+        print("Partial search due to YouTube rate limiting; saving validated official results.")
     print(f"Saved official Patriots YouTube highlights for {len(games)} games.")
     OUT.write_text(json.dumps({"games": games}, indent=2) + "\n", encoding="utf-8")
 
