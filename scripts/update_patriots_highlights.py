@@ -95,6 +95,8 @@ def category(title, duration):
     return "standard"
 
 
+PATRIOTS_CHANNEL = "UCMm_V8YjmnZRhToXIqDYDuw"  # Official @patriots channel
+
 def youtube_search(when, opponent):
     # Search globally, not by channel. Restrict publication to shortly after the
     # game so an older meeting between the same teams is unlikely to match.
@@ -102,6 +104,7 @@ def youtube_search(when, opponent):
     before = when + dt.timedelta(days=2)
     params = urllib.parse.urlencode({
         "part": "snippet", "type": "video", "videoEmbeddable": "true",
+        "channelId": PATRIOTS_CHANNEL,
         "maxResults": 50, "order": "relevance",
         "q": f"{FULL_NAME} {opponent} game highlights {when.strftime('%B %d %Y')}",
         "publishedAfter": after.isoformat().replace("+00:00", "Z"),
@@ -145,7 +148,8 @@ def youtube_search(when, opponent):
         status = item.get("status", {})
         content = item.get("contentDetails", {})
         region = content.get("regionRestriction", {})
-        if (status.get("privacyStatus") != "public"
+        if (item.get("snippet", {}).get("channelId") != PATRIOTS_CHANNEL
+                or status.get("privacyStatus") != "public"
                 or status.get("embeddable") is not True
                 or status.get("uploadStatus") not in (None, "processed")
                 or "GB" in region.get("blocked", [])
@@ -177,7 +181,7 @@ def youtube_search(when, opponent):
             score -= 45
         matches.append({
             "youtubeId": video_id,
-            "source": "YouTube highlights",
+            "source": "Official Patriots YouTube",
             "category": kind,
             "durationSeconds": seconds,
             "providerUrl": f"https://www.youtube.com/watch?v={video_id}",
@@ -206,14 +210,9 @@ def main():
         print("No eligible completed Patriots games found; nothing to update.")
         return
 
-    # Keep manually curated non-NBA entries, but revalidate automated entries.
-    games = dict(old_games)
-    for game_id, record in old_games.items():
-        if isinstance(record, dict):
-            manual = [v for v in record.get("videos", [])
-                      if isinstance(v, dict) and v.get("source") not in ("NBA on YouTube", "YouTube highlights")]
-            if manual:
-                games[game_id] = {"videos": manual}
+    # Rebuild the feed from official Patriots uploads only; never retain
+    # previously found third-party NFL videos.
+    games = {}
 
     candidates = {}
     failed = False
@@ -245,7 +244,7 @@ def main():
         if selected:
             games.setdefault(game_id, {"videos": []})["videos"].extend(selected)
             print(f"{game_id} vs {events[game_id][1]}: {len(selected)} validated YouTube videos")
-    print(f"Saved highlights for {len(games)} games; ESPN remains the website fallback.")
+    print(f"Saved official Patriots YouTube highlights for {len(games)} games.")
     OUT.write_text(json.dumps({"games": games}, indent=2) + "\n", encoding="utf-8")
 
 
