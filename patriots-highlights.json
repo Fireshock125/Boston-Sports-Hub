@@ -3,11 +3,11 @@
     "401872946": {
       "videos": [
         {
-          "youtubeId": "Ai3-C53DkS0",
-          "source": "Official Patriots YouTube",
+          "youtubeId": "HMeTHt77nYE",
+          "source": "Official NFL YouTube",
           "category": "standard",
-          "durationSeconds": 299,
-          "providerUrl": "https://www.youtube.com/watch?v=Ai3-C53DkS0"
+          "durationSeconds": 909,
+          "providerUrl": "https://www.youtube.com/watch?v=HMeTHt77nYE"
         },
         {
           "youtubeId": "-YsDL5bMyGI",
@@ -15,11 +15,25 @@
           "category": "standard",
           "durationSeconds": 812,
           "providerUrl": "https://www.youtube.com/watch?v=-YsDL5bMyGI"
+        },
+        {
+          "youtubeId": "Ai3-C53DkS0",
+          "source": "Official Patriots YouTube",
+          "category": "standard",
+          "durationSeconds": 299,
+          "providerUrl": "https://www.youtube.com/watch?v=Ai3-C53DkS0"
         }
       ]
     },
     "401872957": {
       "videos": [
+        {
+          "youtubeId": "Oi9HQlp-ysA",
+          "source": "Official NFL YouTube",
+          "category": "standard",
+          "durationSeconds": 853,
+          "providerUrl": "https://www.youtube.com/watch?v=Oi9HQlp-ysA"
+        },
         {
           "youtubeId": "F8dP-JdY5VM",
           "source": "Official Patriots YouTube",
@@ -32,11 +46,18 @@
     "401872971": {
       "videos": [
         {
-          "youtubeId": "0G8aLm2bOV0",
-          "source": "Official Patriots YouTube",
+          "youtubeId": "q419_f_lDfY",
+          "source": "Official NFL YouTube",
           "category": "standard",
-          "durationSeconds": 301,
-          "providerUrl": "https://www.youtube.com/watch?v=0G8aLm2bOV0"
+          "durationSeconds": 1119,
+          "providerUrl": "https://www.youtube.com/watch?v=q419_f_lDfY"
+        },
+        {
+          "youtubeId": "Z5zAM_GLGI0",
+          "source": "Official NFL YouTube",
+          "category": "standard",
+          "durationSeconds": 901,
+          "providerUrl": "https://www.youtube.com/watch?v=Z5zAM_GLGI0"
         },
         {
           "youtubeId": "a5c6smqrSFU",
@@ -44,6 +65,13 @@
           "category": "standard",
           "durationSeconds": 529,
           "providerUrl": "https://www.youtube.com/watch?v=a5c6smqrSFU"
+        },
+        {
+          "youtubeId": "0G8aLm2bOV0",
+          "source": "Official Patriots YouTube",
+          "category": "standard",
+          "durationSeconds": 301,
+          "providerUrl": "https://www.youtube.com/watch?v=0G8aLm2bOV0"
         },
         {
           "youtubeId": "IQeNrCnfzGA",
@@ -57,6 +85,13 @@
     "401872986": {
       "videos": [
         {
+          "youtubeId": "fLKLrtqun84",
+          "source": "Official NFL YouTube",
+          "category": "standard",
+          "durationSeconds": 994,
+          "providerUrl": "https://www.youtube.com/watch?v=fLKLrtqun84"
+        },
+        {
           "youtubeId": "ceXA4XhCpLc",
           "source": "Official Patriots YouTube",
           "category": "standard",
@@ -68,11 +103,11 @@
     "401873001": {
       "videos": [
         {
-          "youtubeId": "h22pzTzTQeg",
-          "source": "Official Patriots YouTube",
+          "youtubeId": "CDcGaEkMy6s",
+          "source": "Official NFL YouTube",
           "category": "standard",
-          "durationSeconds": 343,
-          "providerUrl": "https://www.youtube.com/watch?v=h22pzTzTQeg"
+          "durationSeconds": 865,
+          "providerUrl": "https://www.youtube.com/watch?v=CDcGaEkMy6s"
         },
         {
           "youtubeId": "ZRU7sL6Z_js",
@@ -80,11 +115,25 @@
           "category": "standard",
           "durationSeconds": 492,
           "providerUrl": "https://www.youtube.com/watch?v=ZRU7sL6Z_js"
+        },
+        {
+          "youtubeId": "h22pzTzTQeg",
+          "source": "Official Patriots YouTube",
+          "category": "standard",
+          "durationSeconds": 343,
+          "providerUrl": "https://www.youtube.com/watch?v=h22pzTzTQeg"
         }
       ]
     },
     "401873010": {
       "videos": [
+        {
+          "youtubeId": "Urfce838vEc",
+          "source": "Official NFL YouTube",
+          "category": "standard",
+          "durationSeconds": 1191,
+          "providerUrl": "https://www.youtube.com/watch?v=Urfce838vEc"
+        },
         {
           "youtubeId": "MY9cWucyTMo",
           "source": "Official Patriots YouTube",
@@ -96,6 +145,13 @@
     },
     "401873034": {
       "videos": [
+        {
+          "youtubeId": "EL_8uTSc1PY",
+          "source": "Official NFL YouTube",
+          "category": "standard",
+          "durationSeconds": 840,
+          "providerUrl": "https://www.youtube.com/watch?v=EL_8uTSc1PY"
+        },
         {
           "youtubeId": "MhOZjDTqSmw",
           "source": "Official Patriots YouTube",
