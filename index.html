@@ -5,6 +5,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Boston Sports Hub | Your Boston Teams</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="./app-icon.svg">
+<meta name="theme-color" content="#131c29">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Boston Hub">
 
 <style>
 :root {
@@ -1549,6 +1554,13 @@ setInterval(loadAll, 60000);
 
 renderCalendar();
 loadAll();
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch(error => console.warn("App installation helper unavailable:", error));
+  });
+}
 </script>
 </body>
 </html>
