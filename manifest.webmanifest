@@ -1,0 +1,19 @@
+{
+  "id": "/Boston-Sports-Hub/",
+  "name": "Boston Sports Hub",
+  "short_name": "Boston Hub",
+  "description": "Your Boston teams, fixtures, results, standings and highlights.",
+  "start_url": "/Boston-Sports-Hub/",
+  "scope": "/Boston-Sports-Hub/",
+  "display": "standalone",
+  "background_color": "#0e131c",
+  "theme_color": "#131c29",
+  "icons": [
+    {
+      "src": "/Boston-Sports-Hub/app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
