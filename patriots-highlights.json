@@ -140,34 +140,6 @@
           "category": "standard",
           "durationSeconds": 309,
           "providerUrl": "https://www.youtube.com/watch?v=MY9cWucyTMo"
-        },
-        {
-          "youtubeId": "Urfce838vEc",
-          "source": "YouTube highlights",
-          "category": "standard",
-          "durationSeconds": 1191,
-          "providerUrl": "https://www.youtube.com/watch?v=Urfce838vEc"
-        },
-        {
-          "youtubeId": "vIXH2NJ2Smk",
-          "source": "YouTube highlights",
-          "category": "standard",
-          "durationSeconds": 1447,
-          "providerUrl": "https://www.youtube.com/watch?v=vIXH2NJ2Smk"
-        },
-        {
-          "youtubeId": "vc4XKyy32p4",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 1376,
-          "providerUrl": "https://www.youtube.com/watch?v=vc4XKyy32p4"
-        },
-        {
-          "youtubeId": "IQo5T-CFrhQ",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 1233,
-          "providerUrl": "https://www.youtube.com/watch?v=IQo5T-CFrhQ"
         }
       ]
     },
@@ -186,34 +158,6 @@
           "category": "standard",
           "durationSeconds": 234,
           "providerUrl": "https://www.youtube.com/watch?v=MhOZjDTqSmw"
-        },
-        {
-          "youtubeId": "XOYzTx0Papc",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 1513,
-          "providerUrl": "https://www.youtube.com/watch?v=XOYzTx0Papc"
-        },
-        {
-          "youtubeId": "upGhSdCE5aE",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 1096,
-          "providerUrl": "https://www.youtube.com/watch?v=upGhSdCE5aE"
-        },
-        {
-          "youtubeId": "vpeJQw1sDmw",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 1780,
-          "providerUrl": "https://www.youtube.com/watch?v=vpeJQw1sDmw"
-        },
-        {
-          "youtubeId": "vobcNCqm9mY",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 812,
-          "providerUrl": "https://www.youtube.com/watch?v=vobcNCqm9mY"
         }
       ]
     }
