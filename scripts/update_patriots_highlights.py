@@ -98,6 +98,7 @@ def category(title, duration):
 
 
 PATRIOTS_CHANNEL = "UCMm_V8YjmnZRhToXIqDYDuw"  # Official @patriots channel
+NFL_CHANNEL = "UCDVYQ4Zhbm3S2dlz7P1GBDg"  # Official @NFL channel
 
 def youtube_search(when, opponent):
     # Search globally, not by channel. Restrict publication to shortly after the
