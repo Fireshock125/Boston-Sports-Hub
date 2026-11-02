@@ -221,7 +221,16 @@ def main():
     rate_limited = False
     for game_id, (when, opponent) in events.items():
         try:
-            candidates[game_id] = youtube_search(when, opponent)
+            candidates[game_id] = []
+            for channel_id in (PATRIOTS_CHANNEL, NFL_CHANNEL):
+                try:
+                    candidates[game_id].extend(youtube_search(when, opponent, channel_id))
+                except urllib.error.HTTPError as channel_error:
+                    if channel_error.code == 429:
+                        print(f"YouTube rate limit on {channel_id}; keeping already found videos.")
+                        rate_limited = True
+                        break
+                    raise
         except urllib.error.HTTPError as exc:
             print(f"YouTube lookup failed for {game_id}: HTTP {exc.code}")
             if exc.code == 429:
