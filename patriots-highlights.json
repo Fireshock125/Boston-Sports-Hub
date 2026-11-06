@@ -160,6 +160,13 @@
           "providerUrl": "https://www.youtube.com/watch?v=MhOZjDTqSmw"
         },
         {
+          "youtubeId": "vpeJQw1sDmw",
+          "source": "YouTube highlights",
+          "category": "full",
+          "durationSeconds": 1780,
+          "providerUrl": "https://www.youtube.com/watch?v=vpeJQw1sDmw"
+        },
+        {
           "youtubeId": "XOYzTx0Papc",
           "source": "YouTube highlights",
           "category": "full",
@@ -174,18 +181,11 @@
           "providerUrl": "https://www.youtube.com/watch?v=upGhSdCE5aE"
         },
         {
-          "youtubeId": "vpeJQw1sDmw",
+          "youtubeId": "Dz5lKegPu64",
           "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 1780,
-          "providerUrl": "https://www.youtube.com/watch?v=vpeJQw1sDmw"
-        },
-        {
-          "youtubeId": "vE1wycudlFM",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 1096,
-          "providerUrl": "https://www.youtube.com/watch?v=vE1wycudlFM"
+          "category": "standard",
+          "durationSeconds": 568,
+          "providerUrl": "https://www.youtube.com/watch?v=Dz5lKegPu64"
         }
       ]
     }
