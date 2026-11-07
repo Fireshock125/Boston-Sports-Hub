@@ -89,12 +89,12 @@ def category(title, duration):
 def youtube_search(when, opponent, channel_id):
     # Search globally, not by channel. Restrict publication to shortly after the
     # game so an older meeting between the same teams is unlikely to match.
-    after = when + dt.timedelta(hours=1)
-    before = when + dt.timedelta(days=2)
+    after = when
+    before = when + dt.timedelta(days=3)
     params = urllib.parse.urlencode({
         "part": "snippet", "type": "video", "channelId": channel_id,
-        "maxResults": 50, "order": "relevance",
-        "q": f"Boston Celtics {opponent} highlights {when.strftime('%B %d %Y')}",
+        "maxResults": 50, "order": "date",
+        "q": f"Celtics {opponent}",
         "publishedAfter": after.isoformat().replace("+00:00", "Z"),
         "publishedBefore": before.isoformat().replace("+00:00", "Z"),
         "key": API_KEY,
@@ -154,7 +154,7 @@ def youtube_search(when, opponent, channel_id):
         if item.get("snippet", {}).get("channelId") != channel_id:
             continue
         valid[item["id"]] = (seconds, kind, channel_id)
-    print(f"  {len(valid)} UK-accessible, embeddable videos between 3 and 30 minutes")
+    print(f"  {len(valid)} UK-accessible official videos between 3 and 30 minutes")
 
     matches = []
     for video_id, title, description, published in candidates:
@@ -162,7 +162,7 @@ def youtube_search(when, opponent, channel_id):
             continue
         seconds, kind, channel_id = valid[video_id]
         # Longer footage and explicit game highlights outrank player-centric clips.
-        explicit = bool(re.search(r"game highlights|extended highlights|full highlights|game recap", title, re.I))
+        explicit = bool(re.search(r"game highlights|extended highlights|full highlights|game recap|highlights.*(?:celtics|vs)", title, re.I))
         player_focus = bool(re.search(r"\b(points|pts|triple.double|career.high|highlights of|goes off|explodes)\b", title, re.I))
         if not explicit:
             continue
@@ -201,12 +201,12 @@ def main():
         print("No eligible completed Celtics games found; nothing to update.")
         return
 
-    # Keep manually curated non-NBA entries, but revalidate automated entries.
+    # Keep manually curated entries; retain verified official videos on lookup gaps.
     games = {}
     for game_id, record in old_games.items():
         if isinstance(record, dict):
             manual = [v for v in record.get("videos", [])
-                      if isinstance(v, dict) and v.get("source") not in ("NBA on YouTube", "YouTube highlights", "Official NBA YouTube", "Official Celtics YouTube")]
+                      if isinstance(v, dict) and v.get("source") not in ("NBA on YouTube", "YouTube highlights")]
             if manual:
                 games[game_id] = {"videos": manual}
 
@@ -242,8 +242,11 @@ def main():
                 continue
             selected.append({k: v for k, v in video.items() if not k.startswith("_")})
         if selected:
-            games.setdefault(game_id, {"videos": []})["videos"].extend(selected)
+            games[game_id] = {"videos": selected}
             print(f"{game_id} vs {events[game_id][1]}: {len(selected)} validated YouTube videos")
+    if not games:
+        print("No official highlights found; preserving previous file rather than publishing an empty feed.")
+        return
     print(f"Saved highlights for {len(games)} games; ESPN remains the website fallback.")
     OUT.write_text(json.dumps({"games": games}, indent=2) + "\n", encoding="utf-8")
 
