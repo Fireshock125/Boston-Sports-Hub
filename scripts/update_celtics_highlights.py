@@ -171,7 +171,7 @@ def youtube_search(when, opponent, channel_id):
         })
     matches.sort(key=lambda v: v["_score"], reverse=True)
     print(f"  Selected {min(len(matches), 4)} of {len(matches)} suitable videos")
-    return matches[:4]
+    return matches[:20]
 
 
 def main():
