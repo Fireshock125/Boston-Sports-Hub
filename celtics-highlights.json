@@ -1,3 +1,228 @@
 {
-  "games": {}
+  "games": {
+    "401909870": {
+      "videos": [
+        {
+          "youtubeId": "3Mj5KAZlifA",
+          "source": "NBA on YouTube",
+          "category": "full",
+          "durationSeconds": 1084,
+          "providerUrl": "https://www.youtube.com/watch?v=3Mj5KAZlifA"
+        },
+        {
+          "youtubeId": "Q-nA33a6mws",
+          "source": "NBA on YouTube",
+          "category": "full",
+          "durationSeconds": 802,
+          "providerUrl": "https://www.youtube.com/watch?v=Q-nA33a6mws"
+        },
+        {
+          "youtubeId": "nj834O5Ql7Y",
+          "source": "NBA on YouTube",
+          "category": "full",
+          "durationSeconds": 797,
+          "providerUrl": "https://www.youtube.com/watch?v=nj834O5Ql7Y"
+        },
+        {
+          "youtubeId": "vDfAJoBnxf0",
+          "source": "NBA on YouTube",
+          "category": "full",
+          "durationSeconds": 734,
+          "providerUrl": "https://www.youtube.com/watch?v=vDfAJoBnxf0"
+        }
+      ]
+    },
+    "401909877": {
+      "videos": [
+        {
+          "youtubeId": "dklkLxZcBo4",
+          "source": "NBA on YouTube",
+          "category": "full",
+          "durationSeconds": 1160,
+          "providerUrl": "https://www.youtube.com/watch?v=dklkLxZcBo4"
+        },
+        {
+          "youtubeId": "Srj4v4psr-Y",
+          "source": "NBA on YouTube",
+          "category": "full",
+          "durationSeconds": 1443,
+          "providerUrl": "https://www.youtube.com/watch?v=Srj4v4psr-Y"
+        },
+        {
+          "youtubeId": "3hEMZylGWmk",
+          "source": "NBA on YouTube",
+          "category": "full",
+          "durationSeconds": 957,
+          "providerUrl": "https://www.youtube.com/watch?v=3hEMZylGWmk"
+        },
+        {
+          "youtubeId": "4LpTBqY7ndI",
+          "source": "NBA on YouTube",
+          "category": "full",
+          "durationSeconds": 1067,
+          "providerUrl": "https://www.youtube.com/watch?v=4LpTBqY7ndI"
+        }
+      ]
+    },
+    "401909278": {
+      "videos": [
+        {
+          "youtubeId": "9XodEpcAMXQ",
+          "source": "NBA on YouTube",
+          "category": "standard",
+          "durationSeconds": 1104,
+          "providerUrl": "https://www.youtube.com/watch?v=9XodEpcAMXQ"
+        },
+        {
+          "youtubeId": "a3hv8g3lYZw",
+          "source": "NBA on YouTube",
+          "category": "full",
+          "durationSeconds": 1701,
+          "providerUrl": "https://www.youtube.com/watch?v=a3hv8g3lYZw"
+        },
+        {
+          "youtubeId": "Yd98xgLyQ3Y",
+          "source": "NBA on YouTube",
+          "category": "full",
+          "durationSeconds": 854,
+          "providerUrl": "https://www.youtube.com/watch?v=Yd98xgLyQ3Y"
+        },
+        {
+          "youtubeId": "w7vsO9qdkDw",
+          "source": "NBA on YouTube",
+          "category": "full",
+          "durationSeconds": 745,
+          "providerUrl": "https://www.youtube.com/watch?v=w7vsO9qdkDw"
+        }
+      ]
+    },
+    "401909903": {
+      "videos": [
+        {
+          "youtubeId": "AEFW6MkI6QE",
+          "source": "NBA on YouTube",
+          "category": "standard",
+          "durationSeconds": 1008,
+          "providerUrl": "https://www.youtube.com/watch?v=AEFW6MkI6QE"
+        },
+        {
+          "youtubeId": "AN2zJ2i-LOE",
+          "source": "NBA on YouTube",
+          "category": "standard",
+          "durationSeconds": 806,
+          "providerUrl": "https://www.youtube.com/watch?v=AN2zJ2i-LOE"
+        },
+        {
+          "youtubeId": "iyRtJ0MU6Kc",
+          "source": "NBA on YouTube",
+          "category": "full",
+          "durationSeconds": 802,
+          "providerUrl": "https://www.youtube.com/watch?v=iyRtJ0MU6Kc"
+        },
+        {
+          "youtubeId": "jHwJg1saU0w",
+          "source": "NBA on YouTube",
+          "category": "full",
+          "durationSeconds": 769,
+          "providerUrl": "https://www.youtube.com/watch?v=jHwJg1saU0w"
+        }
+      ]
+    },
+    "401909916": {
+      "videos": [
+        {
+          "youtubeId": "BDgOX_Myr9w",
+          "source": "NBA on YouTube",
+          "category": "full",
+          "durationSeconds": 1178,
+          "providerUrl": "https://www.youtube.com/watch?v=BDgOX_Myr9w"
+        },
+        {
+          "youtubeId": "wIPmO0WRAbI",
+          "source": "NBA on YouTube",
+          "category": "full",
+          "durationSeconds": 1012,
+          "providerUrl": "https://www.youtube.com/watch?v=wIPmO0WRAbI"
+        },
+        {
+          "youtubeId": "yRnA7kHF-TI",
+          "source": "NBA on YouTube",
+          "category": "full",
+          "durationSeconds": 970,
+          "providerUrl": "https://www.youtube.com/watch?v=yRnA7kHF-TI"
+        },
+        {
+          "youtubeId": "AYhq91WeUJk",
+          "source": "NBA on YouTube",
+          "category": "standard",
+          "durationSeconds": 1673,
+          "providerUrl": "https://www.youtube.com/watch?v=AYhq91WeUJk"
+        }
+      ]
+    },
+    "401909924": {
+      "videos": [
+        {
+          "youtubeId": "smAN25WR5qM",
+          "source": "NBA on YouTube",
+          "category": "standard",
+          "durationSeconds": 1235,
+          "providerUrl": "https://www.youtube.com/watch?v=smAN25WR5qM"
+        },
+        {
+          "youtubeId": "cMB1f8lre1s",
+          "source": "NBA on YouTube",
+          "category": "full",
+          "durationSeconds": 918,
+          "providerUrl": "https://www.youtube.com/watch?v=cMB1f8lre1s"
+        },
+        {
+          "youtubeId": "xTjxl_ZYZFs",
+          "source": "NBA on YouTube",
+          "category": "full",
+          "durationSeconds": 966,
+          "providerUrl": "https://www.youtube.com/watch?v=xTjxl_ZYZFs"
+        },
+        {
+          "youtubeId": "h7F0OnK_Y6g",
+          "source": "NBA on YouTube",
+          "category": "standard",
+          "durationSeconds": 1141,
+          "providerUrl": "https://www.youtube.com/watch?v=h7F0OnK_Y6g"
+        }
+      ]
+    },
+    "401909288": {
+      "videos": [
+        {
+          "youtubeId": "eWyGlmgMJ2U",
+          "source": "NBA on YouTube",
+          "category": "full",
+          "durationSeconds": 1218,
+          "providerUrl": "https://www.youtube.com/watch?v=eWyGlmgMJ2U"
+        },
+        {
+          "youtubeId": "djGC-d6rVW0",
+          "source": "NBA on YouTube",
+          "category": "full",
+          "durationSeconds": 1182,
+          "providerUrl": "https://www.youtube.com/watch?v=djGC-d6rVW0"
+        },
+        {
+          "youtubeId": "BtknV7FBr8Q",
+          "source": "NBA on YouTube",
+          "category": "full",
+          "durationSeconds": 1240,
+          "providerUrl": "https://www.youtube.com/watch?v=BtknV7FBr8Q"
+        },
+        {
+          "youtubeId": "G6KZlnt0pzY",
+          "source": "NBA on YouTube",
+          "category": "standard",
+          "durationSeconds": 1349,
+          "providerUrl": "https://www.youtube.com/watch?v=G6KZlnt0pzY"
+        }
+      ]
+    }
+  }
 }
