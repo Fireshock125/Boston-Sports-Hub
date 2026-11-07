@@ -75,8 +75,6 @@ def completed_games():
 
 def category(title, duration):
     t = title.lower()
-    if re.search(r"preview|reaction|reacts?|interview|analysis|press conference|podcast|shorts|live stream|watch party|watching|breakdown|commentary|top plays", t):
-        return None
     if duration < 180 or duration > 1800:
         return None
     if "extended" in t:
@@ -92,10 +90,9 @@ def youtube_search(when, opponent, channel_id):
     after = when
     before = when + dt.timedelta(days=3)
     params = urllib.parse.urlencode({
-        "part": "snippet", "type": "video", "channelId": channel_id,
+        "part": "snippet", "type": "video",
         "maxResults": 50, "order": "date",
-        # Browse channel uploads by date; YouTube channel search with a query
-        # can miss the league\'s own full-game highlights.
+        "q": f"Celtics {opponent} full game highlights",
         "publishedAfter": after.isoformat().replace("+00:00", "Z"),
         "publishedBefore": before.isoformat().replace("+00:00", "Z"),
         "key": API_KEY,
@@ -109,13 +106,9 @@ def youtube_search(when, opponent, channel_id):
         description = snippet.get("description", "")
         video_id = item.get("id", {}).get("videoId", "")
         # Require both teams in title; descriptions alone are too unreliable.
-        if snippet.get("channelId") != channel_id:
-            continue
         if not (re.search(r"\bceltics\b", title, re.I)
                 and re.search(r"\b" + re.escape(opponent) + r"\b", title, re.I)
                 and re.fullmatch(r"[A-Za-z0-9_-]{11}", video_id)):
-            continue
-        if re.search(r"preview|reaction|reacts?|interview|podcast|shorts|live stream|watch party|watching|breakdown|analysis|commentary", title, re.I):
             continue
         try:
             published = dt.datetime.fromisoformat(snippet["publishedAt"].replace("Z", "+00:00"))
@@ -152,8 +145,6 @@ def youtube_search(when, opponent, channel_id):
         kind = category(item.get("snippet", {}).get("title", ""), seconds)
         if kind is None:
             continue
-        if item.get("snippet", {}).get("channelId") != channel_id:
-            continue
         valid[item["id"]] = (seconds, kind, channel_id)
     print(f"  {len(valid)} UK-accessible official videos between 3 and 30 minutes")
 
@@ -165,15 +156,13 @@ def youtube_search(when, opponent, channel_id):
         # Longer footage and explicit game highlights outrank player-centric clips.
         explicit = bool(re.search(r"game highlights|extended highlights|full highlights|game recap|highlights.*(?:celtics|vs)", title, re.I))
         player_focus = bool(re.search(r"\b(points|pts|triple.double|career.high|highlights of|goes off|explodes)\b", title, re.I))
-        if not explicit:
-            continue
         score = 100 + (25 if channel_id == NBA_CHANNEL else 15)
         score += min(seconds, 900) / 30
         if player_focus:
             score -= 45
         matches.append({
             "youtubeId": video_id,
-            "source": "Official NBA YouTube" if channel_id == NBA_CHANNEL else "Official Celtics YouTube",
+            "source": "NBA on YouTube" if channel_id == NBA_CHANNEL else ("Celtics on YouTube" if channel_id == CELTICS_CHANNEL else "YouTube highlights"),
             "category": kind,
             "durationSeconds": seconds,
             "providerUrl": f"https://www.youtube.com/watch?v={video_id}",
@@ -215,11 +204,7 @@ def main():
     failed = False
     for game_id, (when, opponent) in events.items():
         try:
-            videos = []
-            for channel_id in (NBA_CHANNEL, CELTICS_CHANNEL):
-                videos.extend(youtube_search(when, opponent, channel_id))
-            videos.sort(key=lambda v: v["_score"], reverse=True)
-            candidates[game_id] = videos[:4]
+            candidates[game_id] = youtube_search(when, opponent, NBA_CHANNEL)
         except Exception as exc:
             print(f"YouTube lookup failed for {game_id}: {exc}")
             failed = True
@@ -246,7 +231,7 @@ def main():
             games[game_id] = {"videos": selected}
             print(f"{game_id} vs {events[game_id][1]}: {len(selected)} validated YouTube videos")
     if not games:
-        print("No official highlights found; preserving previous file rather than publishing an empty feed.")
+        print("No highlights found; preserving previous file rather than publishing an empty feed.")
         return
     print(f"Saved highlights for {len(games)} games; ESPN remains the website fallback.")
     OUT.write_text(json.dumps({"games": games}, indent=2) + "\n", encoding="utf-8")
