@@ -67,20 +67,6 @@
     "401909278": {
       "videos": [
         {
-          "youtubeId": "9XodEpcAMXQ",
-          "source": "NBA on YouTube",
-          "category": "standard",
-          "durationSeconds": 1104,
-          "providerUrl": "https://www.youtube.com/watch?v=9XodEpcAMXQ"
-        },
-        {
-          "youtubeId": "a3hv8g3lYZw",
-          "source": "NBA on YouTube",
-          "category": "full",
-          "durationSeconds": 1701,
-          "providerUrl": "https://www.youtube.com/watch?v=a3hv8g3lYZw"
-        },
-        {
           "youtubeId": "Yd98xgLyQ3Y",
           "source": "NBA on YouTube",
           "category": "full",
@@ -93,6 +79,20 @@
           "category": "full",
           "durationSeconds": 745,
           "providerUrl": "https://www.youtube.com/watch?v=w7vsO9qdkDw"
+        },
+        {
+          "youtubeId": "h_aMlN--Uuc",
+          "source": "NBA on YouTube",
+          "category": "full",
+          "durationSeconds": 692,
+          "providerUrl": "https://www.youtube.com/watch?v=h_aMlN--Uuc"
+        },
+        {
+          "youtubeId": "B30A1ZYFCqY",
+          "source": "NBA on YouTube",
+          "category": "full",
+          "durationSeconds": 614,
+          "providerUrl": "https://www.youtube.com/watch?v=B30A1ZYFCqY"
         }
       ]
     },
