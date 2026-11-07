@@ -94,7 +94,8 @@ def youtube_search(when, opponent, channel_id):
     params = urllib.parse.urlencode({
         "part": "snippet", "type": "video", "channelId": channel_id,
         "maxResults": 50, "order": "date",
-        "q": f"Celtics {opponent}",
+        # Browse channel uploads by date; YouTube channel search with a query
+        # can miss the league\'s own full-game highlights.
         "publishedAfter": after.isoformat().replace("+00:00", "Z"),
         "publishedBefore": before.isoformat().replace("+00:00", "Z"),
         "key": API_KEY,
@@ -123,7 +124,7 @@ def youtube_search(when, opponent, channel_id):
         if not after <= published <= before:
             continue
         candidates.append((video_id, title, description, published))
-    print(f"Search vs {opponent}: {len(results)} results, {len(candidates)} team/date candidates")
+    print(f"Official channel {channel_id} vs {opponent}: {len(results)} recent uploads, {len(candidates)} team/date candidates")
     if not candidates:
         return []
 
