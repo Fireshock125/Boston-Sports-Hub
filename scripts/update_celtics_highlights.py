@@ -16,6 +16,7 @@ OUT = ROOT / "celtics-highlights.json"
 API_KEY = os.environ.get("YOUTUBE_API_KEY", "")
 CELTICS_CHANNEL = "UCMfT9dr6xC_RIWoA9hI0meQ"
 NBA_CHANNEL = "UCWJ2lWNubArHWmf3FIHbfcQ"
+OFFICIAL_CHANNELS = {NBA_CHANNEL: ("NBA Official", 300), CELTICS_CHANNEL: ("Boston Celtics Official", 260)}
 TEAM_NAMES = {
     "ATL": "Hawks", "BKN": "Nets", "BOS": "Celtics", "CHA": "Hornets",
     "CHI": "Bulls", "CLE": "Cavaliers", "DAL": "Mavericks", "DEN": "Nuggets",
@@ -145,24 +146,25 @@ def youtube_search(when, opponent, channel_id):
         kind = category(item.get("snippet", {}).get("title", ""), seconds)
         if kind is None:
             continue
-        valid[item["id"]] = (seconds, kind, channel_id)
+        valid[item["id"]] = (seconds, kind, item.get("snippet", {}).get("channelId", ""))
     print(f"  {len(valid)} UK-accessible official videos between 3 and 30 minutes")
 
     matches = []
     for video_id, title, description, published in candidates:
         if video_id not in valid:
             continue
-        seconds, kind, channel_id = valid[video_id]
+        seconds, kind, actual_channel_id = valid[video_id]
+        source, official_bonus = OFFICIAL_CHANNELS.get(actual_channel_id, ("YouTube highlights", 0))
         # Longer footage and explicit game highlights outrank player-centric clips.
         explicit = bool(re.search(r"game highlights|extended highlights|full highlights|game recap|highlights.*(?:celtics|vs)", title, re.I))
         player_focus = bool(re.search(r"\b(points|pts|triple.double|career.high|highlights of|goes off|explodes)\b", title, re.I))
-        score = 100 + (25 if channel_id == NBA_CHANNEL else 15)
+        score = 100 + official_bonus + (70 if kind == "full" else 35 if kind == "extended" else 0) + (35 if explicit else 0)
         score += min(seconds, 900) / 30
         if player_focus:
             score -= 45
         matches.append({
             "youtubeId": video_id,
-            "source": "NBA on YouTube" if channel_id == NBA_CHANNEL else ("Celtics on YouTube" if channel_id == CELTICS_CHANNEL else "YouTube highlights"),
+            "source": source,
             "category": kind,
             "durationSeconds": seconds,
             "providerUrl": f"https://www.youtube.com/watch?v={video_id}",
@@ -170,7 +172,7 @@ def youtube_search(when, opponent, channel_id):
             "_score": score,
         })
     matches.sort(key=lambda v: v["_score"], reverse=True)
-    print(f"  Selected {min(len(matches), 4)} of {len(matches)} suitable videos")
+    print(f"  Selected {min(len(matches), 20)} of {len(matches)} suitable videos")
     return matches[:20]
 
 
@@ -196,7 +198,7 @@ def main():
     for game_id, record in old_games.items():
         if isinstance(record, dict):
             manual = [v for v in record.get("videos", [])
-                      if isinstance(v, dict) and v.get("source") not in ("NBA on YouTube", "YouTube highlights")]
+                      if isinstance(v, dict) and v.get("source") not in ("NBA on YouTube", "YouTube highlights", "NBA Official", "Boston Celtics Official")]
             if manual:
                 games[game_id] = {"videos": manual}
 
@@ -230,6 +232,10 @@ def main():
         if selected:
             games[game_id] = {"videos": selected}
             print(f"{game_id} vs {events[game_id][1]}: {len(selected)} validated YouTube videos")
+    # Preserve previous videos when a fresh search misses a game.
+    for game_id, record in old_games.items():
+        if game_id not in games and isinstance(record, dict) and record.get("videos"):
+            games[game_id] = record
     if not games:
         print("No highlights found; preserving previous file rather than publishing an empty feed.")
         return
