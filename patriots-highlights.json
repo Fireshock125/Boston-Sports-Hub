@@ -172,6 +172,34 @@
           "category": "standard",
           "durationSeconds": 234,
           "providerUrl": "https://www.youtube.com/watch?v=MhOZjDTqSmw"
+        },
+        {
+          "youtubeId": "vpeJQw1sDmw",
+          "source": "YouTube highlights",
+          "category": "full",
+          "durationSeconds": 1780,
+          "providerUrl": "https://www.youtube.com/watch?v=vpeJQw1sDmw"
+        },
+        {
+          "youtubeId": "XOYzTx0Papc",
+          "source": "YouTube highlights",
+          "category": "full",
+          "durationSeconds": 1513,
+          "providerUrl": "https://www.youtube.com/watch?v=XOYzTx0Papc"
+        },
+        {
+          "youtubeId": "upGhSdCE5aE",
+          "source": "YouTube highlights",
+          "category": "full",
+          "durationSeconds": 1096,
+          "providerUrl": "https://www.youtube.com/watch?v=upGhSdCE5aE"
+        },
+        {
+          "youtubeId": "Dz5lKegPu64",
+          "source": "YouTube highlights",
+          "category": "standard",
+          "durationSeconds": 568,
+          "providerUrl": "https://www.youtube.com/watch?v=Dz5lKegPu64"
         }
       ]
     }
