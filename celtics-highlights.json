@@ -428,11 +428,11 @@
     "401909916": {
       "videos": [
         {
-          "youtubeId": "LI6DZxnROz8",
-          "source": "YouTube highlights",
+          "youtubeId": "Ypah8fwkWgQ",
+          "source": "NBC Sports Boston",
           "category": "standard",
-          "durationSeconds": 1304,
-          "providerUrl": "https://www.youtube.com/watch?v=LI6DZxnROz8"
+          "durationSeconds": 1551,
+          "providerUrl": "https://www.youtube.com/watch?v=Ypah8fwkWgQ"
         },
         {
           "youtubeId": "JtWTwDtWqm4",
@@ -456,18 +456,18 @@
           "providerUrl": "https://www.youtube.com/watch?v=QZzhBFbzA7w"
         },
         {
-          "youtubeId": "Q_nddb8ITrg",
-          "source": "YouTube highlights",
-          "category": "standard",
-          "durationSeconds": 749,
-          "providerUrl": "https://www.youtube.com/watch?v=Q_nddb8ITrg"
-        },
-        {
           "youtubeId": "-4UQS8J1o-M",
           "source": "YouTube highlights",
           "category": "full",
           "durationSeconds": 714,
           "providerUrl": "https://www.youtube.com/watch?v=-4UQS8J1o-M"
+        },
+        {
+          "youtubeId": "QilEZq6OWi8",
+          "source": "YouTube highlights",
+          "category": "full",
+          "durationSeconds": 698,
+          "providerUrl": "https://www.youtube.com/watch?v=QilEZq6OWi8"
         },
         {
           "youtubeId": "FA2Dwn50E9s",
@@ -482,13 +482,6 @@
           "category": "full",
           "durationSeconds": 628,
           "providerUrl": "https://www.youtube.com/watch?v=KMp4TfDrT2M"
-        },
-        {
-          "youtubeId": "G5L_kx6vzc0",
-          "source": "YouTube highlights",
-          "category": "standard",
-          "durationSeconds": 599,
-          "providerUrl": "https://www.youtube.com/watch?v=G5L_kx6vzc0"
         },
         {
           "youtubeId": "t8NZBC0UkhY",
@@ -526,23 +519,30 @@
           "providerUrl": "https://www.youtube.com/watch?v=9Un3Knyc2z4"
         },
         {
-          "youtubeId": "2pGfU-WHks4",
+          "youtubeId": "dTro41jzOpg",
           "source": "YouTube highlights",
           "category": "standard",
-          "durationSeconds": 500,
-          "providerUrl": "https://www.youtube.com/watch?v=2pGfU-WHks4"
+          "durationSeconds": 469,
+          "providerUrl": "https://www.youtube.com/watch?v=dTro41jzOpg"
         },
         {
-          "youtubeId": "jpd4HUZ-COU",
+          "youtubeId": "9wwe5hJSzrM",
           "source": "YouTube highlights",
           "category": "standard",
-          "durationSeconds": 486,
-          "providerUrl": "https://www.youtube.com/watch?v=jpd4HUZ-COU"
+          "durationSeconds": 404,
+          "providerUrl": "https://www.youtube.com/watch?v=9wwe5hJSzrM"
         }
       ]
     },
     "401909924": {
       "videos": [
+        {
+          "youtubeId": "uzrSsCFQRVw",
+          "source": "NBC Sports Boston",
+          "category": "standard",
+          "durationSeconds": 1457,
+          "providerUrl": "https://www.youtube.com/watch?v=uzrSsCFQRVw"
+        },
         {
           "youtubeId": "W-oB0LS4_aw",
           "source": "YouTube highlights",
