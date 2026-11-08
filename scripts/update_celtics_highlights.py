@@ -86,18 +86,21 @@ def category(title, duration):
 
 
 def youtube_search(when, opponent, channel_id=None):
-    # Search globally, not by channel. Restrict publication to shortly after the
-    # game so an older meeting between the same teams is unlikely to match.
+    # Search official channels directly; retain the broad search as fallback.
     after = when + dt.timedelta(hours=1)
     before = when + dt.timedelta(days=2)
-    params = urllib.parse.urlencode({
+    params_dict = {
         "part": "snippet", "type": "video", "videoEmbeddable": "true",
         "maxResults": 50, "order": "relevance",
         "q": f"Boston Celtics {opponent} game highlights {when.strftime('%B %d %Y')}",
         "publishedAfter": after.isoformat().replace("+00:00", "Z"),
         "publishedBefore": before.isoformat().replace("+00:00", "Z"),
         "key": API_KEY,
-    })
+    }
+    if channel_id:
+        params_dict["channelId"] = channel_id
+        params_dict["q"] = f"Celtics {opponent} highlights"
+    params = urllib.parse.urlencode(params_dict)
     data = get_json("https://www.googleapis.com/youtube/v3/search?" + params)
     results = data.get("items", [])
     candidates = []
@@ -156,11 +159,13 @@ def youtube_search(when, opponent, channel_id=None):
     for video_id, title, description, published in candidates:
         if video_id not in valid:
             continue
-        seconds, kind, channel_id = valid[video_id]
+        seconds, kind, actual_channel_id = valid[video_id]
+        if channel_id and actual_channel_id != channel_id:
+            continue
         # Longer footage and explicit game highlights outrank player-centric clips.
         explicit = bool(re.search(r"game highlights|extended highlights|full highlights|game recap", title, re.I))
         player_focus = bool(re.search(r"\b(points|pts|triple.double|career.high|highlights of|goes off|explodes)\b", title, re.I))
-        source, official_bonus = OFFICIAL_CHANNELS.get(channel_id, ("YouTube highlights", 0))
+        source, official_bonus = OFFICIAL_CHANNELS.get(actual_channel_id, ("YouTube highlights", 0))
         score = (100 if explicit else 0) + official_bonus + (40 if kind == "full" else 20 if kind == "extended" else 0)
         score += min(seconds, 900) / 30
         if player_focus:
@@ -209,7 +214,15 @@ def main():
     failed = False
     for game_id, (when, opponent) in events.items():
         try:
-            candidates[game_id] = youtube_search(when, opponent, NBA_CHANNEL)
+            official = []
+            for official_channel in (NBA_CHANNEL, CELTICS_CHANNEL):
+                official.extend(youtube_search(when, opponent, official_channel))
+            fallback = youtube_search(when, opponent)
+            combined = {video["youtubeId"]: video for video in fallback}
+            for video in official:
+                combined[video["youtubeId"]] = video
+            candidates[game_id] = sorted(combined.values(), key=lambda v: v["_score"], reverse=True)[:20]
+            print(f"{game_id}: {len(official)} official candidates, {len(candidates[game_id])} total choices")
         except Exception as exc:
             print(f"YouTube lookup failed for {game_id}: {exc}")
             failed = True
