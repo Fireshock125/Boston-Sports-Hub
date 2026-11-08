@@ -1413,6 +1413,10 @@ function highlightPriority(video) {
   return ({ standard: 1, full: 2, extended: 3, short: 4 })[video.category] || 4;
 }
 
+function highlightSourcePriority(video) {
+  return ({ "NBA Official": 0, "Boston Celtics Official": 1, "ESPN NBA Official": 2, "ESPN": 3 })[video.source] ?? 4;
+}
+
 function rankHighlights(videos) {
   const seen = new Set();
   return videos.filter(video => {
@@ -1420,6 +1424,7 @@ function rankHighlights(videos) {
     seen.add(video.url);
     return true;
   }).sort((a, b) =>
+    highlightSourcePriority(a) - highlightSourcePriority(b) ||
     highlightPriority(a) - highlightPriority(b) ||
     (b.duration || 0) - (a.duration || 0)
   );
@@ -1552,7 +1557,7 @@ function openHighlights(card, videos, index = 0) {
   const note = document.createElement("p");
   note.className = "highlight-note";
   note.textContent =
-    `Video ${index + 1} of ${videos.length} · ${video.source} · ${video.category}. Videos may contain spoilers.`;
+    `${index === 0 && highlightSourcePriority(video) <= 2 && video.duration >= 480 && video.category !== "short" ? "Recommended · " : ""}Video ${index + 1} of ${videos.length} · ${video.source} · ${video.category}. Videos may contain spoilers.`;
   player.appendChild(note);
 
   const actions = document.createElement("div");
