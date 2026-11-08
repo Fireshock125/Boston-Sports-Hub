@@ -1,20 +1,52 @@
 {
-  "updated": "2026-11-08T09:53:48.910310+00:00",
+  "updated": "2026-11-08T12:58:27.234154+00:00",
   "articles": [
+    {
+      "title": "The 20-Game Rule: let’s give this some time",
+      "description": "The 20-Game Rule: let’s give this some time CelticsBlog",
+      "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxOaFE2SlhPNU40MV9RRGczdmM1MnJZc3lCYmdxdEFBbVZJektKUUNxZzVoa1BCVXNuSGZGckxtaHFkdUxRYVlyTGdFMGJWdWFscXIyWmxuRHhJM1I5TDM3MDJCS25hUm9BbkVjOGtvRktmV2t1YmxyeC1MbVZ1ZkllSHYyWDhaSGVQVUdDN2tXYmZISmNfN0lwSmN0ZEVVOEFJTFp1NkVQWTJWTzdaYkE?oc=5",
+      "source": "CelticsBlog",
+      "published": "2026-11-08T12:00:00+00:00",
+      "image": ""
+    },
+    {
+      "title": "Boston Celtics vs Milwaukee Bucks Nov 8, 2026 Game Summary",
+      "description": "Boston Celtics vs Milwaukee Bucks Nov 8, 2026 Game Summary NBA.com",
+      "url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE1HaENNUzgyWjFFMUVYamhaVHN1X1hJc0NlU0ZNU0dNbDB5Z2FaLVIxUWFCekoxY215dmJ6b1l6SlFyYWpVWDlRQUdCdXNZNk43bFJ0cS03UUlsZw?oc=5",
+      "source": "NBA.com",
+      "published": "2026-11-08T10:20:45+00:00",
+      "image": ""
+    },
+    {
+      "title": "Today in Boston Celtics history: Sanders, Carroll born; Driggers, Searcy debuted; Overton, Sykes sign; Nostrand passes",
+      "description": "Today in Boston Celtics history: Sanders, Carroll born; Driggers, Searcy debuted; Overton, Sykes sign; Nostrand passes Yahoo Sports",
+      "url": "https://news.google.com/rss/articles/CBMijgFBVV95cUxORG5hV0NRbnlIUkxBeXJmQzMyVnVuSFpvNjRVazdUamJxQXlzS2ppdlJsWGZaOWZwMTRtLWpPMEVPSlcwSlVHN1pmMjVfV3ZEcE9tVDVtUTd2MVBTM0I0SVhVSUN1RnR1eUcxZm5BSkVmVDQteUtkd3QwY2RBVFRxU3NvYTctSHUzdzFZOWxB?oc=5",
+      "source": "Yahoo Sports",
+      "published": "2026-11-08T10:02:25+00:00",
+      "image": ""
+    },
+    {
+      "title": "Celtics vs Bucks NBA Pick: Sunday Night Rematch in Milwaukee",
+      "description": "Celtics vs Bucks NBA Pick: Sunday Night Rematch in Milwaukee Predictem",
+      "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxQemxNZG9zT0lOWk1CNGdiWWZsOFJDZE13Y0tmREVFa3ZOcjIxT1l1SHZPelZLalgxd2Yxb2l3ZTlteTZ2OEVhSE5uSDVVcF9rXzJ4RnZqMmgyX0pidlZzaEVPX2I3NjdnNGdiYXFWc1hpNjRPV3lmUHJjMTBRRkJWWWgwQ3phWk1obFZrNkUxQXNwblZN?oc=5",
+      "source": "Predictem",
+      "published": "2026-11-08T10:02:15+00:00",
+      "image": ""
+    },
+    {
+      "title": "Celtics vs Bucks Prediction 11/8/2026 NBA Picks Today",
+      "description": "Celtics vs Bucks Prediction 11/8/2026 NBA Picks Today PickDawgz",
+      "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxNejV5QkRrMmR5bnBNYlB3OHl5Qi1vcjU3S3c0THRYRUhpcmotUjdGc2toQmZaVFB2Z2JkVFVGMFJkZHFqWmNEOTdMQ2xOQ1FBRXNxTV9zb2NWV1JraE9PNDhpeGZPajhRekhkTV8wSmMtNGQyMnBoV19jazVLZW1scmlyR3Jfb0czSi1uN1pBMNIBlAFBVV95cUxPd2VjUkp5TGZNUldRNzJja0hiYlhIY0JESEdZcTNNbW4tZWNXUVBaZHlnNEhzcWdEdVJpekJseGxKXzA5SFgzZVo0b3JfaGNVRnlqLUNvdDhxS1FqNmpBVzlEZ3RGZHhSb3V4LTc4aDIyQlYzVFlGMXFHVXQzUVNqU0h5RU1XSjFlMkNsbHRrRFVoY09N?oc=5",
+      "source": "PickDawgz",
+      "published": "2026-11-08T08:02:26+00:00",
+      "image": ""
+    },
     {
       "title": "NBA Notebook: Celtics wings, Kristaps Porzingis, and Giannis Antetokounmpo drama",
       "description": "NBA Notebook: Celtics wings, Kristaps Porzingis, and Giannis Antetokounmpo drama Boston Sports Journal",
       "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxQZGttTnQ3cTRwWlE3WnZLT3FOZzBhdk1jaThXWGo5TWQ2Z05vc0xmMWlqT1RTeVBwbnBFT0Q3ZUtfbzQzY0NjOW1Jay1pS1RmSUVrd1ZvZWNTVURjSEFPS0lwWk9pMVdDZ196T2hnT0I1Y2dtZlNtcDRMRU5VcDlhWEVUbXJHcUlTeHdRX0w0OXZnbUxPMFJNb1Vpd1NMYWx3eDViYTBjT3lDeW1rN184ZlMzaHRWVTc3dml0Nnc5Uk5sQQ?oc=5",
       "source": "Boston Sports Journal",
-      "published": "2026-11-08T06:49:22+00:00",
-      "image": ""
-    },
-    {
-      "title": "Boston Celtics vs Milwaukee Bucks Prediction, Picks & Odds | NBA Sunday",
-      "description": "Boston Celtics vs Milwaukee Bucks Prediction, Picks & Odds | NBA Sunday Sportsgambler",
-      "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxPY0FLaGtIYnVQZXZpdFNzd1djcFc2Tkw1SmlBWkVVaHE2RG9td2h3dlRET01RWWhDc19fSW9sWndvUnRQWmowRHc3aHpja1huLU5QdDhkbmlqRERTX0FyWUZxZmt5aDdfdlZ0LU5oU1Zzc0xOREQzNjlZc0hpT0dJZWpRRm44aFRCWkRYckpyUWM2T0NlVVdOZVQwS3R0Q2dybEduM3l5WC1WRkRhZ0hIRTJB?oc=5",
-      "source": "Sportsgambler",
-      "published": "2026-11-08T06:16:09+00:00",
+      "published": "2026-11-08T07:49:39+00:00",
       "image": ""
     },
     {
@@ -22,7 +54,7 @@
       "description": "Curry leads Warriors to pre-Bill Russell Celtics feat unseen in NBA for over 75 years BasketNews.com",
       "url": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxOVVJlZEtWLUdvM3hwYk1GU2xXRVFiTTZETy15LWN2dFhoYzhUa0ZIWTdMOVFGbEIwaVVJdGtReEo5ZE9JenY5cmJFcERUaTdOekpoOFVzVWRNS3hmSXhLbF94R0pEdnpwNk8xaU5DZ1RLakxQYlo1a2V5T0UzSTA1WnFody02LVN6aXZGSlNaZ2laMVdPcThQVTdQZ0RSc1lHRTJSRE5ydGRZN3hfbnI1UHFWN3VTT1JRcFJTSnFPQnFKc28?oc=5",
       "source": "BasketNews.com",
-      "published": "2026-11-08T06:09:09+00:00",
+      "published": "2026-11-08T06:09:00+00:00",
       "image": ""
     },
     {
@@ -34,51 +66,19 @@
       "image": ""
     },
     {
+      "title": "Boston Celtics vs Milwaukee Bucks Prediction, Picks & Odds | NBA Sunday",
+      "description": "Boston Celtics vs Milwaukee Bucks Prediction, Picks & Odds | NBA Sunday Sportsgambler",
+      "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxPY0FLaGtIYnVQZXZpdFNzd1djcFc2Tkw1SmlBWkVVaHE2RG9td2h3dlRET01RWWhDc19fSW9sWndvUnRQWmowRHc3aHpja1huLU5QdDhkbmlqRERTX0FyWUZxZmt5aDdfdlZ0LU5oU1Zzc0xOREQzNjlZc0hpT0dJZWpRRm44aFRCWkRYckpyUWM2T0NlVVdOZVQwS3R0Q2dybEduM3l5WC1WRkRhZ0hIRTJB?oc=5",
+      "source": "Sportsgambler",
+      "published": "2026-11-08T05:40:54+00:00",
+      "image": ""
+    },
+    {
       "title": "Boston Celtics vs. Milwaukee Bucks Free Pick & NBA Betting Prediction, 11/8/26",
       "description": "Boston Celtics vs. Milwaukee Bucks Free Pick & NBA Betting Prediction, 11/8/26 Sports Cappers Picks",
       "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxNcFpSNENzbG5Tbk5jNTh5WXg4QjUzY3ZQbHhfcTkxZDYxXzE4UERBcDBEUjZDS01WeEZmUUZkU0V2LU1hSlZiVWZkbHFlZXEwMnRYc0YtVkJlaTUwNlFoaUV0S19nbjl4NWp1NG9mRmxDb05WcFg3UjV6SUNwM3JQcjM4emR2NkU3Njk2V1JsWnB5VEhJZ3NQWlRxallaWk9sNXRNNmFNMHJtdG1pOTZudGxmb1lGdUk?oc=5",
       "source": "Sports Cappers Picks",
       "published": "2026-11-08T05:38:59+00:00",
-      "image": ""
-    },
-    {
-      "title": "Boston Celtics vs Milwaukee Bucks Picks and Prediction for Sunday November 8 2026",
-      "description": "Boston Celtics vs Milwaukee Bucks Picks and Prediction for Sunday November 8 2026 Picks and Parlays",
-      "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxORmFiLVNjTkk1SXFxZzNzQ2RfMGpXcnZoZ1Zhc0tVN2lmUks0SWZYLXVFNFF1cmRTT1AwMlRGZENQZmVIMWZFdkVrZzgyZDZfX0lkTUI4R203ZDEzV2tPenNlRVNGRkJ3M1hRUk41ejhzVHVROU1xbnJ0RkMzVy1DZW5TSUVtR3JUaU92QW5vTHlHOXBXQnJ0Z0U4QXpIc2w3aVBhZEMzZjlCSXZCOURkcmU0ZWhmS2hKQjFWQ3FFUFh5dw?oc=5",
-      "source": "Picks and Parlays",
-      "published": "2026-11-08T05:15:00+00:00",
-      "image": ""
-    },
-    {
-      "title": "Boston Celtics vs Milwaukee Bucks Nov 8, 2026 Game Summary",
-      "description": "Boston Celtics vs Milwaukee Bucks Nov 8, 2026 Game Summary NBA.com",
-      "url": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE1HaENNUzgyWjFFMUVYamhaVHN1X1hJc0NlU0ZNU0dNbDB5Z2FaLVIxUWFCekoxY215dmJ6b1l6SlFyYWpVWDlRQUdCdXNZNk43bFJ0cS03UUlsZw?oc=5",
-      "source": "NBA.com",
-      "published": "2026-11-08T04:20:45+00:00",
-      "image": ""
-    },
-    {
-      "title": "Celtics Beat Hornets 119-80: Tatum Triple-Double",
-      "description": "Celtics Beat Hornets 119-80: Tatum Triple-Double Total Apex Sports",
-      "url": "https://news.google.com/rss/articles/CBMiZEFVX3lxTE1ib2RVZE44QlRUS2tCdGNtWlE1eDQtRkczeVRQcHQ1SEFhbWZBZVB1SDdNZnA5S29ZS3R1UGZqeUxmdEtmRGkyWHNaclJmcF9qYm9QTGRDelhtRmhXUGNTaDBYcHc?oc=5",
-      "source": "Total Apex Sports",
-      "published": "2026-11-08T02:40:42+00:00",
-      "image": ""
-    },
-    {
-      "title": "Boston Celtics: Watch Chris Cenac Jr.'s Highlights From G-League Debut",
-      "description": "Boston Celtics: Watch Chris Cenac Jr.'s Highlights From G-League Debut roundtable.io",
-      "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxOa3NhTFZpQ1pSTmdyWlN1aVluUnhXUXliZkhDZzNvUnFRUGsteEg0RGlvYnROUVF4NGNoMUdDeURDV05nYkF4Sk90bHBrUkdDaEwyR3g1a25VVF9YaG1sNUtXelRwdHY1SmJWWWl4WDVkYkI0akVBMFpiRy1xLW8tejMxTGdYS2hpTUFHTzhBS3Itd0ZtdGtJbHE2NzhyR0x6S2VqeHFwQ3R4cjdhZExmSFNrQ20?oc=5",
-      "source": "roundtable.io",
-      "published": "2026-11-08T02:23:50+00:00",
-      "image": ""
-    },
-    {
-      "title": "Warriors clear out Porzingis’ locker after absent center’s announcement",
-      "description": "Warriors clear out Porzingis’ locker after absent center’s announcement The Mercury News",
-      "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxOcXJJUml5TnNkU2xNc3ZQZ0NGdTJpT0RaT0MwNWxXVElBbzVhS1czREhUSkUwbmlXakc3YVlNTWNpN0FKWG92TF9qQUNDWXU3ODZqWnhnZFdmaXlQcTZncmszUWl2cnRPTDhmRjhpbkQyOW9sYUxEdjNrdzlXNnlRVUMtTExkaHVWNDJIS1B0dXBhR2FpUVpn?oc=5",
-      "source": "The Mercury News",
-      "published": "2026-11-08T01:54:17+00:00",
       "image": ""
     }
   ]
