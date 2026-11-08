@@ -86,9 +86,9 @@ def category(title, duration):
 
 
 def youtube_search(when, opponent, channel_id=None):
-    # Search official channels directly; retain the broad search as fallback.
-    after = when + dt.timedelta(hours=1)
-    before = when + dt.timedelta(days=2)
+    # Search broadly and within the two official channels; recommend only official uploads.
+    after = when
+    before = when + dt.timedelta(days=4)
     params_dict = {
         "part": "snippet", "type": "video", "videoEmbeddable": "true",
         "maxResults": 50, "order": "relevance",
@@ -99,7 +99,7 @@ def youtube_search(when, opponent, channel_id=None):
     }
     if channel_id:
         params_dict["channelId"] = channel_id
-        params_dict["q"] = f"Celtics {opponent} highlights"
+        params_dict["q"] = f"Celtics {opponent}"
     params = urllib.parse.urlencode(params_dict)
     data = get_json("https://www.googleapis.com/youtube/v3/search?" + params)
     results = data.get("items", [])
@@ -162,14 +162,8 @@ def youtube_search(when, opponent, channel_id=None):
         seconds, kind, actual_channel_id = valid[video_id]
         if channel_id and actual_channel_id != channel_id:
             continue
-        # Longer footage and explicit game highlights outrank player-centric clips.
-        explicit = bool(re.search(r"game highlights|extended highlights|full highlights|game recap", title, re.I))
-        player_focus = bool(re.search(r"\b(points|pts|triple.double|career.high|highlights of|goes off|explodes)\b", title, re.I))
-        source, official_bonus = OFFICIAL_CHANNELS.get(actual_channel_id, ("YouTube highlights", 0))
-        score = (100 if explicit else 0) + official_bonus + (40 if kind == "full" else 20 if kind == "extended" else 0)
-        score += min(seconds, 900) / 30
-        if player_focus:
-            score -= 45
+        source = OFFICIAL_CHANNELS.get(actual_channel_id, ("YouTube highlights", 0))[0]
+        score = (1 if actual_channel_id in OFFICIAL_CHANNELS else 0, seconds)
         matches.append({
             "youtubeId": video_id,
             "source": source,
