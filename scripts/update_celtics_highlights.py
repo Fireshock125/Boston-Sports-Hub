@@ -17,6 +17,16 @@ API_KEY = os.environ.get("YOUTUBE_API_KEY", "")
 CELTICS_CHANNEL = "UCMfT9dr6xC_RIWoA9hI0meQ"
 NBA_CHANNEL = "UCWJ2lWNubArHWmf3FIHbfcQ"
 OFFICIAL_CHANNELS = {NBA_CHANNEL: ("NBA Official", 300), CELTICS_CHANNEL: ("Boston Celtics Official", 260)}
+
+
+def nbc_channel_id():
+    """Resolve NBC Sports Boston by its official YouTube handle, not a guessed ID."""
+    url = "https://www.googleapis.com/youtube/v3/channels?" + urllib.parse.urlencode({
+        "part": "id", "forHandle": "@nbcsboston", "key": API_KEY,
+    })
+    items = get_json(url).get("items", [])
+    return items[0]["id"] if items else None
+
 TEAM_NAMES = {
     "ATL": "Hawks", "BKN": "Nets", "BOS": "Celtics", "CHA": "Hornets",
     "CHI": "Bulls", "CLE": "Cavaliers", "DAL": "Mavericks", "DEN": "Nuggets",
@@ -200,16 +210,21 @@ def main():
     for game_id, record in old_games.items():
         if isinstance(record, dict):
             manual = [v for v in record.get("videos", [])
-                      if isinstance(v, dict) and v.get("source") not in ("NBA on YouTube", "YouTube highlights", "NBA Official", "Boston Celtics Official")]
+                      if isinstance(v, dict) and v.get("source") not in ("NBA on YouTube", "YouTube highlights", "NBA Official", "Boston Celtics Official", "NBC Sports Boston")]
             if manual:
                 games[game_id] = {"videos": manual}
 
+    nbc_id = nbc_channel_id()
+    if nbc_id:
+        OFFICIAL_CHANNELS[nbc_id] = ("NBC Sports Boston", 200)
+    else:
+        print("NBC Sports Boston channel not resolved; retaining other sources.")
     candidates = {}
     failed = False
     for game_id, (when, opponent) in events.items():
         try:
             official = []
-            for official_channel in (NBA_CHANNEL, CELTICS_CHANNEL):
+            for official_channel in (NBA_CHANNEL, CELTICS_CHANNEL, *([nbc_id] if nbc_id else [])):
                 official.extend(youtube_search(when, opponent, official_channel))
             fallback = youtube_search(when, opponent)
             combined = {video["youtubeId"]: video for video in fallback}
