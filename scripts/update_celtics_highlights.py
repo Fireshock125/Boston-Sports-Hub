@@ -85,15 +85,15 @@ def category(title, duration):
     return "standard"
 
 
-def youtube_search(when, opponent, channel_id):
+def youtube_search(when, opponent, channel_id=None):
     # Search globally, not by channel. Restrict publication to shortly after the
     # game so an older meeting between the same teams is unlikely to match.
-    after = when
-    before = when + dt.timedelta(days=3)
+    after = when + dt.timedelta(hours=1)
+    before = when + dt.timedelta(days=2)
     params = urllib.parse.urlencode({
-        "part": "snippet", "type": "video",
-        "maxResults": 50, "order": "date",
-        "q": f"Celtics {opponent} full game highlights",
+        "part": "snippet", "type": "video", "videoEmbeddable": "true",
+        "maxResults": 50, "order": "relevance",
+        "q": f"Boston Celtics {opponent} game highlights {when.strftime('%B %d %Y')}",
         "publishedAfter": after.isoformat().replace("+00:00", "Z"),
         "publishedBefore": before.isoformat().replace("+00:00", "Z"),
         "key": API_KEY,
@@ -108,8 +108,10 @@ def youtube_search(when, opponent, channel_id):
         video_id = item.get("id", {}).get("videoId", "")
         # Require both teams in title; descriptions alone are too unreliable.
         if not (re.search(r"\bceltics\b", title, re.I)
-                and re.search(r"\b" + re.escape(opponent) + r"\b", title, re.I)
+                and (re.search(re.escape(opponent), title, re.I) or re.search(re.escape(opponent.split()[-1]), title, re.I))
                 and re.fullmatch(r"[A-Za-z0-9_-]{11}", video_id)):
+            continue
+        if re.search(r"preview|reaction|interview|podcast|shorts|live stream|watch party", title, re.I):
             continue
         try:
             published = dt.datetime.fromisoformat(snippet["publishedAt"].replace("Z", "+00:00"))
@@ -118,7 +120,7 @@ def youtube_search(when, opponent, channel_id):
         if not after <= published <= before:
             continue
         candidates.append((video_id, title, description, published))
-    print(f"Official channel {channel_id} vs {opponent}: {len(results)} recent uploads, {len(candidates)} team/date candidates")
+    print(f"Search vs {opponent}: {len(results)} results, {len(candidates)} team/date candidates")
     if not candidates:
         return []
 
@@ -134,6 +136,7 @@ def youtube_search(when, opponent, channel_id):
         content = item.get("contentDetails", {})
         region = content.get("regionRestriction", {})
         if (status.get("privacyStatus") != "public"
+                or status.get("embeddable") is not True
                 or status.get("uploadStatus") not in (None, "processed")
                 or "GB" in region.get("blocked", [])
                 or ("allowed" in region and "GB" not in region["allowed"])):
@@ -147,18 +150,18 @@ def youtube_search(when, opponent, channel_id):
         if kind is None:
             continue
         valid[item["id"]] = (seconds, kind, item.get("snippet", {}).get("channelId", ""))
-    print(f"  {len(valid)} UK-accessible official videos between 3 and 30 minutes")
+    print(f"  {len(valid)} UK-accessible, embeddable videos between 3 and 30 minutes")
 
     matches = []
     for video_id, title, description, published in candidates:
         if video_id not in valid:
             continue
-        seconds, kind, actual_channel_id = valid[video_id]
-        source, official_bonus = OFFICIAL_CHANNELS.get(actual_channel_id, ("YouTube highlights", 0))
+        seconds, kind, channel_id = valid[video_id]
         # Longer footage and explicit game highlights outrank player-centric clips.
-        explicit = bool(re.search(r"game highlights|extended highlights|full highlights|game recap|highlights.*(?:celtics|vs)", title, re.I))
+        explicit = bool(re.search(r"game highlights|extended highlights|full highlights|game recap", title, re.I))
         player_focus = bool(re.search(r"\b(points|pts|triple.double|career.high|highlights of|goes off|explodes)\b", title, re.I))
-        score = 100 + official_bonus + (70 if kind == "full" else 35 if kind == "extended" else 0) + (35 if explicit else 0)
+        source, official_bonus = OFFICIAL_CHANNELS.get(channel_id, ("YouTube highlights", 0))
+        score = (100 if explicit else 0) + official_bonus + (40 if kind == "full" else 20 if kind == "extended" else 0)
         score += min(seconds, 900) / 30
         if player_focus:
             score -= 45
