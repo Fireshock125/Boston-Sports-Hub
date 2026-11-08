@@ -1555,26 +1555,6 @@ function openHighlights(card, videos, index = 0) {
     `Video ${index + 1} of ${videos.length} · ${video.source} · ${video.category}. Videos may contain spoilers.`;
   player.appendChild(note);
 
-  if (videos.length > 1) {
-    const heading = document.createElement("p");
-    heading.className = "highlight-note";
-    heading.textContent = "Choose a highlights video:";
-    player.appendChild(heading);
-    const choices = document.createElement("div");
-    choices.className = "highlight-choices";
-    videos.forEach((option, choiceIndex) => {
-      const choice = document.createElement("a");
-      choice.href = option.providerUrl || option.url;
-      choice.target = "_blank";
-      choice.rel = "noopener noreferrer";
-      const minutes = option.duration ? Math.floor(option.duration / 60) + ":" + String(option.duration % 60).padStart(2, "0") : "";
-      choice.textContent = "Video " + (choiceIndex + 1) + (minutes ? " · " + minutes : "") + " · " + option.source + " · " + option.category;
-      if (choiceIndex === index) choice.classList.add("selected");
-      choices.appendChild(choice);
-    });
-    player.appendChild(choices);
-  }
-
   const actions = document.createElement("div");
   actions.className = "highlight-actions";
   if (videos.length > 1) {
@@ -1595,6 +1575,28 @@ function openHighlights(card, videos, index = 0) {
     actions.appendChild(link);
   }
   player.appendChild(actions);
+
+  if (videos.length > 1) {
+    const heading = document.createElement("p");
+    heading.className = "highlight-note";
+    heading.textContent = "Choose a highlights video:";
+    player.appendChild(heading);
+    const choices = document.createElement("div");
+    choices.className = "highlight-choices";
+    videos.forEach((option, choiceIndex) => {
+      const choice = document.createElement("a");
+      choice.href = option.providerUrl || option.url;
+      choice.target = "_blank";
+      choice.rel = "noopener noreferrer";
+      const minutes = option.duration ? Math.floor(option.duration / 60) + ":" + String(option.duration % 60).padStart(2, "0") : "";
+      choice.textContent = "Video " + (choiceIndex + 1) + (minutes ? " · " + minutes : "") + " · " + option.source + " · " + option.category;
+      if (choiceIndex === index) choice.classList.add("selected");
+      choices.appendChild(choice);
+    });
+    player.appendChild(choices);
+  }
+
+
   player.hidden = false;
   button.textContent = "Hide Highlights";
   button.setAttribute("aria-expanded", "true");
