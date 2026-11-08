@@ -381,6 +381,8 @@ button:disabled { opacity: .6; cursor: wait; }
   font-size: 12px;
 }
 
+.result-actions .analysis-button { display: inline-flex; align-items: center; padding: 9px 13px; border: 1px solid var(--border); border-radius: 8px; color: var(--text); text-decoration: none; font-size: 12px; font-weight: 700; background: var(--button); }
+
 .result-actions .watch-button {
   border-color: var(--accent);
 }
@@ -1304,6 +1306,8 @@ function gameCard(game, resultMode = false) {
           hidden>
           Watch Highlights
         </button>
+
+        <a class="analysis-button" href="https://www.youtube.com/results?search_query=${encodeURIComponent(`NBC Sports Boston Celtics ${game.away} ${game.home} ${dateLabel(game.date)} postgame analysis`)}" target="_blank" rel="noopener noreferrer">Game Analysis</a>
       </div>
 
       <div class="highlight-player" hidden></div>
@@ -1414,7 +1418,7 @@ function highlightPriority(video) {
 }
 
 function highlightSourcePriority(video) {
-  return ({ "NBA Official": 0, "Boston Celtics Official": 1 })[video.source] ?? 4;
+  return ({ "NBA Official": 0, "Boston Celtics Official": 1, "NBC Sports Boston": 2 })[video.source] ?? 4;
 }
 
 function rankHighlights(videos) {
@@ -1557,7 +1561,7 @@ function openHighlights(card, videos, index = 0) {
   const note = document.createElement("p");
   note.className = "highlight-note";
   note.textContent =
-    `${index === 0 && highlightSourcePriority(video) <= 1 && video.duration >= 480 && video.category !== "short" ? "Recommended · " : ""}Video ${index + 1} of ${videos.length} · ${video.source} · ${video.category}. Videos may contain spoilers.`;
+    `${index === 0 && highlightSourcePriority(video) <= 2 && video.duration >= 480 && video.category !== "short" ? "Recommended · " : ""}Video ${index + 1} of ${videos.length} · ${video.source} · ${video.category}. Videos may contain spoilers.`;
   player.appendChild(note);
 
   const actions = document.createElement("div");
