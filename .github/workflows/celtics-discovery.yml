@@ -1,0 +1,26 @@
+name: Celtics video discovery audit
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Search YouTube and independent sports websites
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+        run: python3 scripts/discover_celtics_videos.py
+      - name: Save discovery report
+        run: |
+          if ! git diff --quiet -- celtics-discovery-report.json || [ -n "$(git ls-files --others --exclude-standard celtics-discovery-report.json)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add celtics-discovery-report.json
+            git commit -m "Refresh Celtics discovery audit"
+            git push
+          fi
