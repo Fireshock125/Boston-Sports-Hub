@@ -263,7 +263,7 @@ def clns_analysis(when, opponent):
         url = item.findtext("link") or ""
         published = item.findtext("pubDate") or ""
         if not (url.startswith("https://www.clnsmedia.com/")
-                and re.search(r"\\bceltics\\b|garden report", title, re.I)
+                and re.search(r"\bceltics\b|garden report", title, re.I)
                 and re.search(re.escape(opponent.split()[-1]), title, re.I)
                 and re.search(r"postgame|garden report|reaction|breakdown|analysis|recap", title, re.I)):
             continue
