@@ -40,11 +40,33 @@ def youtube_candidates(when, opponent):
 
 
 def website_candidates(when, opponent):
-    # Public search RSS finds pages from multiple independent publishers.
-    # A result is a candidate page, not a verified playable video.
-    all_items, errors = [], []
+    """Discover publisher pages independently of search-engine RSS indexing."""
+    items, errors = [], []
+    # CLNS exposes a searchable WordPress content index. This previously found
+    # seven Celtics analysis articles in the main highlights workflow.
+    for query in (f"Celtics {opponent}", f"Garden Report {opponent}"):
+        url = "https://www.clnsmedia.com/wp-json/wp/v2/search?" + urllib.parse.urlencode({
+            "search": query, "per_page": 50, "type": "post"
+        })
+        try:
+            results = get_json(url)
+            for item in results if isinstance(results, list) else []:
+                link = item.get("url", "")
+                title = re.sub(r"<[^>]+>", "", item.get("title", ""))
+                if not link.startswith("https://www.clnsmedia.com/"):
+                    continue
+                if not re.search(re.escape(opponent.split()[-1]), title, re.I):
+                    continue
+                items.append({"source": "CLNS Media", "title": title,
+                              "url": link, "status": "candidate_unverified",
+                              "discovery": "publisher_search"})
+        except Exception as exc:
+            errors.append(f"CLNS publisher search: {exc}")
+
+    # General web search is supplemental, not the only route to publisher pages.
+    # Do not require the search engine to return exactly a publisher's hostname.
     for domain in SITES:
-        query = f'site:{domain} "Celtics" "{opponent}" video highlights postgame'
+        query = f'site:{domain} Boston Celtics {opponent} video highlights'
         url = "https://www.bing.com/search?" + urllib.parse.urlencode({"q": query, "format": "rss"})
         try:
             request = urllib.request.Request(url, headers=HEADERS)
@@ -53,16 +75,14 @@ def website_candidates(when, opponent):
             for item in root.findall(".//channel/item"):
                 link = item.findtext("link") or ""
                 title = item.findtext("title") or ""
-                if not link.startswith("https://") or domain not in urllib.parse.urlparse(link).netloc:
+                host = urllib.parse.urlparse(link).hostname or ""
+                if not link.startswith("https://") or not (host == domain or host.endswith("." + domain)):
                     continue
-                all_items.append({
-                    "source": domain, "title": title, "url": link,
-                    "status": "candidate_unverified", "discovery": "web_search",
-                })
+                items.append({"source": domain, "title": title, "url": link,
+                              "status": "candidate_unverified", "discovery": "web_search"})
         except Exception as exc:
             errors.append(f"{domain}: {exc}")
-    unique = {item["url"]: item for item in all_items}
-    return list(unique.values()), errors
+    return list({item["url"]: item for item in items}.values()), errors
 
 
 def main():
