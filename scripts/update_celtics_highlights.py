@@ -343,7 +343,7 @@ def main():
     candidates = {}
     analysis_candidates = {}
     website_analysis = {}
-    failed = False
+    failed_games = set()
     for game_id, (when, opponent) in events.items():
         try:
             found = youtube_search(when, opponent)
@@ -351,9 +351,9 @@ def main():
             print(f"{game_id}: {len(found)} filtered highlights, {len(candidates[game_id])} ranked choices")
         except Exception as exc:
             print(f"YouTube lookup failed for {game_id}: {exc}")
-            failed = True
-    if failed:
-        raise SystemExit("Some YouTube lookups failed; preserving previous data for retry.")
+            failed_games.add(game_id)
+    if failed_games:
+        print(f"Temporary YouTube errors for {len(failed_games)} game(s); retaining their previous entries.")
 
     # Assign each YouTube video to just one game, nearest its publication time.
     owners = {}
@@ -382,12 +382,19 @@ def main():
             games.setdefault(game_id, {})["analysis"] = combined_analysis
         elif isinstance(old_games.get(game_id), dict) and old_games[game_id].get("analysis"):
             games.setdefault(game_id, {})["analysis"] = old_games[game_id]["analysis"]
-    # Preserve previous videos when a fresh search misses a game.
+    # A temporary 429 is not evidence that earlier videos disappeared.
+    # Preserve existing game records ONLY for failed lookups; successful
+    # searches use the newly filtered and ranked results.
+    for game_id in failed_games:
+        record = old_games.get(game_id)
+        if isinstance(record, dict):
+            games[game_id] = dict(record)
+    # Keep previous analysis even when highlights are not found this run.
     for game_id, record in old_games.items():
-        if game_id not in games and isinstance(record, dict) and record.get("videos"):
-            # Do not restore old, unverified highlights when discovery finds no match.
-            if record.get("analysis"):
-                games[game_id] = {"analysis": record["analysis"]}
+        if not isinstance(record, dict):
+            continue
+        if record.get("analysis"):
+            games.setdefault(game_id, {}).setdefault("analysis", record["analysis"])
 
     if not games:
         print("No highlights found; preserving previous file rather than publishing an empty feed.")
