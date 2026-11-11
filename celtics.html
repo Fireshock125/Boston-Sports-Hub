@@ -900,9 +900,6 @@ const SCHEDULE_URL =
 const STANDINGS_URL =
   `https://site.api.espn.com/apis/v2/sports/${SPORT}/${LEAGUE}/standings`;
 
-const SUMMARY_URL =
-  `https://site.api.espn.com/apis/site/v2/sports/${SPORT}/${LEAGUE}/summary`;
-
 const $ = id => document.getElementById(id);
 
 /* SPOILER-FREE SETTINGS */
@@ -1450,77 +1447,23 @@ async function loadExtraHighlights() {
       extraHighlights = data.games;
     }
   } catch {
-    // Optional file. ESPN highlights still work without it.
+    // No highlights are shown if the curated video feed is unavailable.
   }
 }
 
 
-function findESPNHighlights(data) {
-  const videos = Array.isArray(data.videos) ? data.videos : [];
-
-  function durationSeconds(video) {
-    const raw = video.duration;
-    if (typeof raw === "number" && Number.isFinite(raw)) return raw;
-    if (typeof raw === "string") {
-      const parts = raw.split(":").map(Number);
-      if (parts.length >= 2 && parts.length <= 3 && parts.every(Number.isFinite)) {
-        return parts.reduce((total, part) => total * 60 + part, 0);
-      }
-      const numeric = Number(raw);
-      if (Number.isFinite(numeric)) return numeric;
-    }
-    return 0;
-  }
-
-  function categoryFor(video) {
-    const title = [video.headline, video.title, video.description, video.caption]
-      .filter(Boolean).join(" ").toLowerCase();
-    if (/interview|press conference|postgame reaction|analysis|preview|trailer|top plays|best plays|dunk|three.pointer|buzzer.beater|individual highlights|player highlights/i.test(title)) return null;
-    if (/full game highlights|full highlights|full game recap/i.test(title)) return "full";
-    if (/extended highlights|extended recap/i.test(title)) return "extended";
-    if (/(?:game|match|nba)\s+highlights|highlights\s*:/i.test(title)) return "standard";
-    if (/game recap|game summary|full recap/i.test(title)) return "full";
-    if (/highlights/i.test(title)) return durationSeconds(video) >= 180 ? "standard" : "short";
-    if (/recap/i.test(title)) return "short";
-    return null;
-  }
-
-  return videos.filter(video => /^\d+$/.test(String(video.id || "")))
-    .map(video => {
-      const category = categoryFor(video);
-      if (!category) return null;
-      return {
-        source: "ESPN", type: "iframe",
-        url: `https://www.espn.com/core/video/iframe?id=${video.id}`,
-        providerUrl: `https://www.espn.com/video/clip/_/id/${video.id}`,
-        category, duration: durationSeconds(video)
-      };
-    }).filter(Boolean);
-}
-
-async function fetchGameHighlights(game) {
+function fetchGameHighlights(game) {
   const id = String(game.id || "");
   if (!/^\d+$/.test(id)) return [];
-  const extras = videoFromExtra(extraHighlights[id]);
-  try {
-    const response = await fetch(
-      `${SUMMARY_URL}?event=${encodeURIComponent(id)}`,
-      { cache: "no-store" }
-    );
-    if (!response.ok) return rankHighlights(extras);
-    const data = await response.json();
-    return rankHighlights([...extras, ...findESPNHighlights(data)]);
-  } catch (error) {
-    console.warn("ESPN highlights unavailable:", id, error);
-    return rankHighlights(extras);
-  }
+  // Use only curated video records; ESPN's video player is not reliable in the UK.
+  return rankHighlights(videoFromExtra(extraHighlights[id]));
 }
 
 async function discoverHighlights(games) {
   await loadExtraHighlights();
   await Promise.allSettled(games.map(async game => {
     const id = String(game.id || "");
-    const videos = await fetchGameHighlights(game);
+    const videos = fetchGameHighlights(game);
     if (videos.length) highlightsByGame.set(id, videos);
     const card = [...document.querySelectorAll(
       "#results-list .game[data-game-id]"
