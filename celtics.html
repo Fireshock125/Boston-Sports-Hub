@@ -1595,15 +1595,17 @@ function openHighlights(card, videos, index = 0, mode = "highlights") {
   if (videos.length > 1) {
     const heading = document.createElement("p");
     heading.className = "highlight-note";
-    heading.textContent = "Choose a highlights video:";
+    heading.textContent = mode === "analysis" ? "Choose an analysis video:" : "Choose a highlights video:";
     player.appendChild(heading);
     const choices = document.createElement("div");
     choices.className = "highlight-choices";
     videos.forEach((option, choiceIndex) => {
       const choice = document.createElement("a");
-      choice.href = option.providerUrl || option.url;
-      choice.target = "_blank";
-      choice.rel = "noopener noreferrer";
+      choice.href = "#";
+      choice.addEventListener("click", event => {
+        event.preventDefault();
+        openHighlights(card, videos, choiceIndex, mode);
+      });
       const minutes = option.duration ? Math.floor(option.duration / 60) + ":" + String(option.duration % 60).padStart(2, "0") : "";
       choice.textContent = "Video " + (choiceIndex + 1) + (minutes ? " · " + minutes : "") + " · " + option.source + " · " + option.category;
       if (choiceIndex === index) choice.classList.add("selected");
@@ -1614,7 +1616,7 @@ function openHighlights(card, videos, index = 0, mode = "highlights") {
 
 
   player.hidden = false;
-  button.textContent = "Hide Highlights";
+  button.textContent = mode === "analysis" ? "Hide Analysis" : "Hide Highlights";
   button.setAttribute("aria-expanded", "true");
 }
 
