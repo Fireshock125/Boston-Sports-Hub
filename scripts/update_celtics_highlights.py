@@ -207,7 +207,7 @@ def youtube_analysis(when, opponent, channel_id):
         snippet = entry.get("snippet", {})
         title = snippet.get("title", "")
         video_id = entry.get("id", {}).get("videoId", "")
-        if not (re.search(r"\\bceltics\\b", title, re.I)
+        if not (re.search(r"\bceltics\b", title, re.I)
                 and re.search(re.escape(opponent.split()[-1]), title, re.I)
                 and re.search(r"post.?game|analysis|breakdown|reaction|takeaways|recap", title, re.I)
                 and not re.search(r"preview|pregame|live stream|watch party|shorts", title, re.I)
@@ -232,7 +232,7 @@ def youtube_analysis(when, opponent, channel_id):
                 or item.get("snippet", {}).get("channelId") != channel_id):
             continue
         duration = content.get("duration", "")
-        match = re.fullmatch(r"P(?:\\d+D)?T(?:(\\d+)H)?(?:(\\d+)M)?(?:(\\d+)S)?", duration)
+        match = re.fullmatch(r"P(?:\d+D)?T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?", duration)
         if not match:
             continue
         seconds = sum(int(n or 0) * scale for n, scale in zip(match.groups(), (3600, 60, 1)))
