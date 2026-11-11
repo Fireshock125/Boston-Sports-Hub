@@ -262,14 +262,14 @@ def clns_analysis(when, opponent):
     # WordPress search covers more posts than the site's short RSS front page.
     for query in (f"Celtics {opponent}", f"Garden Report {opponent}"):
         url = "https://www.clnsmedia.com/wp-json/wp/v2/search?" + urllib.parse.urlencode({
-            "search": query, "per_page": 50, "type": "post"
+            "search": query, "per_page": 20, "type": "post"
         })
         try:
             results = get_json(url)
         except Exception as exc:
             print(f"CLNS website search unavailable: {exc}")
             continue
-        for item in results if isinstance(results, list) else []:
+        for item in (results[:12] if isinstance(results, list) else []):
             title = html.unescape(re.sub(r"<[^>]*>", "", item.get("title", "")))
             link = item.get("url", "")
             if not (link.startswith("https://www.clnsmedia.com/")
