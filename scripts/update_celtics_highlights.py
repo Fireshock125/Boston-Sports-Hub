@@ -87,14 +87,21 @@ def completed_games():
     return events
 
 
-def category(title, duration):
-    """Reject discussion, recaps and individual-player clips from game highlights."""
+def category(title, duration, description=""):
+    """Classify discovered videos only after search; keep discussion out of highlights."""
     t = html.unescape(title).lower()
+    d = html.unescape(description).lower()
     if duration <= 0:
         return None
-    if re.search(r"reaction|post.?game|analysis|breakdown|interview|press conference|podcast|talk|discussion|review|preview|recap|live|watch party|best plays|top plays|player highlights|mic.d up", t):
+    # A title can contain 'highlights' while the video is a reaction or podcast.
+    if re.search(r"reaction|reacts? to|post[ -]?game (?:show|reaction|press)|analysis|breakdown|interview|press conference|podcast|talk show|discussion|review|preview|watch.?along|watch party|live stream|livestream|play.?by.?play|commentary|film study|film room|mic.?d up|player highlights|best plays|top plays|shorts?", t):
         return None
-    if not re.search(r"highlights|game highlights|full game", t):
+    if re.search(r"reaction|podcast|watch.?along|watch party|live stream|livestream|postgame show", d) and not re.search(r"game highlights|full game highlights|extended highlights", t):
+        return None
+    if not re.search(r"highlights|game recap|full game", t):
+        return None
+    # Full game replays are not highlights.
+    if duration > 1800:
         return None
     if "extended" in t:
         return "extended"
@@ -104,33 +111,58 @@ def category(title, duration):
 
 
 def youtube_search(when, opponent, channel_id=None):
-    # Discover candidates first, then validate footage and rank; do not gate on length.
+    """Discover broadly, then validate and filter, then rank elsewhere."""
     after = when
     before = when + dt.timedelta(days=4)
-    params_dict = {
-        "part": "snippet", "type": "video", "videoEmbeddable": "true",
-        "maxResults": 50, "order": "relevance",
-        "q": f"Boston Celtics {opponent} game highlights {when.strftime('%B %d %Y')}",
-        "publishedAfter": after.isoformat().replace("+00:00", "Z"),
-        "publishedBefore": before.isoformat().replace("+00:00", "Z"),
-        "key": API_KEY,
-    }
+    queries = [
+        f"Boston Celtics {opponent} {when.strftime('%B %d %Y')}",
+        f"Celtics vs {opponent} highlights {when.strftime('%B %d %Y')}",
+    ]
     if channel_id:
-        params_dict["channelId"] = channel_id
-        params_dict["q"] = f"Celtics {opponent}"
-    params = urllib.parse.urlencode(params_dict)
-    data = get_json("https://www.googleapis.com/youtube/v3/search?" + params)
-    results = data.get("items", [])
-    candidates = []
-    for item in results:
+        queries = [f"Celtics {opponent} {when.strftime('%B %d')}"]
+    discovered = {}
+    for query in queries:
+        params_dict = {
+            "part": "snippet", "type": "video", "videoEmbeddable": "true",
+            "maxResults": 50, "order": "relevance", "q": query,
+            "publishedAfter": after.isoformat().replace("+00:00", "Z"),
+            "publishedBefore": before.isoformat().replace("+00:00", "Z"),
+            "key": API_KEY,
+        }
+        if channel_id:
+            params_dict["channelId"] = channel_id
+        data = get_json("https://www.googleapis.com/youtube/v3/search?" +
+                        urllib.parse.urlencode(params_dict))
+        for item in data.get("items", []):
+            video_id = item.get("id", {}).get("videoId", "")
+            if re.fullmatch(r"[A-Za-z0-9_-]{11}", video_id):
+                discovered[video_id] = item.get("snippet", {})
+    print(f"Search vs {opponent}: discovered {len(discovered)} videos before filtering")
+    if not discovered:
+        return []
+
+    # YouTube's videos endpoint accepts up to 50 IDs per request.
+    details = []
+    ids = list(discovered)
+    for offset in range(0, len(ids), 50):
+        data = get_json("https://www.googleapis.com/youtube/v3/videos?" +
+            urllib.parse.urlencode({
+                "part": "status,contentDetails,snippet",
+                "id": ",".join(ids[offset:offset + 50]),
+                "key": API_KEY,
+            }))
+        details.extend(data.get("items", []))
+
+    matches = []
+    for item in details:
+        video_id = item.get("id", "")
         snippet = item.get("snippet", {})
-        title = snippet.get("title", "")
+        title = html.unescape(snippet.get("title", ""))
         description = snippet.get("description", "")
-        video_id = item.get("id", {}).get("videoId", "")
-        # Require both teams in title; descriptions alone are too unreliable.
-        if not (re.search(r"\bceltics\b", title, re.I)
-                and (re.search(re.escape(opponent), title, re.I) or re.search(re.escape(opponent.split()[-1]), title, re.I))
-                and re.fullmatch(r"[A-Za-z0-9_-]{11}", video_id)):
+        actual_channel_id = snippet.get("channelId", "")
+        # Stage 2: validate that the video belongs to this matchup and works in GB.
+        if not (re.search(r"\\bceltics\\b", title, re.I)
+                and re.search(r"\\b" + re.escape(opponent) + r"\\b", title, re.I)):
             continue
         try:
             published = dt.datetime.fromisoformat(snippet["publishedAt"].replace("Z", "+00:00"))
@@ -138,19 +170,6 @@ def youtube_search(when, opponent, channel_id=None):
             continue
         if not after <= published <= before:
             continue
-        candidates.append((video_id, title, description, published))
-    print(f"Search vs {opponent}: {len(results)} results, {len(candidates)} team/date candidates")
-    if not candidates:
-        return []
-
-    details = get_json("https://www.googleapis.com/youtube/v3/videos?" +
-        urllib.parse.urlencode({
-            "part": "status,contentDetails,snippet",
-            "id": ",".join(x[0] for x in candidates),
-            "key": API_KEY,
-        }))
-    valid = {}
-    for item in details.get("items", []):
         status = item.get("status", {})
         content = item.get("contentDetails", {})
         region = content.get("regionRestriction", {})
@@ -160,26 +179,18 @@ def youtube_search(when, opponent, channel_id=None):
                 or "GB" in region.get("blocked", [])
                 or ("allowed" in region and "GB" not in region["allowed"])):
             continue
-        duration = content.get("duration", "")
-        match = re.fullmatch(r"P(?:\d+D)?T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?", duration)
+        match = re.fullmatch(r"P(?:\\d+D)?T(?:(\\d+)H)?(?:(\\d+)M)?(?:(\\d+)S)?",
+                             content.get("duration", ""))
         if not match:
             continue
         seconds = sum(int(n or 0) * scale for n, scale in zip(match.groups(), (3600, 60, 1)))
-        valid[item["id"]] = (seconds, item.get("snippet", {}).get("title", ""), item.get("snippet", {}).get("channelId", ""))
-    print(f"  {len(valid)} UK-accessible, embeddable candidate videos")
-
-    matches = []
-    for video_id, title, description, published in candidates:
-        if video_id not in valid:
-            continue
-        seconds, verified_title, actual_channel_id = valid[video_id]
-        kind = category(verified_title, seconds)
+        # Stage 2: reject reactions, interviews and other non-highlight formats.
+        kind = category(title, seconds, description)
         if kind is None:
             continue
         if channel_id and actual_channel_id != channel_id:
             continue
         source = OFFICIAL_CHANNELS.get(actual_channel_id, ("YouTube highlights", 0))[0]
-        score = (1 if actual_channel_id in OFFICIAL_CHANNELS else 0, seconds)
         matches.append({
             "youtubeId": video_id,
             "source": source,
@@ -187,12 +198,11 @@ def youtube_search(when, opponent, channel_id=None):
             "durationSeconds": seconds,
             "providerUrl": f"https://www.youtube.com/watch?v={video_id}",
             "_published": published,
-            "_score": score,
+            "_score": (1 if actual_channel_id in OFFICIAL_CHANNELS else 0, seconds),
         })
-    matches.sort(key=lambda v: v["_score"], reverse=True)
-    print(f"  Selected {min(len(matches), 20)} of {len(matches)} suitable videos")
-    return matches[:15]
-
+    print(f"  {len(matches)} suitable highlights after filtering")
+    # Stage 3: rank happens in main(), after all channel and general searches merge.
+    return matches
 
 
 def youtube_analysis(when, opponent, channel_id):
