@@ -912,6 +912,7 @@ const SPOILER_STORAGE_KEY = "bsh-hide-scores";
 let hideAllScores = true;
 const individuallyRevealed = new Set();
 const highlightsByGame = new Map();
+const analysisByGame = new Map();
 
 try {
   const saved = localStorage.getItem(SPOILER_STORAGE_KEY);
@@ -1307,7 +1308,7 @@ function gameCard(game, resultMode = false) {
           Watch Highlights
         </button>
 
-        <a class="analysis-button" href="https://www.youtube.com/results?search_query=${encodeURIComponent(`NBC Sports Boston Celtics ${game.away} ${game.home} ${dateLabel(game.date)} postgame analysis`)}" target="_blank" rel="noopener noreferrer">Game Analysis</a>
+        <button type="button" class="analysis-button" data-action="analysis" aria-expanded="false" hidden>Game Analysis</button>
       </div>
 
       <div class="highlight-player" hidden></div>
@@ -1520,29 +1521,35 @@ async function discoverHighlights(games) {
   await Promise.allSettled(games.map(async game => {
     const id = String(game.id || "");
     const videos = await fetchGameHighlights(game);
-    if (!videos.length) return;
-    highlightsByGame.set(id, videos);
+    if (videos.length) highlightsByGame.set(id, videos);
     const card = [...document.querySelectorAll(
       "#results-list .game[data-game-id]"
     )].find(item => item.dataset.gameId === id);
     const button = card?.querySelector(".watch-button");
-    if (button) button.hidden = false;
+    if (button && videos.length) button.hidden = false;
+    const analysis = videoFromExtra(extraHighlights[id]?.analysis);
+    if (analysis.length) {
+      analysisByGame.set(id, analysis);
+      const analysisButton = card?.querySelector(".analysis-button");
+      if (analysisButton) analysisButton.hidden = false;
+    }
   }));
 }
 
 function closeHighlights(card) {
   const player = card.querySelector(".highlight-player");
   const button = card.querySelector(".watch-button");
-  if (!player || !button) return;
+  const analysisButton = card.querySelector(".analysis-button");
+  if (!player) return;
   player.replaceChildren();
   player.hidden = true;
-  button.textContent = "Watch Highlights";
-  button.setAttribute("aria-expanded", "false");
+  if (button) { button.textContent = "Watch Highlights"; button.setAttribute("aria-expanded", "false"); }
+  if (analysisButton) { analysisButton.textContent = "Game Analysis"; analysisButton.setAttribute("aria-expanded", "false"); }
 }
 
-function openHighlights(card, videos, index = 0) {
+function openHighlights(card, videos, index = 0, mode = "highlights") {
   const player = card.querySelector(".highlight-player");
-  const button = card.querySelector(".watch-button");
+  const button = card.querySelector(mode === "analysis" ? ".analysis-button" : ".watch-button");
   const video = videos[index];
   if (!player || !button || !video) return;
   player.replaceChildren();
@@ -1550,7 +1557,7 @@ function openHighlights(card, videos, index = 0) {
   frame.className = "video-frame";
   const iframe = document.createElement("iframe");
   iframe.src = video.url;
-  iframe.title = "Game highlights";
+  iframe.title = mode === "analysis" ? "Game analysis" : "Game highlights";
   iframe.loading = "lazy";
   iframe.allow = "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen";
   iframe.allowFullscreen = true;
@@ -1561,7 +1568,7 @@ function openHighlights(card, videos, index = 0) {
   const note = document.createElement("p");
   note.className = "highlight-note";
   note.textContent =
-    `${index === 0 && highlightSourcePriority(video) <= 2 && video.duration >= 480 && video.category !== "short" ? "Recommended · " : ""}Video ${index + 1} of ${videos.length} · ${video.source} · ${video.category}. Videos may contain spoilers.`;
+    `${mode === "highlights" && index === 0 && highlightSourcePriority(video) <= 2 && video.duration >= 480 && video.category !== "short" ? "Recommended · " : ""}Video ${index + 1} of ${videos.length} · ${video.source} · ${video.category}. Videos may contain spoilers.`;
   player.appendChild(note);
 
   const actions = document.createElement("div");
@@ -1571,7 +1578,7 @@ function openHighlights(card, videos, index = 0) {
     next.type = "button";
     next.textContent = "Preview Next Choice";
     next.addEventListener("click", () =>
-      openHighlights(card, videos, (index + 1) % videos.length)
+      openHighlights(card, videos, (index + 1) % videos.length, mode)
     );
     actions.appendChild(next);
   }
@@ -1625,12 +1632,13 @@ $("results-list").addEventListener("click", event => {
     updateResultScores();
     return;
   }
-  if (button.dataset.action === "highlights") {
-    const videos = highlightsByGame.get(id);
+  if (button.dataset.action === "highlights" || button.dataset.action === "analysis") {
+    const mode = button.dataset.action;
+    const videos = mode === "analysis" ? analysisByGame.get(id) : highlightsByGame.get(id);
     if (!videos?.length) return;
     const player = card.querySelector(".highlight-player");
     if (!player.hidden) closeHighlights(card);
-    else openHighlights(card, videos);
+    else openHighlights(card, videos, 0, mode);
   }
 });
 
