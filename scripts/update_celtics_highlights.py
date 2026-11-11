@@ -88,8 +88,13 @@ def completed_games():
 
 
 def category(title, duration):
-    t = title.lower()
+    """Reject discussion, recaps and individual-player clips from game highlights."""
+    t = html.unescape(title).lower()
     if duration < 180 or duration > 1800:
+        return None
+    if re.search(r"reaction|post.?game|analysis|breakdown|interview|press conference|podcast|talk|discussion|review|preview|recap|live|watch party|best plays|top plays|player highlights|mic.d up", t):
+        return None
+    if not re.search(r"highlights|game highlights|full game", t):
         return None
     if "extended" in t:
         return "extended"
@@ -127,7 +132,7 @@ def youtube_search(when, opponent, channel_id=None):
                 and (re.search(re.escape(opponent), title, re.I) or re.search(re.escape(opponent.split()[-1]), title, re.I))
                 and re.fullmatch(r"[A-Za-z0-9_-]{11}", video_id)):
             continue
-        if re.search(r"preview|reaction|interview|podcast|shorts|live stream|watch party", title, re.I):
+        if category(title, 600) is None:
             continue
         try:
             published = dt.datetime.fromisoformat(snippet["publishedAt"].replace("Z", "+00:00"))
@@ -252,31 +257,44 @@ def youtube_analysis(when, opponent, channel_id):
 
 
 def clns_analysis(when, opponent):
-    """Discover free, directly linked Garden Report articles from CLNS's RSS feed."""
-    request = urllib.request.Request("https://www.clnsmedia.com/feed/",
-                                     headers={"User-Agent": "BostonSportsHub/1.0"})
-    with urllib.request.urlopen(request, timeout=20) as response:
-        root = ET.fromstring(response.read())
+    """Find matchup-specific CLNS postgame articles on the publisher's website."""
     matches = []
-    for item in root.findall(".//channel/item"):
-        title = html.unescape(item.findtext("title") or "")
-        url = item.findtext("link") or ""
-        published = item.findtext("pubDate") or ""
-        if not (url.startswith("https://www.clnsmedia.com/")
-                and re.search(r"\bceltics\b|garden report", title, re.I)
-                and re.search(re.escape(opponent.split()[-1]), title, re.I)
-                and re.search(r"postgame|garden report|reaction|breakdown|analysis|recap", title, re.I)):
-            continue
+    # WordPress search covers more posts than the site's short RSS front page.
+    for query in (f"Celtics {opponent}", f"Garden Report {opponent}"):
+        url = "https://www.clnsmedia.com/wp-json/wp/v2/search?" + urllib.parse.urlencode({
+            "search": query, "per_page": 50, "type": "post"
+        })
         try:
-            date = email.utils.parsedate_to_datetime(published).astimezone(dt.timezone.utc)
-        except (ValueError, TypeError):
+            results = get_json(url)
+        except Exception as exc:
+            print(f"CLNS website search unavailable: {exc}")
             continue
-        if not when <= date <= when + dt.timedelta(days=3):
-            continue
-        # A direct article link is not assumed to be embeddable or UK-playable.
-        matches.append({"source": "CLNS Media", "category": "analysis",
-                        "providerUrl": url, "title": title, "access": "free_page"})
-    return matches[:5]
+        for item in results if isinstance(results, list) else []:
+            title = html.unescape(re.sub(r"<[^>]*>", "", item.get("title", "")))
+            link = item.get("url", "")
+            if not (link.startswith("https://www.clnsmedia.com/")
+                    and re.search(re.escape(opponent.split()[-1]), title, re.I)
+                    and re.search(r"celtics|garden report|postgame", title, re.I)):
+                continue
+            # WordPress search API doesn't return a reliable publication date.
+            # Check the public article's published metadata via the posts API.
+            post_id = item.get("id")
+            if not isinstance(post_id, int):
+                continue
+            try:
+                post = get_json(f"https://www.clnsmedia.com/wp-json/wp/v2/posts/{post_id}")
+                published = dt.datetime.fromisoformat(post["date_gmt"] + "+00:00")
+            except Exception:
+                continue
+            if not when <= published <= when + dt.timedelta(days=3):
+                continue
+            if not re.search(r"postgame|garden report|reaction|breakdown|analysis|recap|win|lose|beat|fall|escape|dominate|struggle", title, re.I):
+                continue
+            matches.append({"source": "CLNS Media", "category": "analysis",
+                            "providerUrl": link, "title": title, "access": "free_page"})
+        if matches:
+            break
+    return list({v["providerUrl"]: v for v in matches}.values())[:5]
 
 
 def video_rank(video, analysis=False):
@@ -380,6 +398,8 @@ def main():
     for game_id, record in old_games.items():
         if game_id not in games and isinstance(record, dict) and record.get("videos"):
             games[game_id] = record
+    # Previously saved videos lacked titles, so they may contain reaction content.
+    # Only retain videos freshly validated against the strict highlights title filter.
     if not games:
         print("No highlights found; preserving previous file rather than publishing an empty feed.")
         return
