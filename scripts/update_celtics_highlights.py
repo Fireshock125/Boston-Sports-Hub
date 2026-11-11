@@ -161,8 +161,8 @@ def youtube_search(when, opponent, channel_id=None):
         description = snippet.get("description", "")
         actual_channel_id = snippet.get("channelId", "")
         # Stage 2: validate that the video belongs to this matchup and works in GB.
-        if not (re.search(r"\\bceltics\\b", title, re.I)
-                and re.search(r"\\b" + re.escape(opponent) + r"\\b", title, re.I)):
+        if not (re.search(r"\bceltics\b", title, re.I)
+                and re.search(r"\b" + re.escape(opponent) + r"\b", title, re.I)):
             continue
         try:
             published = dt.datetime.fromisoformat(snippet["publishedAt"].replace("Z", "+00:00"))
@@ -179,7 +179,7 @@ def youtube_search(when, opponent, channel_id=None):
                 or "GB" in region.get("blocked", [])
                 or ("allowed" in region and "GB" not in region["allowed"])):
             continue
-        match = re.fullmatch(r"P(?:\\d+D)?T(?:(\\d+)H)?(?:(\\d+)M)?(?:(\\d+)S)?",
+        match = re.fullmatch(r"P(?:\d+D)?T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?",
                              content.get("duration", ""))
         if not match:
             continue
