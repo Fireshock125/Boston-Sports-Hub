@@ -90,7 +90,7 @@ def completed_games():
 def category(title, duration):
     """Reject discussion, recaps and individual-player clips from game highlights."""
     t = html.unescape(title).lower()
-    if duration < 180 or duration > 1800:
+    if duration <= 0:
         return None
     if re.search(r"reaction|post.?game|analysis|breakdown|interview|press conference|podcast|talk|discussion|review|preview|recap|live|watch party|best plays|top plays|player highlights|mic.d up", t):
         return None
@@ -104,7 +104,7 @@ def category(title, duration):
 
 
 def youtube_search(when, opponent, channel_id=None):
-    # Search broadly and within the two official channels; recommend only official uploads.
+    # Discover candidates first, then validate footage and rank; do not gate on length.
     after = when
     before = when + dt.timedelta(days=4)
     params_dict = {
@@ -131,8 +131,6 @@ def youtube_search(when, opponent, channel_id=None):
         if not (re.search(r"\bceltics\b", title, re.I)
                 and (re.search(re.escape(opponent), title, re.I) or re.search(re.escape(opponent.split()[-1]), title, re.I))
                 and re.fullmatch(r"[A-Za-z0-9_-]{11}", video_id)):
-            continue
-        if category(title, 600) is None:
             continue
         try:
             published = dt.datetime.fromisoformat(snippet["publishedAt"].replace("Z", "+00:00"))
@@ -167,17 +165,17 @@ def youtube_search(when, opponent, channel_id=None):
         if not match:
             continue
         seconds = sum(int(n or 0) * scale for n, scale in zip(match.groups(), (3600, 60, 1)))
-        kind = category(item.get("snippet", {}).get("title", ""), seconds)
-        if kind is None:
-            continue
-        valid[item["id"]] = (seconds, kind, item.get("snippet", {}).get("channelId", ""))
-    print(f"  {len(valid)} UK-accessible, embeddable videos between 3 and 30 minutes")
+        valid[item["id"]] = (seconds, item.get("snippet", {}).get("title", ""), item.get("snippet", {}).get("channelId", ""))
+    print(f"  {len(valid)} UK-accessible, embeddable candidate videos")
 
     matches = []
     for video_id, title, description, published in candidates:
         if video_id not in valid:
             continue
-        seconds, kind, actual_channel_id = valid[video_id]
+        seconds, verified_title, actual_channel_id = valid[video_id]
+        kind = category(verified_title, seconds)
+        if kind is None:
+            continue
         if channel_id and actual_channel_id != channel_id:
             continue
         source = OFFICIAL_CHANNELS.get(actual_channel_id, ("YouTube highlights", 0))[0]
@@ -193,7 +191,7 @@ def youtube_search(when, opponent, channel_id=None):
         })
     matches.sort(key=lambda v: v["_score"], reverse=True)
     print(f"  Selected {min(len(matches), 20)} of {len(matches)} suitable videos")
-    return matches[:20]
+    return matches[:15]
 
 
 
@@ -353,7 +351,7 @@ def main():
             combined = {video["youtubeId"]: video for video in fallback}
             for video in official:
                 combined[video["youtubeId"]] = video
-            candidates[game_id] = sorted(combined.values(), key=video_rank, reverse=True)[:20]
+            candidates[game_id] = sorted(combined.values(), key=video_rank, reverse=True)[:4]
             analysis_candidates[game_id] = youtube_analysis(when, opponent, nbc_id) if nbc_id else []
             try:
                 website_analysis[game_id] = clns_analysis(when, opponent)
@@ -397,9 +395,10 @@ def main():
     # Preserve previous videos when a fresh search misses a game.
     for game_id, record in old_games.items():
         if game_id not in games and isinstance(record, dict) and record.get("videos"):
-            games[game_id] = record
-    # Previously saved videos lacked titles, so they may contain reaction content.
-    # Only retain videos freshly validated against the strict highlights title filter.
+            # Do not restore old, unverified highlights when discovery finds no match.
+            if record.get("analysis"):
+                games[game_id] = {"analysis": record["analysis"]}
+
     if not games:
         print("No highlights found; preserving previous file rather than publishing an empty feed.")
         return
