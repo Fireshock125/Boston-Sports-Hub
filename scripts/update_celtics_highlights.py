@@ -188,6 +188,65 @@ def youtube_search(when, opponent, channel_id=None):
     return matches[:20]
 
 
+
+def youtube_analysis(when, opponent, channel_id):
+    """Find actual NBC Sports Boston postgame analysis videos for this matchup."""
+    after = when
+    before = when + dt.timedelta(days=3)
+    params = urllib.parse.urlencode({
+        "part": "snippet", "type": "video", "videoEmbeddable": "true",
+        "maxResults": 50, "order": "relevance", "channelId": channel_id,
+        "q": f"Celtics {opponent} postgame",
+        "publishedAfter": after.isoformat().replace("+00:00", "Z"),
+        "publishedBefore": before.isoformat().replace("+00:00", "Z"),
+        "key": API_KEY,
+    })
+    results = get_json("https://www.googleapis.com/youtube/v3/search?" + params).get("items", [])
+    candidates = []
+    for entry in results:
+        snippet = entry.get("snippet", {})
+        title = snippet.get("title", "")
+        video_id = entry.get("id", {}).get("videoId", "")
+        if not (re.search(r"\\bceltics\\b", title, re.I)
+                and re.search(re.escape(opponent.split()[-1]), title, re.I)
+                and re.search(r"post.?game|analysis|breakdown|reaction|takeaways|recap", title, re.I)
+                and not re.search(r"preview|pregame|live stream|watch party|shorts", title, re.I)
+                and re.fullmatch(r"[A-Za-z0-9_-]{11}", video_id)):
+            continue
+        candidates.append((video_id, title))
+    if not candidates:
+        return []
+    details = get_json("https://www.googleapis.com/youtube/v3/videos?" + urllib.parse.urlencode({
+        "part": "status,contentDetails,snippet",
+        "id": ",".join(v[0] for v in candidates), "key": API_KEY,
+    }))
+    valid = {}
+    for item in details.get("items", []):
+        status = item.get("status", {})
+        content = item.get("contentDetails", {})
+        region = content.get("regionRestriction", {})
+        if (status.get("privacyStatus") != "public"
+                or status.get("embeddable") is not True
+                or "GB" in region.get("blocked", [])
+                or ("allowed" in region and "GB" not in region["allowed"])
+                or item.get("snippet", {}).get("channelId") != channel_id):
+            continue
+        duration = content.get("duration", "")
+        match = re.fullmatch(r"P(?:\\d+D)?T(?:(\\d+)H)?(?:(\\d+)M)?(?:(\\d+)S)?", duration)
+        if not match:
+            continue
+        seconds = sum(int(n or 0) * scale for n, scale in zip(match.groups(), (3600, 60, 1)))
+        if 180 <= seconds <= 5400:
+            valid[item["id"]] = seconds
+    return [{
+        "youtubeId": video_id,
+        "source": "NBC Sports Boston",
+        "category": "analysis",
+        "durationSeconds": valid[video_id],
+        "providerUrl": f"https://www.youtube.com/watch?v={video_id}",
+    } for video_id, title in candidates if video_id in valid][:10]
+
+
 def main():
     if not API_KEY:
         raise SystemExit("Missing YOUTUBE_API_KEY secret; no changes made.")
@@ -220,6 +279,7 @@ def main():
     else:
         print("NBC Sports Boston channel not resolved; retaining other sources.")
     candidates = {}
+    analysis_candidates = {}
     failed = False
     for game_id, (when, opponent) in events.items():
         try:
@@ -231,6 +291,7 @@ def main():
             for video in official:
                 combined[video["youtubeId"]] = video
             candidates[game_id] = sorted(combined.values(), key=lambda v: v["_score"], reverse=True)[:20]
+            analysis_candidates[game_id] = youtube_analysis(when, opponent, nbc_id) if nbc_id else []
             print(f"{game_id}: {len(official)} official candidates, {len(candidates[game_id])} total choices")
         except Exception as exc:
             print(f"YouTube lookup failed for {game_id}: {exc}")
@@ -257,6 +318,12 @@ def main():
         if selected:
             games[game_id] = {"videos": selected}
             print(f"{game_id} vs {events[game_id][1]}: {len(selected)} validated YouTube videos")
+    # Keep analysis independent from highlights, including games with no highlights.
+    for game_id, analysis in analysis_candidates.items():
+        if analysis:
+            games.setdefault(game_id, {})["analysis"] = analysis
+        elif isinstance(old_games.get(game_id), dict) and old_games[game_id].get("analysis"):
+            games.setdefault(game_id, {})["analysis"] = old_games[game_id]["analysis"]
     # Preserve previous videos when a fresh search misses a game.
     for game_id, record in old_games.items():
         if game_id not in games and isinstance(record, dict) and record.get("videos"):
