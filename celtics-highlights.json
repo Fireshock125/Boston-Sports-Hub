@@ -115,25 +115,20 @@
           "providerUrl": "https://www.youtube.com/watch?v=9XodEpcAMXQ"
         },
         {
-          "youtubeId": "AyoLVPtL_0Y",
-          "source": "YouTube highlights",
-          "category": "standard",
-          "durationSeconds": 230,
-          "providerUrl": "https://www.youtube.com/watch?v=AyoLVPtL_0Y"
-        },
-        {
-          "youtubeId": "xQpxJWOQTD4",
-          "source": "YouTube highlights",
-          "category": "standard",
-          "durationSeconds": 191,
-          "providerUrl": "https://www.youtube.com/watch?v=xQpxJWOQTD4"
-        },
-        {
           "youtubeId": "a3hv8g3lYZw",
           "source": "YouTube highlights",
           "category": "full",
           "durationSeconds": 1701,
           "providerUrl": "https://www.youtube.com/watch?v=a3hv8g3lYZw"
+        }
+      ],
+      "analysis": [
+        {
+          "source": "CLNS Media",
+          "category": "analysis",
+          "providerUrl": "https://www.clnsmedia.com/celtics-open-nba-cup-play-with-big-win-over-bulls/",
+          "title": "Celtics Open NBA Cup Play With Big Win Over Bulls",
+          "access": "free_page"
         }
       ]
     },
@@ -166,13 +161,6 @@
           "category": "full",
           "durationSeconds": 721,
           "providerUrl": "https://www.youtube.com/watch?v=cUPYYjuv1Fo"
-        },
-        {
-          "youtubeId": "85oFFl_jLOk",
-          "source": "YouTube highlights",
-          "category": "standard",
-          "durationSeconds": 592,
-          "providerUrl": "https://www.youtube.com/watch?v=85oFFl_jLOk"
         },
         {
           "youtubeId": "ql28dnf55pU",
@@ -215,6 +203,13 @@
           "category": "full",
           "durationSeconds": 769,
           "providerUrl": "https://www.youtube.com/watch?v=jHwJg1saU0w"
+        },
+        {
+          "youtubeId": "WlaIxoIf2-g",
+          "source": "YouTube highlights",
+          "category": "standard",
+          "durationSeconds": 542,
+          "providerUrl": "https://www.youtube.com/watch?v=WlaIxoIf2-g"
         },
         {
           "youtubeId": "iyRtJ0MU6Kc",
@@ -279,6 +274,22 @@
           "durationSeconds": 1561,
           "providerUrl": "https://www.youtube.com/watch?v=aVlYjqSoyEg"
         }
+      ],
+      "analysis": [
+        {
+          "source": "CLNS Media",
+          "category": "analysis",
+          "providerUrl": "https://www.clnsmedia.com/celtics-beat-magic-to-improve-to-5-1-on-the-season-you-got-boston/",
+          "title": "Celtics Beat Magic to improve to 5-1 on the season | You Got Boston",
+          "access": "free_page"
+        },
+        {
+          "source": "CLNS Media",
+          "category": "analysis",
+          "providerUrl": "https://www.clnsmedia.com/celtics-take-down-magic-make-it-5th-straight-win-garden-report/",
+          "title": "Celtics Take Down Magic Make it 5th Straight Win! | Garden Report",
+          "access": "free_page"
+        }
       ]
     },
     "401909916": {
@@ -296,13 +307,6 @@
           "category": "full",
           "durationSeconds": 628,
           "providerUrl": "https://www.youtube.com/watch?v=KMp4TfDrT2M"
-        },
-        {
-          "youtubeId": "G5L_kx6vzc0",
-          "source": "YouTube highlights",
-          "category": "standard",
-          "durationSeconds": 599,
-          "providerUrl": "https://www.youtube.com/watch?v=G5L_kx6vzc0"
         },
         {
           "youtubeId": "t8NZBC0UkhY",
@@ -389,18 +393,20 @@
           "providerUrl": "https://www.youtube.com/watch?v=JtWTwDtWqm4"
         },
         {
-          "youtubeId": "Ypah8fwkWgQ",
-          "source": "NBC Sports Boston",
-          "category": "standard",
-          "durationSeconds": 1551,
-          "providerUrl": "https://www.youtube.com/watch?v=Ypah8fwkWgQ"
-        },
-        {
           "youtubeId": "LI6DZxnROz8",
           "source": "YouTube highlights",
           "category": "standard",
           "durationSeconds": 1304,
           "providerUrl": "https://www.youtube.com/watch?v=LI6DZxnROz8"
+        }
+      ],
+      "analysis": [
+        {
+          "source": "CLNS Media",
+          "category": "analysis",
+          "providerUrl": "https://www.clnsmedia.com/celtics-lose-to-rockets-with-no-paul-george/",
+          "title": "Celtics Lose to Rockets With No Paul George",
+          "access": "free_page"
         }
       ]
     },
@@ -435,25 +441,27 @@
           "providerUrl": "https://www.youtube.com/watch?v=-05tWSju1Fo"
         },
         {
-          "youtubeId": "uzrSsCFQRVw",
-          "source": "NBC Sports Boston",
-          "category": "standard",
-          "durationSeconds": 1457,
-          "providerUrl": "https://www.youtube.com/watch?v=uzrSsCFQRVw"
-        },
-        {
           "youtubeId": "ima4nBaHU8w",
           "source": "YouTube highlights",
           "category": "standard",
           "durationSeconds": 477,
           "providerUrl": "https://www.youtube.com/watch?v=ima4nBaHU8w"
+        }
+      ],
+      "analysis": [
+        {
+          "source": "CLNS Media",
+          "category": "analysis",
+          "providerUrl": "https://www.clnsmedia.com/celtics-escape-bucks-through-derrick-white-paul-george/",
+          "title": "Celtics Escape Bucks Through Derrick White, Paul George",
+          "access": "free_page"
         },
         {
-          "youtubeId": "W-oB0LS4_aw",
-          "source": "YouTube highlights",
-          "category": "standard",
-          "durationSeconds": 1310,
-          "providerUrl": "https://www.youtube.com/watch?v=W-oB0LS4_aw"
+          "source": "CLNS Media",
+          "category": "analysis",
+          "providerUrl": "https://www.clnsmedia.com/paul-george-derrick-white-lead-celtics-to-win-over-bucks/",
+          "title": "Paul George, Derrick White Lead Celtics to Win Over Bucks",
+          "access": "free_page"
         }
       ]
     },
@@ -465,6 +473,13 @@
           "category": "full",
           "durationSeconds": 665,
           "providerUrl": "https://www.youtube.com/watch?v=Vx4HYxUfsZw"
+        },
+        {
+          "youtubeId": "8sixJfIUufk",
+          "source": "YouTube highlights",
+          "category": "standard",
+          "durationSeconds": 726,
+          "providerUrl": "https://www.youtube.com/watch?v=8sixJfIUufk"
         },
         {
           "youtubeId": "Z9KSvtgh_Yk",
@@ -481,20 +496,6 @@
           "providerUrl": "https://www.youtube.com/watch?v=5K4vt-kL2Zo"
         },
         {
-          "youtubeId": "fohO6bklVEQ",
-          "source": "YouTube highlights",
-          "category": "standard",
-          "durationSeconds": 582,
-          "providerUrl": "https://www.youtube.com/watch?v=fohO6bklVEQ"
-        },
-        {
-          "youtubeId": "y7V80CFXrK8",
-          "source": "YouTube highlights",
-          "category": "standard",
-          "durationSeconds": 551,
-          "providerUrl": "https://www.youtube.com/watch?v=y7V80CFXrK8"
-        },
-        {
           "youtubeId": "edcQnsbi94s",
           "source": "YouTube highlights",
           "category": "full",
@@ -507,34 +508,6 @@
           "category": "standard",
           "durationSeconds": 537,
           "providerUrl": "https://www.youtube.com/watch?v=idGT15fHzN0"
-        },
-        {
-          "youtubeId": "Edd2-ADR_iQ",
-          "source": "YouTube highlights",
-          "category": "standard",
-          "durationSeconds": 537,
-          "providerUrl": "https://www.youtube.com/watch?v=Edd2-ADR_iQ"
-        },
-        {
-          "youtubeId": "efE_2K86tbQ",
-          "source": "YouTube highlights",
-          "category": "standard",
-          "durationSeconds": 488,
-          "providerUrl": "https://www.youtube.com/watch?v=efE_2K86tbQ"
-        },
-        {
-          "youtubeId": "bzz7d4sa7P0",
-          "source": "YouTube highlights",
-          "category": "standard",
-          "durationSeconds": 1031,
-          "providerUrl": "https://www.youtube.com/watch?v=bzz7d4sa7P0"
-        },
-        {
-          "youtubeId": "LQp-e2x7vSY",
-          "source": "YouTube highlights",
-          "category": "standard",
-          "durationSeconds": 1090,
-          "providerUrl": "https://www.youtube.com/watch?v=LQp-e2x7vSY"
         }
       ]
     },
@@ -569,44 +542,25 @@
           "providerUrl": "https://www.youtube.com/watch?v=CsP--FFdl4E"
         },
         {
-          "youtubeId": "Z7LXlLtYSOc",
-          "source": "YouTube highlights",
-          "category": "standard",
-          "durationSeconds": 555,
-          "providerUrl": "https://www.youtube.com/watch?v=Z7LXlLtYSOc"
-        },
-        {
-          "youtubeId": "rURUobtOT24",
-          "source": "YouTube highlights",
-          "category": "standard",
-          "durationSeconds": 230,
-          "providerUrl": "https://www.youtube.com/watch?v=rURUobtOT24"
-        },
-        {
           "youtubeId": "QdSNUUXjoPo",
           "source": "YouTube highlights",
           "category": "standard",
           "durationSeconds": 187,
           "providerUrl": "https://www.youtube.com/watch?v=QdSNUUXjoPo"
-        },
+        }
+      ],
+      "analysis": [
         {
-          "youtubeId": "6GhqE816SAU",
-          "source": "YouTube highlights",
-          "category": "standard",
-          "durationSeconds": 1315,
-          "providerUrl": "https://www.youtube.com/watch?v=6GhqE816SAU"
+          "source": "CLNS Media",
+          "category": "analysis",
+          "providerUrl": "https://www.clnsmedia.com/celtics-dominate-bucks-again-as-matchup-vs-76ers-looms-garden-report/",
+          "title": "Celtics Dominate Bucks Again As Matchup vs 76ers Looms | Garden Report",
+          "access": "free_page"
         }
       ]
     },
     "401909961": {
       "videos": [
-        {
-          "youtubeId": "y44LHKCt2BI",
-          "source": "YouTube highlights",
-          "category": "standard",
-          "durationSeconds": 671,
-          "providerUrl": "https://www.youtube.com/watch?v=y44LHKCt2BI"
-        },
         {
           "youtubeId": "LIhLVbSwUIA",
           "source": "YouTube highlights",
@@ -634,13 +588,6 @@
           "category": "standard",
           "durationSeconds": 1033,
           "providerUrl": "https://www.youtube.com/watch?v=3eyybFCloOc"
-        },
-        {
-          "youtubeId": "5g5KrzywBu0",
-          "source": "YouTube highlights",
-          "category": "standard",
-          "durationSeconds": 198,
-          "providerUrl": "https://www.youtube.com/watch?v=5g5KrzywBu0"
         },
         {
           "youtubeId": "JGVhXpc1scc",
