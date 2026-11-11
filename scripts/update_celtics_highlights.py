@@ -114,12 +114,7 @@ def youtube_search(when, opponent, channel_id=None):
     """Discover broadly, then validate and filter, then rank elsewhere."""
     after = when
     before = when + dt.timedelta(days=4)
-    queries = [
-        f"Boston Celtics {opponent} {when.strftime('%B %d %Y')}",
-        f"Celtics vs {opponent} highlights {when.strftime('%B %d %Y')}",
-    ]
-    if channel_id:
-        queries = [f"Celtics {opponent} {when.strftime('%B %d')}"]
+    queries = [f"Celtics {opponent} highlights {when.strftime('%B %d %Y')}"]
     discovered = {}
     for query in queries:
         params_dict = {
@@ -343,32 +338,17 @@ def main():
             if manual:
                 games[game_id] = {"videos": manual}
 
-    nbc_id = nbc_channel_id()
-    if nbc_id:
-        OFFICIAL_CHANNELS[nbc_id] = ("NBC Sports Boston", 200)
-    else:
-        print("NBC Sports Boston channel not resolved; retaining other sources.")
+    # One broad search per game: discover, filter, then rank.
+    # Avoid multiple expensive YouTube search calls per game (HTTP 429).
     candidates = {}
     analysis_candidates = {}
     website_analysis = {}
     failed = False
     for game_id, (when, opponent) in events.items():
         try:
-            official = []
-            for official_channel in (NBA_CHANNEL, CELTICS_CHANNEL, *([nbc_id] if nbc_id else [])):
-                official.extend(youtube_search(when, opponent, official_channel))
-            fallback = youtube_search(when, opponent)
-            combined = {video["youtubeId"]: video for video in fallback}
-            for video in official:
-                combined[video["youtubeId"]] = video
-            candidates[game_id] = sorted(combined.values(), key=video_rank, reverse=True)[:4]
-            analysis_candidates[game_id] = youtube_analysis(when, opponent, nbc_id) if nbc_id else []
-            try:
-                website_analysis[game_id] = clns_analysis(when, opponent)
-            except Exception as exc:
-                print(f"CLNS feed unavailable for {game_id}: {exc}")
-                website_analysis[game_id] = []
-            print(f"{game_id}: {len(official)} official candidates, {len(candidates[game_id])} total choices")
+            found = youtube_search(when, opponent)
+            candidates[game_id] = sorted(found, key=video_rank, reverse=True)[:4]
+            print(f"{game_id}: {len(found)} filtered highlights, {len(candidates[game_id])} ranked choices")
         except Exception as exc:
             print(f"YouTube lookup failed for {game_id}: {exc}")
             failed = True
