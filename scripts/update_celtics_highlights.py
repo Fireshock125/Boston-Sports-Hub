@@ -10,6 +10,9 @@ import pathlib
 import re
 import urllib.parse
 import urllib.request
+import email.utils
+import xml.etree.ElementTree as ET
+import html
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 OUT = ROOT / "celtics-highlights.json"
@@ -247,6 +250,47 @@ def youtube_analysis(when, opponent, channel_id):
     } for video_id, title in candidates if video_id in valid][:10]
 
 
+
+def clns_analysis(when, opponent):
+    """Discover free, directly linked Garden Report articles from CLNS's RSS feed."""
+    request = urllib.request.Request("https://www.clnsmedia.com/feed/",
+                                     headers={"User-Agent": "BostonSportsHub/1.0"})
+    with urllib.request.urlopen(request, timeout=20) as response:
+        root = ET.fromstring(response.read())
+    matches = []
+    for item in root.findall(".//channel/item"):
+        title = html.unescape(item.findtext("title") or "")
+        url = item.findtext("link") or ""
+        published = item.findtext("pubDate") or ""
+        if not (url.startswith("https://www.clnsmedia.com/")
+                and re.search(r"\\bceltics\\b|garden report", title, re.I)
+                and re.search(re.escape(opponent.split()[-1]), title, re.I)
+                and re.search(r"postgame|garden report|reaction|breakdown|analysis|recap", title, re.I)):
+            continue
+        try:
+            date = email.utils.parsedate_to_datetime(published).astimezone(dt.timezone.utc)
+        except (ValueError, TypeError):
+            continue
+        if not when <= date <= when + dt.timedelta(days=3):
+            continue
+        # A direct article link is not assumed to be embeddable or UK-playable.
+        matches.append({"source": "CLNS Media", "category": "analysis",
+                        "providerUrl": url, "title": title, "access": "free_page"})
+    return matches[:5]
+
+
+def video_rank(video, analysis=False):
+    """Professional coverage first; prefer concise complete highlights over long videos."""
+    source = video.get("source", "")
+    duration = int(video.get("durationSeconds") or 0)
+    professional = {"NBA Official": 5, "NBC Sports Boston": 4,
+                    "Boston Celtics Official": 4, "CLNS Media": 3}.get(source, 1)
+    if analysis:
+        return (professional, 1 if video.get("youtubeId") else 0, -abs(duration - 1200))
+    return (1 if 480 <= duration <= 900 else 0,
+            professional, 1 if 480 <= duration <= 1200 else 0,
+            -abs(duration - 660))
+
 def main():
     if not API_KEY:
         raise SystemExit("Missing YOUTUBE_API_KEY secret; no changes made.")
@@ -280,6 +324,7 @@ def main():
         print("NBC Sports Boston channel not resolved; retaining other sources.")
     candidates = {}
     analysis_candidates = {}
+    website_analysis = {}
     failed = False
     for game_id, (when, opponent) in events.items():
         try:
@@ -290,8 +335,13 @@ def main():
             combined = {video["youtubeId"]: video for video in fallback}
             for video in official:
                 combined[video["youtubeId"]] = video
-            candidates[game_id] = sorted(combined.values(), key=lambda v: v["_score"], reverse=True)[:20]
+            candidates[game_id] = sorted(combined.values(), key=video_rank, reverse=True)[:20]
             analysis_candidates[game_id] = youtube_analysis(when, opponent, nbc_id) if nbc_id else []
+            try:
+                website_analysis[game_id] = clns_analysis(when, opponent)
+            except Exception as exc:
+                print(f"CLNS feed unavailable for {game_id}: {exc}")
+                website_analysis[game_id] = []
             print(f"{game_id}: {len(official)} official candidates, {len(candidates[game_id])} total choices")
         except Exception as exc:
             print(f"YouTube lookup failed for {game_id}: {exc}")
@@ -320,8 +370,10 @@ def main():
             print(f"{game_id} vs {events[game_id][1]}: {len(selected)} validated YouTube videos")
     # Keep analysis independent from highlights, including games with no highlights.
     for game_id, analysis in analysis_candidates.items():
-        if analysis:
-            games.setdefault(game_id, {})["analysis"] = analysis
+        combined_analysis = analysis + website_analysis.get(game_id, [])
+        combined_analysis.sort(key=lambda v: video_rank(v, analysis=True), reverse=True)
+        if combined_analysis:
+            games.setdefault(game_id, {})["analysis"] = combined_analysis
         elif isinstance(old_games.get(game_id), dict) and old_games[game_id].get("analysis"):
             games.setdefault(game_id, {})["analysis"] = old_games[game_id]["analysis"]
     # Preserve previous videos when a fresh search misses a game.
@@ -331,7 +383,7 @@ def main():
     if not games:
         print("No highlights found; preserving previous file rather than publishing an empty feed.")
         return
-    print(f"Saved highlights for {len(games)} games; ESPN remains the website fallback.")
+    print(f"Saved highlights and analysis for {len(games)} games; no ESPN video fallback.")
     OUT.write_text(json.dumps({"games": games}, indent=2) + "\n", encoding="utf-8")
 
 
