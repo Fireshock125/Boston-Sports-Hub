@@ -381,6 +381,8 @@ button:disabled { opacity: .6; cursor: wait; }
   font-size: 12px;
 }
 
+.highlight-direct-link { display: inline-block; padding: 10px 13px; margin-top: 10px; border: 1px solid var(--accent); border-radius: 8px; color: var(--text); text-decoration: none; font-weight: 700; }
+
 .result-actions .analysis-button { display: inline-flex; align-items: center; padding: 9px 13px; border: 1px solid var(--border); border-radius: 8px; color: var(--text); text-decoration: none; font-size: 12px; font-weight: 700; background: var(--button); }
 
 .result-actions .watch-button {
@@ -1395,12 +1397,14 @@ function videoFromExtra(record) {
     const embed = youtubeId
       ? `https://www.youtube-nocookie.com/embed/${youtubeId}?rel=0`
       : validEmbedUrl(item.embedUrl);
-    if (!embed) return null;
-    const espnId = embed.includes("espn.com/core/video/iframe")
+    const direct = validHttpUrl(item.providerUrl);
+    if (!embed && !direct) return null;
+    const espnId = (embed || "").includes("espn.com/core/video/iframe")
       ? new URL(embed).searchParams.get("id") : "";
     return {
       source: String(item.source || (youtubeId ? "YouTube" : "Highlights")),
-      type: "iframe", url: embed,
+      type: embed ? "iframe" : "link", url: embed || direct,
+      title: String(item.title || ""),
       providerUrl: youtubeId
         ? `https://www.youtube.com/watch?v=${youtubeId}`
         : validHttpUrl(item.providerUrl) ||
@@ -1412,7 +1416,7 @@ function videoFromExtra(record) {
 }
 
 function highlightPriority(video) {
-  return ({ standard: 1, full: 2, extended: 3, short: 4 })[video.category] || 4;
+  return ({ full: 0, extended: 1, standard: 2, short: 4 })[video.category] ?? 3;
 }
 
 function highlightSourcePriority(video) {
@@ -1426,6 +1430,7 @@ function rankHighlights(videos) {
     seen.add(video.url);
     return true;
   }).sort((a, b) =>
+    (b.duration >= 480 && b.duration <= 900 ? 1 : 0) - (a.duration >= 480 && a.duration <= 900 ? 1 : 0) ||
     highlightSourcePriority(a) - highlightSourcePriority(b) ||
     highlightPriority(a) - highlightPriority(b) ||
     (b.duration || 0) - (a.duration || 0)
@@ -1496,17 +1501,31 @@ function openHighlights(card, videos, index = 0, mode = "highlights") {
   const video = videos[index];
   if (!player || !button || !video) return;
   player.replaceChildren();
-  const frame = document.createElement("div");
-  frame.className = "video-frame";
-  const iframe = document.createElement("iframe");
-  iframe.src = video.url;
-  iframe.title = mode === "analysis" ? "Game analysis" : "Game highlights";
-  iframe.loading = "lazy";
-  iframe.allow = "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen";
-  iframe.allowFullscreen = true;
-  iframe.referrerPolicy = "strict-origin-when-cross-origin";
-  frame.appendChild(iframe);
-  player.appendChild(frame);
+  if (video.type === "link") {
+    const message = document.createElement("p");
+    message.className = "highlight-note";
+    message.textContent = "This provider hosts the video on its own website. Open the specific coverage page to watch it for free where available.";
+    player.appendChild(message);
+    const direct = document.createElement("a");
+    direct.href = video.providerUrl || video.url;
+    direct.target = "_blank";
+    direct.rel = "noopener noreferrer";
+    direct.textContent = "Open " + video.source + " coverage";
+    direct.className = "highlight-direct-link";
+    player.appendChild(direct);
+  } else {
+    const frame = document.createElement("div");
+    frame.className = "video-frame";
+    const iframe = document.createElement("iframe");
+    iframe.src = video.url;
+    iframe.title = mode === "analysis" ? "Game analysis" : "Game highlights";
+    iframe.loading = "lazy";
+    iframe.allow = "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen";
+    iframe.allowFullscreen = true;
+    iframe.referrerPolicy = "strict-origin-when-cross-origin";
+    frame.appendChild(iframe);
+    player.appendChild(frame);
+  }
 
   const note = document.createElement("p");
   note.className = "highlight-note";
