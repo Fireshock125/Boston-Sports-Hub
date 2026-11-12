@@ -1,94 +1,5 @@
 {
   "games": {
-    "401909278": {
-      "videos": [
-        {
-          "youtubeId": "jYlrCQwjHJ0",
-          "source": "YouTube highlights",
-          "category": "standard",
-          "durationSeconds": 645,
-          "providerUrl": "https://www.youtube.com/watch?v=jYlrCQwjHJ0"
-        },
-        {
-          "youtubeId": "R-tU4z3h-jE",
-          "source": "YouTube highlights",
-          "category": "standard",
-          "durationSeconds": 641,
-          "providerUrl": "https://www.youtube.com/watch?v=R-tU4z3h-jE"
-        },
-        {
-          "youtubeId": "mdytNw1aXAU",
-          "source": "YouTube highlights",
-          "category": "standard",
-          "durationSeconds": 613,
-          "providerUrl": "https://www.youtube.com/watch?v=mdytNw1aXAU"
-        },
-        {
-          "youtubeId": "bFSMDVJzWtg",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 582,
-          "providerUrl": "https://www.youtube.com/watch?v=bFSMDVJzWtg"
-        }
-      ],
-      "analysis": [
-        {
-          "source": "CLNS Media",
-          "category": "analysis",
-          "providerUrl": "https://www.clnsmedia.com/celtics-open-nba-cup-play-with-big-win-over-bulls/",
-          "title": "Celtics Open NBA Cup Play With Big Win Over Bulls",
-          "access": "free_page"
-        }
-      ]
-    },
-    "401909903": {
-      "videos": [
-        {
-          "youtubeId": "1lPy6EYZKR8",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 669,
-          "providerUrl": "https://www.youtube.com/watch?v=1lPy6EYZKR8"
-        },
-        {
-          "youtubeId": "fyjPW9N-VdI",
-          "source": "YouTube highlights",
-          "category": "standard",
-          "durationSeconds": 697,
-          "providerUrl": "https://www.youtube.com/watch?v=fyjPW9N-VdI"
-        },
-        {
-          "youtubeId": "7X6hkl6BlsA",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 607,
-          "providerUrl": "https://www.youtube.com/watch?v=7X6hkl6BlsA"
-        },
-        {
-          "youtubeId": "ql28dnf55pU",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 587,
-          "providerUrl": "https://www.youtube.com/watch?v=ql28dnf55pU"
-        }
-      ],
-      "analysis": [
-        {
-          "source": "CLNS Media",
-          "category": "analysis",
-          "providerUrl": "https://www.clnsmedia.com/celtics-beat-magic-to-improve-to-5-1-on-the-season-you-got-boston/",
-          "title": "Celtics Beat Magic to improve to 5-1 on the season | You Got Boston",
-          "access": "free_page"
-        },
-        {
-          "source": "CLNS Media",
-          "category": "analysis",
-          "providerUrl": "https://www.clnsmedia.com/celtics-take-down-magic-make-it-5th-straight-win-garden-report/",
-          "title": "Celtics Take Down Magic Make it 5th Straight Win! | Garden Report",
-          "access": "free_page"
-        }
-      ]
-    },
     "401909916": {
       "videos": [
         {
@@ -308,6 +219,65 @@
           "category": "full",
           "durationSeconds": 1749,
           "providerUrl": "https://www.youtube.com/watch?v=JGVhXpc1scc"
+        }
+      ]
+    },
+    "401909903": {
+      "videos": [
+        {
+          "youtubeId": "1lPy6EYZKR8",
+          "source": "YouTube highlights",
+          "category": "full",
+          "durationSeconds": 669,
+          "providerUrl": "https://www.youtube.com/watch?v=1lPy6EYZKR8"
+        },
+        {
+          "youtubeId": "fyjPW9N-VdI",
+          "source": "YouTube highlights",
+          "category": "standard",
+          "durationSeconds": 697,
+          "providerUrl": "https://www.youtube.com/watch?v=fyjPW9N-VdI"
+        },
+        {
+          "youtubeId": "7X6hkl6BlsA",
+          "source": "YouTube highlights",
+          "category": "full",
+          "durationSeconds": 607,
+          "providerUrl": "https://www.youtube.com/watch?v=7X6hkl6BlsA"
+        },
+        {
+          "youtubeId": "ql28dnf55pU",
+          "source": "YouTube highlights",
+          "category": "full",
+          "durationSeconds": 587,
+          "providerUrl": "https://www.youtube.com/watch?v=ql28dnf55pU"
+        }
+      ],
+      "analysis": [
+        {
+          "source": "CLNS Media",
+          "category": "analysis",
+          "providerUrl": "https://www.clnsmedia.com/celtics-beat-magic-to-improve-to-5-1-on-the-season-you-got-boston/",
+          "title": "Celtics Beat Magic to improve to 5-1 on the season | You Got Boston",
+          "access": "free_page"
+        },
+        {
+          "source": "CLNS Media",
+          "category": "analysis",
+          "providerUrl": "https://www.clnsmedia.com/celtics-take-down-magic-make-it-5th-straight-win-garden-report/",
+          "title": "Celtics Take Down Magic Make it 5th Straight Win! | Garden Report",
+          "access": "free_page"
+        }
+      ]
+    },
+    "401909278": {
+      "analysis": [
+        {
+          "source": "CLNS Media",
+          "category": "analysis",
+          "providerUrl": "https://www.clnsmedia.com/celtics-open-nba-cup-play-with-big-win-over-bulls/",
+          "title": "Celtics Open NBA Cup Play With Big Win Over Bulls",
+          "access": "free_page"
         }
       ]
     }
