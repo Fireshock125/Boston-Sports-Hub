@@ -1117,7 +1117,17 @@ function getResult(game) {
 
 const SPOILER_STORAGE_KEY = "bsh-hide-scores";
 let hideAllScores = true;
+const REVEALED_SCORES_KEY = "bsh-revealed-scores-red-sox";
 const individuallyRevealed = new Set();
+try {
+  const savedReveals = JSON.parse(localStorage.getItem(REVEALED_SCORES_KEY) || "[]");
+  if (Array.isArray(savedReveals)) {
+    savedReveals.forEach(id => individuallyRevealed.add(String(id)));
+  }
+} catch {}
+function saveRevealedScores() {
+  try { localStorage.setItem(REVEALED_SCORES_KEY, JSON.stringify([...individuallyRevealed])); } catch {}
+}
 const highlightsByGame = new Map();
 try { if (localStorage.getItem(SPOILER_STORAGE_KEY) === "false") hideAllScores = false; } catch {}
 function isScoreVisible(id) { return !hideAllScores || individuallyRevealed.has(String(id)); }
@@ -1133,7 +1143,7 @@ function updateResultScores() {
  $("toggle-all-scores").setAttribute("aria-pressed",String(!hideAllScores));
  $("spoiler-status").textContent = hideAllScores ? "Spoiler-free mode on" : "All scores visible";
 }
-$("toggle-all-scores").addEventListener("click",()=>{hideAllScores=!hideAllScores; individuallyRevealed.clear(); try{localStorage.setItem(SPOILER_STORAGE_KEY,String(hideAllScores))}catch{} updateResultScores();});
+$("toggle-all-scores").addEventListener("click",()=>{hideAllScores=!hideAllScores;  try{localStorage.setItem(SPOILER_STORAGE_KEY,String(hideAllScores))}catch{} updateResultScores();});
 const SUMMARY_URL = "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/summary";
 function gameCard(game, resultMode = false) {
  const header = `<div class="game-top"><span>MLB · Boston Red Sox</span><span>${safeText(dateLabel(game.date))}</span></div><div class="matchup">${safeText(game.away)} @ ${safeText(game.home)}</div>`;
@@ -1421,6 +1431,7 @@ $("resultGames").addEventListener("click", event => {
   if (button.dataset.action === "reveal") {
     if (individuallyRevealed.has(id)) individuallyRevealed.delete(id);
     else individuallyRevealed.add(id);
+    saveRevealedScores();
     updateResultScores();
     return;
   }
