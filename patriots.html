@@ -1229,10 +1229,9 @@ function openHighlights(card, videos, index = 0) {
   const video = videos[index];
   if (!player || !button || !video) return;
   player.replaceChildren();
-  // NFL rights holders can block embedded playback even when the YouTube
-  // Data API reports embeddable=true. Do not show a known-unreliable player.
+  // Try embedded playback for NFL highlights; retain the provider link as fallback.
   const isYouTube = video.providerUrl && /youtube\.com\/watch/.test(video.providerUrl);
-  if (!isYouTube) {
+  if (video.url) {
     const frame = document.createElement("div");
     frame.className = "video-frame";
     const iframe = document.createElement("iframe");
@@ -1250,11 +1249,10 @@ function openHighlights(card, videos, index = 0) {
   note.className = "highlight-note";
   note.textContent =
     `Video ${index + 1} of ${videos.length} · ${video.source} · ${video.category}. Videos may contain spoilers.`;
-  if (isYouTube) note.textContent = "NFL footage may be blocked from embedded playback. Watch this video directly on YouTube instead. Videos may contain spoilers.";
+  if (isYouTube) note.textContent += " If playback is blocked, use Watch on YouTube below.";
   player.appendChild(note);
 
-  // Present every option as a direct link: mobile users can choose without
-  // cycling through blocked NFL embeds or losing their selection.
+  // Let viewers preview each option here, with a direct provider fallback.
   if (videos.length > 1) {
     const heading = document.createElement("p");
     heading.className = "highlight-note";
@@ -1263,10 +1261,9 @@ function openHighlights(card, videos, index = 0) {
     const choices = document.createElement("div");
     choices.className = "highlight-choices";
     videos.forEach((option, choiceIndex) => {
-      const choice = document.createElement("a");
-      choice.href = option.providerUrl || option.url;
-      choice.target = "_blank";
-      choice.rel = "noopener noreferrer";
+      const choice = document.createElement("button");
+      choice.type = "button";
+      choice.addEventListener("click", () => openHighlights(card, videos, choiceIndex));
       const minutes = option.duration ? Math.floor(option.duration / 60) + ":" + String(option.duration % 60).padStart(2, "0") : "";
       choice.textContent = "Video " + (choiceIndex + 1) + (minutes ? " · " + minutes : "") + " · " + option.source + " · " + option.category;
       if (choiceIndex === index) choice.classList.add("selected");
@@ -1298,7 +1295,7 @@ function openHighlights(card, videos, index = 0) {
   if (video.providerUrl) {
     const help = document.createElement("p");
     help.className = "highlight-note";
-    help.textContent = isYouTube ? "Opens in a new tab so the NFL video can play on YouTube." : "If this video cannot play here, use the provider link above.";
+    help.textContent = isYouTube ? "If the NFL blocks playback here, Watch on YouTube opens the video in a new tab." : "If this video cannot play here, use the provider link above.";
     player.appendChild(help);
   }
   player.hidden = false;
