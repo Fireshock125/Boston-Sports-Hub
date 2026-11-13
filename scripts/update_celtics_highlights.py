@@ -111,8 +111,13 @@ def youtube_search(when, opponent):
         "publishedBefore": before.isoformat().replace("+00:00", "Z"),
         "key": API_KEY,
     })
+    print(f"API query vs {opponent}: {dict(urllib.parse.parse_qsl(params)).get('q')}")
     data = get_json("https://www.googleapis.com/youtube/v3/search?" + params)
     results = data.get("items", [])
+    print(f"API returned {len(results)} results for {opponent}; totalResults estimate: {data.get('pageInfo', {}).get('totalResults', 'unknown')}")
+    for index, entry in enumerate(results, 1):
+        snippet = entry.get("snippet", {})
+        print(f"  API #{index}: {snippet.get('title', '')} | {entry.get('id', {}).get('videoId', '')} | {snippet.get('publishedAt', '')}")
     candidates = []
     for item in results:
         snippet = item.get("snippet", {})
@@ -123,14 +128,18 @@ def youtube_search(when, opponent):
         if not (re.search(re.escape("Celtics"), title, re.I)
                 and (re.search(re.escape(opponent), title, re.I) or re.search(re.escape(opponent.split()[-1]), title, re.I))
                 and re.fullmatch(r"[A-Za-z0-9_-]{11}", video_id)):
+            print(f"  REJECT matchup/ID: {title}")
             continue
         if re.search(r"preview|reaction|interview|podcast|shorts|live stream|watch party", title, re.I):
+            print(f"  REJECT title exclusion: {title}")
             continue
         try:
             published = dt.datetime.fromisoformat(snippet["publishedAt"].replace("Z", "+00:00"))
         except (ValueError, KeyError):
+            print(f"  REJECT invalid published date: {title}")
             continue
         if not after <= published <= before:
+            print(f"  REJECT publication window: {title}")
             continue
         candidates.append((video_id, title, description, published))
     print(f"Search vs {opponent}: {len(results)} results, {len(candidates)} team/date candidates")
@@ -153,17 +162,20 @@ def youtube_search(when, opponent):
                 or status.get("uploadStatus") not in (None, "processed")
                 or "GB" in region.get("blocked", [])
                 or ("allowed" in region and "GB" not in region["allowed"])):
+            print(f"  REJECT availability: {item.get('id')} | {item.get('snippet', {}).get('title', '')}")
             continue
         duration = content.get("duration", "")
         match = re.fullmatch(r"P(?:\d+D)?T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?", duration)
         if not match:
+            print(f"  REJECT duration metadata: {item.get('id')}")
             continue
         seconds = sum(int(n or 0) * scale for n, scale in zip(match.groups(), (3600, 60, 1)))
         kind = category(item.get("snippet", {}).get("title", ""), seconds)
         if kind is None:
+            print(f"  REJECT category: {item.get('id')} | {item.get('snippet', {}).get('title', '')}")
             continue
         valid[item["id"]] = (seconds, kind, item.get("snippet", {}).get("channelId", ""))
-    print(f"  {len(valid)} UK-accessible, embeddable videos between 3 and 30 minutes")
+    print(f"  {len(valid)} UK-accessible, embeddable videos (no duration limit)")
 
     matches = []
     for video_id, title, description, published in candidates:
@@ -188,6 +200,8 @@ def youtube_search(when, opponent):
             "_score": score,
         })
     matches.sort(key=lambda v: v["_score"], reverse=True)
+    for index, video in enumerate(matches, 1):
+        print(f"  RANK #{index}: {video['youtubeId']} | score={video['_score']:.1f} | {video['durationSeconds']}s")
     print(f"  Selected {min(len(matches), 4)} of {len(matches)} suitable videos")
     return matches[:4]
 
