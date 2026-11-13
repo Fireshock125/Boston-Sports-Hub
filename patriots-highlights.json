@@ -195,11 +195,11 @@
           "providerUrl": "https://www.youtube.com/watch?v=vpeJQw1sDmw"
         },
         {
-          "youtubeId": "vE1wycudlFM",
+          "youtubeId": "MKAoukD_Z5g",
           "source": "YouTube highlights",
           "category": "full",
-          "durationSeconds": 1096,
-          "providerUrl": "https://www.youtube.com/watch?v=vE1wycudlFM"
+          "durationSeconds": 943,
+          "providerUrl": "https://www.youtube.com/watch?v=MKAoukD_Z5g"
         }
       ]
     },
@@ -241,18 +241,18 @@
           "providerUrl": "https://www.youtube.com/watch?v=Xsh39iqj94s"
         },
         {
-          "youtubeId": "B6W6PCMW6d8",
-          "source": "YouTube highlights",
-          "category": "standard",
-          "durationSeconds": 1502,
-          "providerUrl": "https://www.youtube.com/watch?v=B6W6PCMW6d8"
-        },
-        {
-          "youtubeId": "cqL6vHzne4k",
+          "youtubeId": "_mt5Faxn2rA",
           "source": "YouTube highlights",
           "category": "full",
-          "durationSeconds": 1227,
-          "providerUrl": "https://www.youtube.com/watch?v=cqL6vHzne4k"
+          "durationSeconds": 993,
+          "providerUrl": "https://www.youtube.com/watch?v=_mt5Faxn2rA"
+        },
+        {
+          "youtubeId": "jF3XIMGhQbg",
+          "source": "YouTube highlights",
+          "category": "standard",
+          "durationSeconds": 1590,
+          "providerUrl": "https://www.youtube.com/watch?v=jF3XIMGhQbg"
         }
       ]
     }
