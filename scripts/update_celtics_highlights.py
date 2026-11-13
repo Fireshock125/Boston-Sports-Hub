@@ -87,9 +87,20 @@ def completed_games():
     return events
 
 
+BAD_HIGHLIGHT_TITLES = re.compile(
+    r"reaction|reacts|reacting|flightreacts|podcast|radio|talk show|the .* show|"
+    r"play.by.play|commentary|watch party|live score|scoreboard|"
+    r"nba\s*2k\d*|2k2[0-9]|simulation|simulated|gameplay|"
+    r"preview|pregame|interview|press conference|analysis|breakdown|"
+    r"takeaways|grades|shorts|live stream|\blive\b|"
+    r"first take|postgame|post.game|vlog",
+    re.I,
+)
+
+
 def category(title, duration):
     t = title.lower()
-    if re.search(r"preview|reaction|interview|analysis|press conference|podcast|shorts|live stream|watch party|top plays", t):
+    if BAD_HIGHLIGHT_TITLES.search(t):
         return None
     if "extended" in t:
         return "extended"
@@ -103,10 +114,16 @@ def youtube_search(when, opponent):
     # game so an older meeting between the same teams is unlikely to match.
     after = when + dt.timedelta(hours=1)
     before = when + dt.timedelta(days=2)
+    # ESPN timestamps are UTC; US evening games can be dated the next day in UTC.
+    game_date = (when - dt.timedelta(hours=6)).date()
+    full_opponent = {
+        "Raptors": "Toronto Raptors", "76ers": "Philadelphia 76ers",
+        "Hornets": "Charlotte Hornets", "Bucks": "Milwaukee Bucks",
+    }.get(opponent, opponent)
     params = urllib.parse.urlencode({
         "part": "snippet", "type": "video", "videoEmbeddable": "true",
         "maxResults": 50, "order": "relevance",
-        "q": f"{"Boston Celtics"} {opponent} game highlights {when.strftime('%B %d %Y')}",
+        "q": f"Boston Celtics {full_opponent} full game highlights {game_date.strftime('%B %d %Y')}",
         "publishedAfter": after.isoformat().replace("+00:00", "Z"),
         "publishedBefore": before.isoformat().replace("+00:00", "Z"),
         "key": API_KEY,
@@ -130,7 +147,7 @@ def youtube_search(when, opponent):
                 and re.fullmatch(r"[A-Za-z0-9_-]{11}", video_id)):
             print(f"  REJECT matchup/ID: {title}")
             continue
-        if re.search(r"preview|reaction|interview|podcast|shorts|live stream|watch party", title, re.I):
+        if BAD_HIGHLIGHT_TITLES.search(html.unescape(title)):
             print(f"  REJECT title exclusion: {title}")
             continue
         try:
@@ -182,12 +199,18 @@ def youtube_search(when, opponent):
         if video_id not in valid:
             continue
         seconds, kind, channel_id = valid[video_id]
+        # A matchup alone is not evidence that a video contains game footage.
+        if not re.search(r"highlights|\brecap\b|best plays|best moments", html.unescape(title), re.I):
+            print(f"  REJECT not highlights: {title}")
+            continue
         # Longer footage and explicit game highlights outrank player-centric clips.
         explicit = bool(re.search(r"game highlights|extended highlights|full highlights|game recap", title, re.I))
         player_focus = bool(re.search(r"\b(points|pts|triple.double|career.high|highlights of|goes off|explodes)\b", title, re.I))
         official = channel_id in (CELTICS_CHANNEL, NBA_CHANNEL)
         score = (100 if explicit else 0) + (25 if official else 0)
         score += min(seconds, 900) / 30
+        if seconds > 3600:
+            score -= 150
         if player_focus:
             score -= 45
         matches.append({
