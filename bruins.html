@@ -1378,6 +1378,14 @@ function closeHighlights(card) {
   button.setAttribute("aria-expanded", "false");
 }
 
+function highlightDescription(video, number) {
+  const seconds = Number(video.duration) || 0;
+  const length = seconds ? Math.floor(seconds / 60) + ":" + String(seconds % 60).padStart(2, "0") : "Length unknown";
+  const kind = ({ extended: "Extended highlights", full: "Full game highlights", standard: "Game highlights", short: "Short highlights" })[video.category] || "Video";
+  const title = String(video.title || "").trim();
+  return "Video " + number + " · " + (title ? title + " · " : "") + kind + " · " + video.source + " · " + length;
+}
+
 function openHighlights(card, videos, index = 0) {
   const player = card.querySelector(".highlight-player");
   const button = card.querySelector(".watch-button");
@@ -1398,8 +1406,7 @@ function openHighlights(card, videos, index = 0) {
 
   const note = document.createElement("p");
   note.className = "highlight-note";
-  note.textContent =
-    `Video ${index + 1} of ${videos.length} · ${video.source} · ${video.category}. Videos may contain spoilers.`;
+  note.textContent = highlightDescription(video, index + 1) + ". Videos may contain spoilers.";
   player.appendChild(note);
 
   if (videos.length > 1) {
@@ -1414,8 +1421,7 @@ function openHighlights(card, videos, index = 0) {
       choice.href = option.providerUrl || option.url;
       choice.target = "_blank";
       choice.rel = "noopener noreferrer";
-      const minutes = option.duration ? Math.floor(option.duration / 60) + ":" + String(option.duration % 60).padStart(2, "0") : "";
-      choice.textContent = "Video " + (choiceIndex + 1) + (minutes ? " · " + minutes : "") + " · " + option.source + " · " + option.category;
+      choice.textContent = highlightDescription(option, choiceIndex + 1);
       if (choiceIndex === index) choice.classList.add("selected");
       choices.appendChild(choice);
     });
