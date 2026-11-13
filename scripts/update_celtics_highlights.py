@@ -91,8 +91,6 @@ def category(title, duration):
     t = title.lower()
     if re.search(r"preview|reaction|interview|analysis|press conference|podcast|shorts|live stream|watch party|top plays", t):
         return None
-    if duration < 180 or duration > 1800:
-        return None
     if "extended" in t:
         return "extended"
     if "full game highlights" in t or "full highlights" in t:
