@@ -1109,11 +1109,18 @@ function rankHighlights(videos) {
     if (seen.has(video.url)) return false;
     seen.add(video.url);
     return true;
-  }).sort((a, b) =>
-    Number(Boolean(a.providerUrl?.includes("youtube.com"))) - Number(Boolean(b.providerUrl?.includes("youtube.com"))) ||
-    highlightPriority(a) - highlightPriority(b) ||
-    (b.duration || 0) - (a.duration || 0)
-  );
+  }).sort((a, b) => {
+    // Put official NFL and Patriots footage ahead of ESPN and legacy sources.
+    const sourceRank = video => ({
+      "Official NFL YouTube": 0,
+      "Official Patriots YouTube": 1,
+      "ESPN": 2,
+      "YouTube highlights": 3
+    })[video.source] ?? 4;
+    return sourceRank(a) - sourceRank(b) ||
+      highlightPriority(a) - highlightPriority(b) ||
+      (b.duration || 0) - (a.duration || 0);
+  });
 }
 
 async function loadExtraHighlights() {
