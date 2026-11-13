@@ -225,8 +225,8 @@ def youtube_search(when, opponent):
     matches.sort(key=lambda v: v["_score"], reverse=True)
     for index, video in enumerate(matches, 1):
         print(f"  RANK #{index}: {video['youtubeId']} | score={video['_score']:.1f} | {video['durationSeconds']}s")
-    print(f"  Selected {min(len(matches), 4)} of {len(matches)} suitable videos")
-    return matches[:4]
+    print(f"  Selected {min(len(matches), 10)} of {len(matches)} suitable videos")
+    return matches[:10]
 
 
 def youtube_analysis(when, opponent, channel_id):
