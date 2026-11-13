@@ -1,88 +1,5 @@
 {
   "games": {
-    "401909278": {
-      "videos": [
-        {
-          "youtubeId": "tdB-BhFdsfo",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 2284,
-          "providerUrl": "https://www.youtube.com/watch?v=tdB-BhFdsfo"
-        },
-        {
-          "youtubeId": "w7vsO9qdkDw",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 745,
-          "providerUrl": "https://www.youtube.com/watch?v=w7vsO9qdkDw"
-        },
-        {
-          "youtubeId": "bFSMDVJzWtg",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 582,
-          "providerUrl": "https://www.youtube.com/watch?v=bFSMDVJzWtg"
-        },
-        {
-          "youtubeId": "QuGUxmUqSFg",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 572,
-          "providerUrl": "https://www.youtube.com/watch?v=QuGUxmUqSFg"
-        },
-        {
-          "youtubeId": "iOxE0bs1l5E",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 519,
-          "providerUrl": "https://www.youtube.com/watch?v=iOxE0bs1l5E"
-        },
-        {
-          "youtubeId": "9XodEpcAMXQ",
-          "source": "YouTube highlights",
-          "category": "standard",
-          "durationSeconds": 1104,
-          "providerUrl": "https://www.youtube.com/watch?v=9XodEpcAMXQ"
-        },
-        {
-          "youtubeId": "Z6ffmVpLt9g",
-          "source": "YouTube highlights",
-          "category": "standard",
-          "durationSeconds": 1043,
-          "providerUrl": "https://www.youtube.com/watch?v=Z6ffmVpLt9g"
-        },
-        {
-          "youtubeId": "jYlrCQwjHJ0",
-          "source": "YouTube highlights",
-          "category": "standard",
-          "durationSeconds": 645,
-          "providerUrl": "https://www.youtube.com/watch?v=jYlrCQwjHJ0"
-        },
-        {
-          "youtubeId": "R-tU4z3h-jE",
-          "source": "YouTube highlights",
-          "category": "standard",
-          "durationSeconds": 641,
-          "providerUrl": "https://www.youtube.com/watch?v=R-tU4z3h-jE"
-        },
-        {
-          "youtubeId": "mdytNw1aXAU",
-          "source": "YouTube highlights",
-          "category": "standard",
-          "durationSeconds": 613,
-          "providerUrl": "https://www.youtube.com/watch?v=mdytNw1aXAU"
-        }
-      ],
-      "analysis": [
-        {
-          "source": "CLNS Media",
-          "category": "analysis",
-          "providerUrl": "https://www.clnsmedia.com/celtics-open-nba-cup-play-with-big-win-over-bulls/",
-          "title": "Celtics Open NBA Cup Play With Big Win Over Bulls",
-          "access": "free_page"
-        }
-      ]
-    },
     "401909903": {
       "videos": [
         {
@@ -93,18 +10,18 @@
           "providerUrl": "https://www.youtube.com/watch?v=ZrwIDuPtgbo"
         },
         {
-          "youtubeId": "b4MI1__NNYw",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 2137,
-          "providerUrl": "https://www.youtube.com/watch?v=b4MI1__NNYw"
-        },
-        {
           "youtubeId": "Pymr9u7GkvU",
           "source": "YouTube highlights",
           "category": "full",
           "durationSeconds": 2079,
           "providerUrl": "https://www.youtube.com/watch?v=Pymr9u7GkvU"
+        },
+        {
+          "youtubeId": "b4MI1__NNYw",
+          "source": "YouTube highlights",
+          "category": "full",
+          "durationSeconds": 2137,
+          "providerUrl": "https://www.youtube.com/watch?v=b4MI1__NNYw"
         },
         {
           "youtubeId": "HfRcFQwF6Dk",
@@ -356,6 +273,13 @@
           "providerUrl": "https://www.youtube.com/watch?v=-XVI0clyuPY"
         },
         {
+          "youtubeId": "aY8I88i8bqw",
+          "source": "YouTube highlights",
+          "category": "full",
+          "durationSeconds": 2110,
+          "providerUrl": "https://www.youtube.com/watch?v=aY8I88i8bqw"
+        },
+        {
           "youtubeId": "OLFN0_d5hpk",
           "source": "YouTube highlights",
           "category": "full",
@@ -391,6 +315,13 @@
           "providerUrl": "https://www.youtube.com/watch?v=5K4vt-kL2Zo"
         },
         {
+          "youtubeId": "fGFgYAOKUFw",
+          "source": "YouTube highlights",
+          "category": "full",
+          "durationSeconds": 588,
+          "providerUrl": "https://www.youtube.com/watch?v=fGFgYAOKUFw"
+        },
+        {
           "youtubeId": "edcQnsbi94s",
           "source": "YouTube highlights",
           "category": "full",
@@ -403,20 +334,6 @@
           "category": "full",
           "durationSeconds": 512,
           "providerUrl": "https://www.youtube.com/watch?v=RIawyf3oXWM"
-        },
-        {
-          "youtubeId": "4UozaJRKGw8",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 509,
-          "providerUrl": "https://www.youtube.com/watch?v=4UozaJRKGw8"
-        },
-        {
-          "youtubeId": "BtKNY2YczuE",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 487,
-          "providerUrl": "https://www.youtube.com/watch?v=BtKNY2YczuE"
         }
       ]
     },
@@ -428,6 +345,13 @@
           "category": "full",
           "durationSeconds": 2233,
           "providerUrl": "https://www.youtube.com/watch?v=xxHFVYEzpXU"
+        },
+        {
+          "youtubeId": "2NHaMsJ4YEk",
+          "source": "YouTube highlights",
+          "category": "full",
+          "durationSeconds": 2211,
+          "providerUrl": "https://www.youtube.com/watch?v=2NHaMsJ4YEk"
         },
         {
           "youtubeId": "KyC552g_gds",
@@ -442,6 +366,13 @@
           "category": "full",
           "durationSeconds": 1022,
           "providerUrl": "https://www.youtube.com/watch?v=jgLh2Nn6Cx4"
+        },
+        {
+          "youtubeId": "K1CQYbRDLgI",
+          "source": "YouTube highlights",
+          "category": "full",
+          "durationSeconds": 615,
+          "providerUrl": "https://www.youtube.com/watch?v=K1CQYbRDLgI"
         },
         {
           "youtubeId": "LJSD4gd7Ds4",
@@ -477,20 +408,6 @@
           "category": "standard",
           "durationSeconds": 1113,
           "providerUrl": "https://www.youtube.com/watch?v=aIT8FcBqH5o"
-        },
-        {
-          "youtubeId": "Yt4qEhANsGQ",
-          "source": "YouTube highlights",
-          "category": "standard",
-          "durationSeconds": 1630,
-          "providerUrl": "https://www.youtube.com/watch?v=Yt4qEhANsGQ"
-        },
-        {
-          "youtubeId": "PtfCeUZxHZM",
-          "source": "YouTube highlights",
-          "category": "standard",
-          "durationSeconds": 806,
-          "providerUrl": "https://www.youtube.com/watch?v=PtfCeUZxHZM"
         }
       ],
       "analysis": [
@@ -520,13 +437,6 @@
           "providerUrl": "https://www.youtube.com/watch?v=dRwzomLFll4"
         },
         {
-          "youtubeId": "Ka1TjRn4qRw",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 2263,
-          "providerUrl": "https://www.youtube.com/watch?v=Ka1TjRn4qRw"
-        },
-        {
           "youtubeId": "-3eGpAiQ9ns",
           "source": "YouTube highlights",
           "category": "standard",
@@ -534,64 +444,71 @@
           "providerUrl": "https://www.youtube.com/watch?v=-3eGpAiQ9ns"
         },
         {
-          "youtubeId": "6j6ooACmcIY",
+          "youtubeId": "Ka1TjRn4qRw",
           "source": "YouTube highlights",
           "category": "full",
-          "durationSeconds": 623,
-          "providerUrl": "https://www.youtube.com/watch?v=6j6ooACmcIY"
+          "durationSeconds": 2263,
+          "providerUrl": "https://www.youtube.com/watch?v=Ka1TjRn4qRw"
         },
         {
-          "youtubeId": "imGs0-W5pY8",
+          "youtubeId": "8T_mNg82yM8",
           "source": "YouTube highlights",
           "category": "full",
-          "durationSeconds": 600,
-          "providerUrl": "https://www.youtube.com/watch?v=imGs0-W5pY8"
+          "durationSeconds": 1032,
+          "providerUrl": "https://www.youtube.com/watch?v=8T_mNg82yM8"
         },
         {
-          "youtubeId": "ckRBA0WHU2M",
+          "youtubeId": "IFZxyd_P2bc",
           "source": "YouTube highlights",
           "category": "full",
-          "durationSeconds": 578,
-          "providerUrl": "https://www.youtube.com/watch?v=ckRBA0WHU2M"
+          "durationSeconds": 2191,
+          "providerUrl": "https://www.youtube.com/watch?v=IFZxyd_P2bc"
         },
         {
-          "youtubeId": "CCgQxBHrbHg",
+          "youtubeId": "ZxehyokHAsw",
           "source": "YouTube highlights",
           "category": "full",
-          "durationSeconds": 129,
-          "providerUrl": "https://www.youtube.com/watch?v=CCgQxBHrbHg"
+          "durationSeconds": 1490,
+          "providerUrl": "https://www.youtube.com/watch?v=ZxehyokHAsw"
         },
         {
-          "youtubeId": "3eyybFCloOc",
+          "youtubeId": "5k013Z7nyxA",
           "source": "YouTube highlights",
-          "category": "standard",
-          "durationSeconds": 1033,
-          "providerUrl": "https://www.youtube.com/watch?v=3eyybFCloOc"
+          "category": "full",
+          "durationSeconds": 872,
+          "providerUrl": "https://www.youtube.com/watch?v=5k013Z7nyxA"
         },
         {
-          "youtubeId": "OjUKU1IC0gU",
+          "youtubeId": "myKqcewe5i0",
           "source": "YouTube highlights",
-          "category": "standard",
-          "durationSeconds": 1013,
-          "providerUrl": "https://www.youtube.com/watch?v=OjUKU1IC0gU"
+          "category": "full",
+          "durationSeconds": 849,
+          "providerUrl": "https://www.youtube.com/watch?v=myKqcewe5i0"
+        },
+        {
+          "youtubeId": "Gxlt6lDHVuo",
+          "source": "YouTube highlights",
+          "category": "full",
+          "durationSeconds": 841,
+          "providerUrl": "https://www.youtube.com/watch?v=Gxlt6lDHVuo"
         }
       ]
     },
     "401909968": {
       "videos": [
         {
+          "youtubeId": "DxO2u-pch3U",
+          "source": "YouTube highlights",
+          "category": "full",
+          "durationSeconds": 2679,
+          "providerUrl": "https://www.youtube.com/watch?v=DxO2u-pch3U"
+        },
+        {
           "youtubeId": "O6pwP-0c7Z0",
           "source": "YouTube highlights",
           "category": "full",
           "durationSeconds": 2791,
           "providerUrl": "https://www.youtube.com/watch?v=O6pwP-0c7Z0"
-        },
-        {
-          "youtubeId": "ebSToBCBOaE",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 1040,
-          "providerUrl": "https://www.youtube.com/watch?v=ebSToBCBOaE"
         },
         {
           "youtubeId": "mOK1ECDluV4",
@@ -608,32 +525,11 @@
           "providerUrl": "https://www.youtube.com/watch?v=z_ecujTEFXk"
         },
         {
-          "youtubeId": "Bv96HuEKgyY",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 546,
-          "providerUrl": "https://www.youtube.com/watch?v=Bv96HuEKgyY"
-        },
-        {
-          "youtubeId": "C-pZ_RRU-5I",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 458,
-          "providerUrl": "https://www.youtube.com/watch?v=C-pZ_RRU-5I"
-        },
-        {
           "youtubeId": "UKZyJimhqE4",
           "source": "YouTube highlights",
           "category": "full",
           "durationSeconds": 282,
           "providerUrl": "https://www.youtube.com/watch?v=UKZyJimhqE4"
-        },
-        {
-          "youtubeId": "n7GSgRpdQ6I",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 277,
-          "providerUrl": "https://www.youtube.com/watch?v=n7GSgRpdQ6I"
         },
         {
           "youtubeId": "y0AQg7bH_z4",
@@ -648,6 +544,17 @@
           "category": "standard",
           "durationSeconds": 601,
           "providerUrl": "https://www.youtube.com/watch?v=SU7JURu5gb0"
+        }
+      ]
+    },
+    "401909278": {
+      "analysis": [
+        {
+          "source": "CLNS Media",
+          "category": "analysis",
+          "providerUrl": "https://www.clnsmedia.com/celtics-open-nba-cup-play-with-big-win-over-bulls/",
+          "title": "Celtics Open NBA Cup Play With Big Win Over Bulls",
+          "access": "free_page"
         }
       ]
     }
