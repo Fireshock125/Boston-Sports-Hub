@@ -1,95 +1,5 @@
 {
   "games": {
-    "401909903": {
-      "videos": [
-        {
-          "youtubeId": "ZrwIDuPtgbo",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 3006,
-          "providerUrl": "https://www.youtube.com/watch?v=ZrwIDuPtgbo"
-        },
-        {
-          "youtubeId": "HfRcFQwF6Dk",
-          "source": "YouTube highlights",
-          "category": "extended",
-          "durationSeconds": 129,
-          "providerUrl": "https://www.youtube.com/watch?v=HfRcFQwF6Dk"
-        },
-        {
-          "youtubeId": "jHwJg1saU0w",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 769,
-          "providerUrl": "https://www.youtube.com/watch?v=jHwJg1saU0w"
-        },
-        {
-          "youtubeId": "oyhwrzwd7oE",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 757,
-          "providerUrl": "https://www.youtube.com/watch?v=oyhwrzwd7oE"
-        },
-        {
-          "youtubeId": "cUPYYjuv1Fo",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 721,
-          "providerUrl": "https://www.youtube.com/watch?v=cUPYYjuv1Fo"
-        },
-        {
-          "youtubeId": "1lPy6EYZKR8",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 669,
-          "providerUrl": "https://www.youtube.com/watch?v=1lPy6EYZKR8"
-        },
-        {
-          "youtubeId": "7X6hkl6BlsA",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 607,
-          "providerUrl": "https://www.youtube.com/watch?v=7X6hkl6BlsA"
-        },
-        {
-          "youtubeId": "ql28dnf55pU",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 587,
-          "providerUrl": "https://www.youtube.com/watch?v=ql28dnf55pU"
-        },
-        {
-          "youtubeId": "SXBSrmtiX9k",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 570,
-          "providerUrl": "https://www.youtube.com/watch?v=SXBSrmtiX9k"
-        },
-        {
-          "youtubeId": "ZUirZumLOEk",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 183,
-          "providerUrl": "https://www.youtube.com/watch?v=ZUirZumLOEk"
-        }
-      ],
-      "analysis": [
-        {
-          "source": "CLNS Media",
-          "category": "analysis",
-          "providerUrl": "https://www.clnsmedia.com/celtics-beat-magic-to-improve-to-5-1-on-the-season-you-got-boston/",
-          "title": "Celtics Beat Magic to improve to 5-1 on the season | You Got Boston",
-          "access": "free_page"
-        },
-        {
-          "source": "CLNS Media",
-          "category": "analysis",
-          "providerUrl": "https://www.clnsmedia.com/celtics-take-down-magic-make-it-5th-straight-win-garden-report/",
-          "title": "Celtics Take Down Magic Make it 5th Straight Win! | Garden Report",
-          "access": "free_page"
-        }
-      ]
-    },
     "401909916": {
       "videos": [
         {
@@ -98,20 +8,6 @@
           "category": "standard",
           "durationSeconds": 1304,
           "providerUrl": "https://www.youtube.com/watch?v=LI6DZxnROz8"
-        },
-        {
-          "youtubeId": "BDgOX_Myr9w",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 1178,
-          "providerUrl": "https://www.youtube.com/watch?v=BDgOX_Myr9w"
-        },
-        {
-          "youtubeId": "nR0NRui5-oA",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 855,
-          "providerUrl": "https://www.youtube.com/watch?v=nR0NRui5-oA"
         },
         {
           "youtubeId": "LlujXMe97_U",
@@ -135,13 +31,6 @@
           "providerUrl": "https://www.youtube.com/watch?v=KMp4TfDrT2M"
         },
         {
-          "youtubeId": "BAyj7Fy-aaE",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 628,
-          "providerUrl": "https://www.youtube.com/watch?v=BAyj7Fy-aaE"
-        },
-        {
           "youtubeId": "IFTLLXnQ-PE",
           "source": "YouTube highlights",
           "category": "full",
@@ -161,6 +50,27 @@
           "category": "full",
           "durationSeconds": 571,
           "providerUrl": "https://www.youtube.com/watch?v=qe70jvrfbY4"
+        },
+        {
+          "youtubeId": "QZzhBFbzA7w",
+          "source": "YouTube highlights",
+          "category": "standard",
+          "durationSeconds": 795,
+          "providerUrl": "https://www.youtube.com/watch?v=QZzhBFbzA7w"
+        },
+        {
+          "youtubeId": "dVlZiqife9k",
+          "source": "YouTube highlights",
+          "category": "standard",
+          "durationSeconds": 509,
+          "providerUrl": "https://www.youtube.com/watch?v=dVlZiqife9k"
+        },
+        {
+          "youtubeId": "pO-Tv3gGLCI",
+          "source": "YouTube highlights",
+          "category": "standard",
+          "durationSeconds": 504,
+          "providerUrl": "https://www.youtube.com/watch?v=pO-Tv3gGLCI"
         }
       ],
       "analysis": [
@@ -308,13 +218,6 @@
           "providerUrl": "https://www.youtube.com/watch?v=5K4vt-kL2Zo"
         },
         {
-          "youtubeId": "fGFgYAOKUFw",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 588,
-          "providerUrl": "https://www.youtube.com/watch?v=fGFgYAOKUFw"
-        },
-        {
           "youtubeId": "edcQnsbi94s",
           "source": "YouTube highlights",
           "category": "full",
@@ -334,6 +237,13 @@
           "category": "full",
           "durationSeconds": 509,
           "providerUrl": "https://www.youtube.com/watch?v=4UozaJRKGw8"
+        },
+        {
+          "youtubeId": "BtKNY2YczuE",
+          "source": "YouTube highlights",
+          "category": "full",
+          "durationSeconds": 487,
+          "providerUrl": "https://www.youtube.com/watch?v=BtKNY2YczuE"
         }
       ]
     },
@@ -451,18 +361,18 @@
           "providerUrl": "https://www.youtube.com/watch?v=ZxehyokHAsw"
         },
         {
-          "youtubeId": "8T_mNg82yM8",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 1032,
-          "providerUrl": "https://www.youtube.com/watch?v=8T_mNg82yM8"
-        },
-        {
           "youtubeId": "IFZxyd_P2bc",
           "source": "YouTube highlights",
           "category": "full",
           "durationSeconds": 2191,
           "providerUrl": "https://www.youtube.com/watch?v=IFZxyd_P2bc"
+        },
+        {
+          "youtubeId": "8T_mNg82yM8",
+          "source": "YouTube highlights",
+          "category": "full",
+          "durationSeconds": 1032,
+          "providerUrl": "https://www.youtube.com/watch?v=8T_mNg82yM8"
         },
         {
           "youtubeId": "5k013Z7nyxA",
@@ -565,6 +475,24 @@
           "category": "standard",
           "durationSeconds": 147,
           "providerUrl": "https://www.youtube.com/watch?v=y0AQg7bH_z4"
+        }
+      ]
+    },
+    "401909903": {
+      "analysis": [
+        {
+          "source": "CLNS Media",
+          "category": "analysis",
+          "providerUrl": "https://www.clnsmedia.com/celtics-beat-magic-to-improve-to-5-1-on-the-season-you-got-boston/",
+          "title": "Celtics Beat Magic to improve to 5-1 on the season | You Got Boston",
+          "access": "free_page"
+        },
+        {
+          "source": "CLNS Media",
+          "category": "analysis",
+          "providerUrl": "https://www.clnsmedia.com/celtics-take-down-magic-make-it-5th-straight-win-garden-report/",
+          "title": "Celtics Take Down Magic Make it 5th Straight Win! | Garden Report",
+          "access": "free_page"
         }
       ]
     },
