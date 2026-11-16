@@ -197,63 +197,28 @@
           "category": "standard",
           "durationSeconds": 337,
           "providerUrl": "https://www.youtube.com/watch?v=5VQ8ooYGCA0"
-        },
-        {
-          "youtubeId": "ONX73PsPFD8",
-          "source": "YouTube highlights",
-          "category": "standard",
-          "durationSeconds": 1053,
-          "providerUrl": "https://www.youtube.com/watch?v=ONX73PsPFD8"
-        },
-        {
-          "youtubeId": "Xsh39iqj94s",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 1242,
-          "providerUrl": "https://www.youtube.com/watch?v=Xsh39iqj94s"
-        },
-        {
-          "youtubeId": "_mt5Faxn2rA",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 993,
-          "providerUrl": "https://www.youtube.com/watch?v=_mt5Faxn2rA"
-        },
-        {
-          "youtubeId": "zcjSXOo6IzU",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 946,
-          "providerUrl": "https://www.youtube.com/watch?v=zcjSXOo6IzU"
         }
       ]
     },
     "401873053": {
       "videos": [
         {
-          "youtubeId": "vDoseTmsIs0",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 1234,
-          "providerUrl": "https://www.youtube.com/watch?v=vDoseTmsIs0"
+          "youtubeId": "u9ggzabBnEo",
+          "source": "Official NFL YouTube",
+          "category": "standard",
+          "durationSeconds": 825,
+          "providerUrl": "https://www.youtube.com/watch?v=u9ggzabBnEo"
         },
         {
-          "youtubeId": "KGC7D04reKk",
-          "source": "YouTube highlights",
+          "youtubeId": "oEWzIE47H7Q",
+          "source": "Official NFL YouTube",
           "category": "standard",
-          "durationSeconds": 966,
-          "providerUrl": "https://www.youtube.com/watch?v=KGC7D04reKk"
-        },
-        {
-          "youtubeId": "gBtbF4ME2LM",
-          "source": "YouTube highlights",
-          "category": "standard",
-          "durationSeconds": 1027,
-          "providerUrl": "https://www.youtube.com/watch?v=gBtbF4ME2LM"
+          "durationSeconds": 546,
+          "providerUrl": "https://www.youtube.com/watch?v=oEWzIE47H7Q"
         },
         {
           "youtubeId": "R0bF5z-qYe8",
-          "source": "YouTube highlights",
+          "source": "Official Patriots YouTube",
           "category": "standard",
           "durationSeconds": 825,
           "providerUrl": "https://www.youtube.com/watch?v=R0bF5z-qYe8"
