@@ -1,0 +1,28 @@
+name: Update Celtics TV channels
+on:
+  schedule:
+    - cron: '25 6,18 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Refresh game-specific broadcasters
+        run: python3 scripts/update_celtics_tv.py
+      - name: Commit updated listings
+        run: |
+          if git diff --quiet -- celtics-tv-channels.json; then
+            echo "No changes"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add celtics-tv-channels.json
+          git commit -m "Refresh Celtics TV channel listings"
+          git push
