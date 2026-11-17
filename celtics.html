@@ -1259,7 +1259,9 @@ function tvFromEvent(event) {
   return channels;
 }
 function tvChannelsFor(game) {
-  const curated = tvListings[String(game.id)]?.channels || [];
+  const usDate = new Intl.DateTimeFormat("en-CA", {timeZone:"America/New_York",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(game.date));
+  const opponent = game.home === TEAM_NAME ? game.away : game.home;
+  const curated = (tvListings[String(game.id)] || tvListings[usDate + "|" + opponent])?.channels || [];
   const fromESPN = tvFromEvent(game.event);
   const names = new Set(curated.map(c => String(c.name || "").toLowerCase()));
   return [...curated, ...fromESPN.filter(c => !names.has(c.name.toLowerCase()))];
