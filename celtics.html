@@ -433,6 +433,11 @@ button:disabled { opacity: .6; cursor: wait; }
   display: none !important;
 }
 
+.tv-channel-actions { margin-top: 12px; }
+.tv-channel-panel { margin-top: 10px; padding: 12px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px; font-size: 13px; }
+.tv-channel-panel ul { padding-left: 20px; line-height: 1.9; }
+.tv-channel-panel a { color: var(--text); text-decoration: underline; }
+
 /* NBA STANDINGS */
 
 .standings-tabs {
@@ -1236,6 +1241,50 @@ function parseEvent(event) {
   };
 }
 
+/* TV listings: ESPN event metadata plus optional sourced celtics-tv-channels.json.
+   Do not infer individual channels from parent networks or market geography. */
+let tvListings = {};
+function tvFromEvent(event) {
+  const competition = event?.competitions?.[0] || {};
+  const feeds = [...(competition.broadcasts || []), ...(event?.broadcasts || [])];
+  const channels = [];
+  for (const feed of feeds) {
+    const names = [...(feed.names || []), ...(feed.name ? [feed.name] : [])];
+    for (const name of names) {
+      if (typeof name !== "string" || !name.trim()) continue;
+      if (!channels.some(c => c.name.toLowerCase() === name.trim().toLowerCase()))
+        channels.push({ name: name.trim(), region: "US / unspecified", status: "Listed by ESPN", source: "https://www.espn.com/nba/scoreboard" });
+    }
+  }
+  return channels;
+}
+function tvChannelsFor(game) {
+  const curated = tvListings[String(game.id)]?.channels || [];
+  const fromESPN = tvFromEvent(game.event);
+  const names = new Set(curated.map(c => String(c.name || "").toLowerCase()));
+  return [...curated, ...fromESPN.filter(c => !names.has(c.name.toLowerCase()))];
+}
+function tvPanel(game) {
+  const channels = tvChannelsFor(game);
+  const entries = channels.map(channel => {
+    const name = safeText(channel.name || "");
+    if (!name) return "";
+    const region = safeText(channel.region || "Region not specified");
+    const status = safeText(channel.status || "Unconfirmed");
+    const source = typeof channel.source === "string" && /^https:\/\//.test(channel.source) ? channel.source : "";
+    return `<li><strong>${name}</strong> · ${region} · ${status}${source ? ` · <a href="${safeText(source)}" target="_blank" rel="noopener noreferrer">Source</a>` : ""}</li>`;
+  }).join("");
+  return `<div class="tv-channel-panel" hidden><p class="highlight-note">Broadcaster listings are spoiler-free. A network listing does not guarantee a specific local channel or UK feed.</p>${entries ? `<ul>${entries}</ul>` : '<p>No verified channel listings yet for this game.</p>'}<p class="highlight-note">Listings can change near tip-off. Only named channels from source data are shown; international and UK feeds appear when individually verified.</p></div>`;
+}
+async function loadTvListings() {
+  try {
+    const response = await fetch("celtics-tv-channels.json?updated=" + Date.now(), { cache: "no-store" });
+    if (!response.ok) return;
+    const data = await response.json();
+    if (data.games && typeof data.games === "object") tvListings = data.games;
+  } catch (error) { console.warn("TV listings unavailable", error); }
+}
+
 /* GAME CARDS */
 
 function gameCard(game, resultMode = false) {
@@ -1263,14 +1312,14 @@ function gameCard(game, resultMode = false) {
         <span>UK: ${safeText(timeLabel(game.date))}</span>
       </div>`;
 
-    return `<article class="game">${
+    return `<article class="game" data-game-id="${safeText(id)}">${
       game.link
         ? `<a class="game-link"
              href="${safeText(game.link)}"
              target="_blank"
              rel="noopener noreferrer">${content}</a>`
         : content
-    }</article>`;
+    }${actions}</article>`;
   }
 
   const scoreText =
@@ -1321,6 +1370,7 @@ function gameCard(game, resultMode = false) {
       </div>
 
       <div class="highlight-player" hidden></div>
+      <div class="tv-channel-actions"><button type="button" class="tv-channel-button" data-action="tv" aria-expanded="false">TV Channels</button></div>${tvPanel(game)}
     </article>`;
 }
 
@@ -1598,6 +1648,18 @@ function openHighlights(card, videos, index = 0, mode = "highlights") {
   button.setAttribute("aria-expanded", "true");
 }
 
+/* TV channel buttons work for upcoming fixtures and completed games. */
+function toggleTvChannels(event) {
+  const button = event.target.closest('button[data-action="tv"]');
+  if (!button) return;
+  const panel = button.closest(".game")?.querySelector(".tv-channel-panel");
+  if (!panel) return;
+  panel.hidden = !panel.hidden;
+  button.setAttribute("aria-expanded", String(!panel.hidden));
+}
+$("fixtures-list").addEventListener("click", toggleTvChannels);
+$("results-list").addEventListener("click", toggleTvChannels);
+
 /* RESULT BUTTON EVENTS */
 
 $("results-list").addEventListener("click", event => {
@@ -1660,6 +1722,7 @@ async function fetchSchedule(request) {
 let scheduleLoadNumber = 0;
 
 async function loadSchedule() {
+  await loadTvListings();
   const button = $("refresh-fixtures");
   const loadNumber = ++scheduleLoadNumber;
 
