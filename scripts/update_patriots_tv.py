@@ -7,6 +7,7 @@ import json
 import pathlib
 import urllib.request
 from zoneinfo import ZoneInfo
+from tv_source_integrations import sky_nfl_games
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 OUT = ROOT / "patriots-tv-channels.json"
@@ -22,6 +23,7 @@ def main():
     now = dt.datetime.now(dt.timezone.utc)
     count = 0
     successes = 0
+    events_by_key = {}
     for season in (now.year,now.year-1):
         for typ in (1,2,3):
             try:
@@ -40,6 +42,9 @@ def main():
                         continue
                     opponent = next(c["team"]["displayName"] for c in competitors if str(c["team"].get("id")) != "17")
                     key = date.astimezone(ZoneInfo("America/New_York")).date().isoformat()+"|"+opponent
+                    home = next(c["team"]["displayName"] for c in competitors if c.get("homeAway") == "home")
+                    away = next(c["team"]["displayName"] for c in competitors if c.get("homeAway") == "away")
+                    events_by_key[key] = (home,away)
                     names = set()
                     for b in competition.get("broadcasts",[]) + event.get("broadcasts",[]):
                         names.update(n.strip() for n in b.get("names",[]) if isinstance(n,str) and n.strip())
@@ -54,6 +59,10 @@ def main():
                 except (KeyError,TypeError,StopIteration,ValueError) as exc:
                     print("Skipped event:",exc)
     if not successes: raise SystemExit("No schedule feeds succeeded; preserving old data")
+    try:
+        print("Sky UK NFL channels added:", sky_nfl_games(games,events_by_key))
+    except Exception as exc:
+        print("Sky NFL source unavailable; existing listings preserved:",exc)
     data["lastAutoRefresh"]=now.isoformat()
     OUT.write_text(json.dumps(data,indent=2,ensure_ascii=False)+"\n")
     print("Added",count,"game-specific broadcast networks")
