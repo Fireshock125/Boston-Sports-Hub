@@ -74,6 +74,8 @@ def main():
                     if not dt.timedelta(days=-8) <= date - now <= dt.timedelta(days=75):
                         continue
                     competitors = event["competitions"][0]["competitors"]
+                    if not any(str(c.get("team", {}).get("id")) == "2" for c in competitors):
+                        continue
                     other = next(c for c in competitors if str(c.get("team", {}).get("id")) != "2")
                     opponent = other["team"]["displayName"]
                     # Use the New York date, including daylight-saving changes.
@@ -87,6 +89,7 @@ def main():
                         for name in item.get("names", []) + ([item["name"]] if item.get("name") else []):
                             if isinstance(name, str) and name.strip():
                                 names.add(name.strip())
+                    names = {n for n in names if not any(term in n.casefold() for term in ("highlights", "recap", "nba tv highlights"))}
                     if not names:
                         continue
                     record = games.setdefault(key, {"channels": []})
