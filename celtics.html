@@ -1277,7 +1277,7 @@ function tvPanel(game) {
     const source = typeof channel.source === "string" && /^https:\/\//.test(channel.source) ? channel.source : "";
     return `<li><strong>${name}</strong> · ${region} · ${status}${source ? ` · <a href="${safeText(source)}" target="_blank" rel="noopener noreferrer">Source</a>` : ""}</li>`;
   }).join("");
-  return `<div class="tv-channel-panel" hidden><p class="highlight-note">Broadcaster listings are spoiler-free. A network listing does not guarantee a specific local channel or UK feed.</p>${entries ? `<ul>${entries}</ul>` : '<p>No verified channel listings yet for this game.</p>'}<p class="highlight-note">Listings can change near tip-off. Only named channels from source data are shown; international and UK feeds appear when individually verified.</p></div>`;
+  return `<div class="tv-channel-panel" hidden>${entries ? `<ul>${entries}</ul>` : '<p>No verified channel listings yet for this game.</p>'}</div>`;
 }
 async function loadTvListings() {
   try {
