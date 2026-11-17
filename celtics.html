@@ -1287,8 +1287,8 @@ function tvPanel(game) {
     const country = /canada/i.test(region) ? "Canada"
       : /portugal/i.test(region) ? "Portugal"
       : /italy/i.test(region) ? "Italy"
-      : /united kingdom|\\buk\\b/i.test(region) ? "UK"
-      : /united states|\\bus\\b/i.test(region) ? "USA"
+      : /united kingdom|(^|[^a-z])uk([^a-z]|$)/i.test(region) ? "UK"
+      : /united states|(^|[^a-z])us([^a-z]|$)/i.test(region) ? "USA"
       : "Country unspecified";
     return `<li><strong>${name}</strong> · ${safeText(country)}</li>`;
   }).join("");
