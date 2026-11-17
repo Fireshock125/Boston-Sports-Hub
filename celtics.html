@@ -380,6 +380,14 @@ button:disabled { opacity: .6; cursor: wait; }
   padding: 9px 13px;
   font-size: 12px;
 }
+.result-actions {
+  display: grid;
+  grid-template-columns: repeat(2, max-content);
+  align-items: center;
+}
+@media (max-width: 390px) {
+  .result-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 
 .highlight-direct-link { display: inline-block; padding: 10px 13px; margin-top: 10px; border: 1px solid var(--accent); border-radius: 8px; color: var(--text); text-decoration: none; font-weight: 700; }
 
@@ -1369,11 +1377,12 @@ function gameCard(game, resultMode = false) {
           Watch Highlights
         </button>
 
+        <button type="button" class="tv-channel-button" data-action="tv" aria-expanded="false">TV Channels</button>
         <button type="button" class="analysis-button" data-action="analysis" aria-expanded="false" hidden>Game Analysis</button>
       </div>
 
       <div class="highlight-player" hidden></div>
-      <div class="tv-channel-actions"><button type="button" class="tv-channel-button" data-action="tv" aria-expanded="false">TV Channels</button></div>${tvPanel(game)}
+      ${tvPanel(game)}
     </article>`;
 }
 
