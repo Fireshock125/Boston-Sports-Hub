@@ -1,0 +1,25 @@
+name: Update Patriots TV channels
+on:
+  schedule:
+    - cron: '35 6,18 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Refresh NFL game-specific TV networks
+        run: python3 scripts/update_patriots_tv.py
+      - name: Commit updated listings
+        run: |
+          if git diff --quiet -- patriots-tv-channels.json; then exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add patriots-tv-channels.json
+          git commit -m "Refresh Patriots TV listings"
+          git push
