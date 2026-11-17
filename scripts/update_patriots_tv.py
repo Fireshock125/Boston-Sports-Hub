@@ -36,12 +36,15 @@ def main():
                     if not -120 <= (date-now).days <= 120: continue
                     competition = event["competitions"][0]
                     competitors = competition["competitors"]
+                    if not any(str(c.get("team",{}).get("id")) == "17" for c in competitors):
+                        continue
                     opponent = next(c["team"]["displayName"] for c in competitors if str(c["team"].get("id")) != "17")
                     key = date.astimezone(ZoneInfo("America/New_York")).date().isoformat()+"|"+opponent
                     names = set()
                     for b in competition.get("broadcasts",[]) + event.get("broadcasts",[]):
                         names.update(n.strip() for n in b.get("names",[]) if isinstance(n,str) and n.strip())
                         if isinstance(b.get("name"),str): names.add(b["name"].strip())
+                    names = {n for n in names if not any(term in n.casefold() for term in ("redzone", "red zone", "highlights", "recap", "nfl network highlights"))}
                     if not names: continue
                     channels = games.setdefault(key,{"channels":[]})["channels"]
                     for name in sorted(names):
