@@ -147,6 +147,12 @@
           "region": "US regional (Boston)",
           "status": "Confirmed listing",
           "source": "https://www.sportsmediawatch.com/tv-schedules/nba-tv-schedule/boston-celtics/"
+        },
+        {
+          "name": "Sky Sports+",
+          "region": "UK",
+          "status": "Confirmed listing",
+          "source": "https://www.skysports.com/nba/news/13599587/nba-on-sky-sports-dates-schedule-uk-start-times-and-how-to-watch-or-stream-live-regular-season-and-playoff-action"
         }
       ]
     },
@@ -163,6 +169,24 @@
           "region": "US streaming",
           "status": "Confirmed listing",
           "source": "https://www.nba.com/news/every-nba-game-on-nbc-and-peacock-in-2026-27"
+        },
+        {
+          "name": "Sky Sports Main Event",
+          "region": "UK",
+          "status": "Confirmed listing",
+          "source": "https://www.skysports.com/watch/other-sports-on-sky"
+        },
+        {
+          "name": "Sky Sports+",
+          "region": "UK",
+          "status": "Confirmed listing",
+          "source": "https://www.skysports.com/watch/other-sports-on-sky"
+        },
+        {
+          "name": "Sky Sports Ultra HDR",
+          "region": "UK",
+          "status": "Confirmed listing",
+          "source": "https://www.wheresthematch.com/live-basketball-on-tv/"
         }
       ]
     },
@@ -287,6 +311,18 @@
           "region": "US regional (Boston)",
           "status": "Confirmed listing",
           "source": "https://www.sportsmediawatch.com/tv-schedules/nba-tv-schedule/boston-celtics/"
+        },
+        {
+          "name": "Sky Sports Main Event",
+          "region": "UK",
+          "status": "Confirmed listing",
+          "source": "https://www.skysports.com/watch/basketball-on-sky"
+        },
+        {
+          "name": "Sky Sports+",
+          "region": "UK",
+          "status": "Confirmed listing",
+          "source": "https://www.skysports.com/watch/basketball-on-sky"
         }
       ]
     },
