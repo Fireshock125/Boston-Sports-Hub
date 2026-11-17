@@ -445,6 +445,7 @@ button:disabled { opacity: .6; cursor: wait; }
 .tv-channel-actions .tv-channel-button { padding: 9px 13px; font-size: 12px; }
 .tv-channel-panel { margin-top: 10px; padding: 12px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px; font-size: 13px; }
 .tv-channel-panel ul { padding-left: 20px; line-height: 1.9; }
+.tv-game-time { margin: 0 0 8px; font-size: 13px; }
 .tv-channel-panel a { color: var(--text); text-decoration: underline; }
 
 /* NBA STANDINGS */
@@ -1277,15 +1278,21 @@ function tvChannelsFor(game) {
 }
 function tvPanel(game) {
   const channels = tvChannelsFor(game);
+  const ukDate = safeText(dateLabel(game.date));
+  const ukTime = safeText(timeLabel(game.date));
   const entries = channels.map(channel => {
     const name = safeText(channel.name || "");
     if (!name) return "";
-    const region = safeText(channel.region || "Region not specified");
-    const status = safeText(channel.status || "Unconfirmed");
-    const source = typeof channel.source === "string" && /^https:\/\//.test(channel.source) ? channel.source : "";
-    return `<li><strong>${name}</strong> · ${region} · ${status}${source ? ` · <a href="${safeText(source)}" target="_blank" rel="noopener noreferrer">Source</a>` : ""}</li>`;
+    const region = String(channel.region || "");
+    const country = /canada/i.test(region) ? "Canada"
+      : /portugal/i.test(region) ? "Portugal"
+      : /italy/i.test(region) ? "Italy"
+      : /united kingdom|\\buk\\b/i.test(region) ? "UK"
+      : /united states|\\bus\\b/i.test(region) ? "USA"
+      : "Country unspecified";
+    return `<li><strong>${name}</strong> · ${safeText(country)}</li>`;
   }).join("");
-  return `<div class="tv-channel-panel" hidden>${entries ? `<ul>${entries}</ul>` : '<p>No verified channel listings yet for this game.</p>'}</div>`;
+  return `<div class="tv-channel-panel" hidden><p class="tv-game-time"><strong>UK game time:</strong> ${ukDate} · ${ukTime}</p>${entries ? `<ul>${entries}</ul>` : '<p>No channel listings available for this game.</p>'}</div>`;
 }
 async function loadTvListings() {
   try {
