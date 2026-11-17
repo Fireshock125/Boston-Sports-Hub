@@ -37,12 +37,12 @@ def sky_nfl_games(games, events):
             continue
         other = away if home == "New England Patriots" else home
         # Sky uses both full names and short team names in its weekly listings.
-        matchup = re.compile(r"\\b(?:New England )?Patriots\\s*(?:@|at|v|vs|versus)\\s*"+re.escape(other)+r"\\b|\\b"+re.escape(other)+r"\\s*(?:@|at|v|vs|versus)\\s*(?:New England )?Patriots\\b",re.I)
+        matchup = re.compile(r"\b(?:New England )?Patriots\s*(?:@|at|v|vs|versus)\s*"+re.escape(other)+r"\b|\b"+re.escape(other)+r"\s*(?:@|at|v|vs|versus)\s*(?:New England )?Patriots\b",re.I)
         for i, line in enumerate(lines):
             if not matchup.search(line):
                 continue
             context = " ".join(lines[i:i+4])
-            if not re.search(r"\\bLIVE\\b",context,re.I):
+            if not re.search(r"\bLIVE\b",context,re.I):
                 continue
             for channel in ("Sky Sports NFL","Sky Sports Main Event","Sky Sports Action","Sky Sports Mix"):
                 if re.search(re.escape(channel),context,re.I):
