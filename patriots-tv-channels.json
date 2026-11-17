@@ -1,0 +1,59 @@
+{
+  "games": {
+    "2026-11-15|Detroit Lions": {
+      "channels": [
+        {
+          "name": "FOX",
+          "region": "USA",
+          "source": "https://www.patriots.com/news/patriots-announce-2026-schedule"
+        },
+        {
+          "name": "Sky Sports",
+          "region": "UK",
+          "source": "https://www.nfl.com/news/where-to-watch-the-nfl-in-the-uk-and-ireland-in-2026"
+        },
+        {
+          "name": "5",
+          "region": "UK",
+          "source": "https://www.nfl.com/news/where-to-watch-the-nfl-in-the-uk-and-ireland-in-2026"
+        }
+      ]
+    },
+    "2026-11-29|Los Angeles Chargers": {
+      "channels": [
+        {
+          "name": "NBC",
+          "region": "USA",
+          "source": "https://www.patriots.com/news/patriots-announce-2026-schedule"
+        }
+      ]
+    },
+    "2026-12-06|Buffalo Bills": {
+      "channels": [
+        {
+          "name": "CBS",
+          "region": "USA",
+          "source": "https://www.patriots.com/news/patriots-announce-2026-schedule"
+        }
+      ]
+    },
+    "2026-12-10|Minnesota Vikings": {
+      "channels": [
+        {
+          "name": "Prime Video",
+          "region": "USA",
+          "source": "https://www.patriots.com/news/patriots-announce-2026-schedule"
+        }
+      ]
+    },
+    "2026-12-21|Kansas City Chiefs": {
+      "channels": [
+        {
+          "name": "ESPN",
+          "region": "USA",
+          "source": "https://www.patriots.com/news/patriots-announce-2026-schedule"
+        }
+      ]
+    }
+  }
+}
