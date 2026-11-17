@@ -187,6 +187,78 @@
           "region": "UK",
           "status": "Confirmed listing",
           "source": "https://www.wheresthematch.com/live-basketball-on-tv/"
+        },
+        {
+          "name": "TSN 4",
+          "region": "Canada",
+          "status": "Broadcaster listed",
+          "source": "https://www.zivosports.tv/games/nba-2601864/orlando-magic-at-boston-celtics"
+        },
+        {
+          "name": "beIN Sports HD 1 France",
+          "region": "France",
+          "status": "Broadcaster listed",
+          "source": "https://www.zivosports.tv/games/nba-2601864/orlando-magic-at-boston-celtics"
+        },
+        {
+          "name": "Sky Sport NBA",
+          "region": "Italy",
+          "status": "Broadcaster listed",
+          "source": "https://www.zivosports.tv/games/nba-2601864/orlando-magic-at-boston-celtics"
+        },
+        {
+          "name": "Eurosport 3 Polska",
+          "region": "Poland",
+          "status": "Broadcaster listed",
+          "source": "https://goalsat.com/match/5098-boston-celtics-vs-orlando-magic"
+        },
+        {
+          "name": "Sport 1 Hungary",
+          "region": "Hungary",
+          "status": "Broadcaster listed",
+          "source": "https://goalsat.com/match/5098-boston-celtics-vs-orlando-magic"
+        },
+        {
+          "name": "5 PLUS Israel",
+          "region": "Israel",
+          "status": "Broadcaster listed",
+          "source": "https://goalsat.com/match/5098-boston-celtics-vs-orlando-magic"
+        },
+        {
+          "name": "beIN Sports MENA 8",
+          "region": "Qatar",
+          "status": "Broadcaster listed",
+          "source": "https://goalsat.com/match/5098-boston-celtics-vs-orlando-magic"
+        },
+        {
+          "name": "Prime Video Türkiye",
+          "region": "Türkiye",
+          "status": "Broadcaster listed",
+          "source": "https://goalsat.com/match/5098-boston-celtics-vs-orlando-magic"
+        },
+        {
+          "name": "Diema Sport 2 BG",
+          "region": "Bulgaria",
+          "status": "Broadcaster listed",
+          "source": "https://sportstvradar.com/en/coverage/"
+        },
+        {
+          "name": "Sky Sport Basket",
+          "region": "Italy",
+          "status": "Broadcaster listed",
+          "source": "https://sportstvradar.com/en/coverage/"
+        },
+        {
+          "name": "beIN SPORTS EN 1",
+          "region": "Qatar",
+          "status": "Broadcaster listed",
+          "source": "https://sportstvradar.com/en/coverage/"
+        },
+        {
+          "name": "Fox Sports 1 BR",
+          "region": "Brazil",
+          "status": "Broadcaster listed",
+          "source": "https://usct.news/en/sport?date=2026-11-14&league=6&sport=Basketball"
         }
       ]
     },
@@ -233,6 +305,12 @@
           "region": "US regional streaming (Denver)",
           "status": "Confirmed listing",
           "source": "https://www.sportsmediawatch.com/tv-schedules/nba-tv-schedule/boston-celtics/"
+        },
+        {
+          "name": "Sportsnet+",
+          "region": "Canada",
+          "status": "Broadcaster listed",
+          "source": "https://www.sportsguidetv.com/sport/baloncesto/competition/nba"
         }
       ]
     },
@@ -261,6 +339,12 @@
           "region": "US regional (Sacramento)",
           "status": "Confirmed listing",
           "source": "https://www.sportsmediawatch.com/tv-schedules/nba-tv-schedule/boston-celtics/"
+        },
+        {
+          "name": "NBA TV Canada",
+          "region": "Canada",
+          "status": "Broadcaster listed",
+          "source": "https://www.sportsguidetv.com/sport/baloncesto/competition/nba"
         }
       ]
     },
@@ -289,6 +373,12 @@
           "region": "US out-of-market streaming",
           "status": "Confirmed listing",
           "source": "https://www.sportsmediawatch.com/tv-schedules/nba-tv-schedule/boston-celtics/"
+        },
+        {
+          "name": "NBA TV Canada",
+          "region": "Canada",
+          "status": "Broadcaster listed",
+          "source": "https://www.sportsguidetv.com/sport/baloncesto/competition/nba"
         }
       ]
     },
@@ -323,6 +413,18 @@
           "region": "UK",
           "status": "Confirmed listing",
           "source": "https://www.skysports.com/watch/basketball-on-sky"
+        },
+        {
+          "name": "TSN 1",
+          "region": "Canada",
+          "status": "Broadcaster listed",
+          "source": "https://www.sportsguidetv.com/sport/baloncesto/competition/nba"
+        },
+        {
+          "name": "TSN 4",
+          "region": "Canada",
+          "status": "Broadcaster listed",
+          "source": "https://www.sportsguidetv.com/sport/baloncesto/competition/nba"
         }
       ]
     },
