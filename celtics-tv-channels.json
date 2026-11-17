@@ -1,0 +1,420 @@
+{
+  "updated": "2026-11-17",
+  "note": "Only individually sourced broadcast listings. UK and international feeds will be added when verified. All dates US Eastern.",
+  "games": {
+    "2026-10-20|Detroit Pistons": {
+      "channels": [
+        {
+          "name": "NBC",
+          "region": "US national",
+          "status": "Confirmed listing",
+          "source": "https://www.nba.com/news/every-nba-game-on-nbc-and-peacock-in-2026-27"
+        },
+        {
+          "name": "Peacock",
+          "region": "US streaming",
+          "status": "Confirmed listing",
+          "source": "https://www.nba.com/news/every-nba-game-on-nbc-and-peacock-in-2026-27"
+        }
+      ]
+    },
+    "2026-10-23|New York Knicks": {
+      "channels": [
+        {
+          "name": "Prime Video",
+          "region": "US streaming",
+          "status": "Confirmed listing",
+          "source": "https://www.nba.com/stats/team/1610612738/schedule"
+        }
+      ]
+    },
+    "2026-10-26|Chicago Bulls": {
+      "channels": [
+        {
+          "name": "NBC Sports Boston",
+          "region": "US regional (Boston)",
+          "status": "Confirmed listing",
+          "source": "https://www.sportsmediawatch.com/tv-schedules/nba-tv-schedule/boston-celtics/"
+        }
+      ]
+    },
+    "2026-10-27|Brooklyn Nets": {
+      "channels": [
+        {
+          "name": "NBC Sports Boston",
+          "region": "US regional (Boston)",
+          "status": "Confirmed listing",
+          "source": "https://www.sportsmediawatch.com/tv-schedules/nba-tv-schedule/boston-celtics/"
+        }
+      ]
+    },
+    "2026-10-30|Chicago Bulls": {
+      "channels": [
+        {
+          "name": "NBC Sports Boston",
+          "region": "US regional (Boston)",
+          "status": "Confirmed listing",
+          "source": "https://www.sportsmediawatch.com/tv-schedules/nba-tv-schedule/boston-celtics/"
+        }
+      ]
+    },
+    "2026-11-01|Orlando Magic": {
+      "channels": [
+        {
+          "name": "NBC Sports Boston",
+          "region": "US regional (Boston)",
+          "status": "Confirmed listing",
+          "source": "https://www.sportsmediawatch.com/tv-schedules/nba-tv-schedule/boston-celtics/"
+        }
+      ]
+    },
+    "2026-11-02|Houston Rockets": {
+      "channels": [
+        {
+          "name": "NBC Sports Boston",
+          "region": "US regional (Boston)",
+          "status": "Confirmed listing",
+          "source": "https://www.sportsmediawatch.com/tv-schedules/nba-tv-schedule/boston-celtics/"
+        }
+      ]
+    },
+    "2026-11-04|Milwaukee Bucks": {
+      "channels": [
+        {
+          "name": "NBC Sports Boston",
+          "region": "US regional (Boston)",
+          "status": "Confirmed listing",
+          "source": "https://www.sportsmediawatch.com/tv-schedules/nba-tv-schedule/boston-celtics/"
+        }
+      ]
+    },
+    "2026-11-06|Charlotte Hornets": {
+      "channels": [
+        {
+          "name": "NBC Sports Boston",
+          "region": "US regional (Boston)",
+          "status": "Confirmed listing",
+          "source": "https://www.sportsmediawatch.com/tv-schedules/nba-tv-schedule/boston-celtics/"
+        }
+      ]
+    },
+    "2026-11-08|Milwaukee Bucks": {
+      "channels": [
+        {
+          "name": "NBC Sports Boston",
+          "region": "US regional (Boston)",
+          "status": "Confirmed listing",
+          "source": "https://www.sportsmediawatch.com/tv-schedules/nba-tv-schedule/boston-celtics/"
+        }
+      ]
+    },
+    "2026-11-11|Toronto Raptors": {
+      "channels": [
+        {
+          "name": "NBC Sports Boston",
+          "region": "US regional (Boston)",
+          "status": "Confirmed listing",
+          "source": "https://www.sportsmediawatch.com/tv-schedules/nba-tv-schedule/boston-celtics/"
+        }
+      ]
+    },
+    "2026-11-15|Dallas Mavericks": {
+      "channels": [
+        {
+          "name": "NBC Sports Boston",
+          "region": "US regional (Boston)",
+          "status": "Confirmed listing",
+          "source": "https://www.sportsmediawatch.com/tv-schedules/nba-tv-schedule/boston-celtics/"
+        }
+      ]
+    },
+    "2026-11-10|Philadelphia 76ers": {
+      "channels": [
+        {
+          "name": "NBC",
+          "region": "US national",
+          "status": "Confirmed listing",
+          "source": "https://www.nba.com/news/every-nba-game-on-nbc-and-peacock-in-2026-27"
+        },
+        {
+          "name": "Peacock",
+          "region": "US streaming",
+          "status": "Confirmed listing",
+          "source": "https://www.nba.com/news/every-nba-game-on-nbc-and-peacock-in-2026-27"
+        },
+        {
+          "name": "NBC Sports Boston",
+          "region": "US regional (Boston)",
+          "status": "Confirmed listing",
+          "source": "https://www.sportsmediawatch.com/tv-schedules/nba-tv-schedule/boston-celtics/"
+        }
+      ]
+    },
+    "2026-11-16|Orlando Magic": {
+      "channels": [
+        {
+          "name": "NBCSN",
+          "region": "US national",
+          "status": "Confirmed listing",
+          "source": "https://www.nba.com/news/every-nba-game-on-nbc-and-peacock-in-2026-27"
+        },
+        {
+          "name": "Peacock",
+          "region": "US streaming",
+          "status": "Confirmed listing",
+          "source": "https://www.nba.com/news/every-nba-game-on-nbc-and-peacock-in-2026-27"
+        }
+      ]
+    },
+    "2026-11-18|Denver Nuggets": {
+      "channels": [
+        {
+          "name": "ESPN",
+          "region": "US national",
+          "status": "Confirmed listing",
+          "source": "https://www.sportsmediawatch.com/tv-schedules/nba-tv-schedule/boston-celtics/"
+        },
+        {
+          "name": "ESPN Unlimited",
+          "region": "US streaming",
+          "status": "Confirmed listing",
+          "source": "https://www.sportsmediawatch.com/tv-schedules/nba-tv-schedule/boston-celtics/"
+        },
+        {
+          "name": "NBC Sports Boston",
+          "region": "US regional (Boston)",
+          "status": "Confirmed listing",
+          "source": "https://www.sportsmediawatch.com/tv-schedules/nba-tv-schedule/boston-celtics/"
+        },
+        {
+          "name": "Peacock",
+          "region": "US streaming",
+          "status": "Confirmed listing",
+          "source": "https://www.sportsmediawatch.com/tv-schedules/nba-tv-schedule/boston-celtics/"
+        },
+        {
+          "name": "Altitude 2",
+          "region": "US regional (Denver)",
+          "status": "Confirmed listing",
+          "source": "https://www.sportsmediawatch.com/tv-schedules/nba-tv-schedule/boston-celtics/"
+        },
+        {
+          "name": "KTVD",
+          "region": "US local (Denver)",
+          "status": "Confirmed listing",
+          "source": "https://www.sportsmediawatch.com/tv-schedules/nba-tv-schedule/boston-celtics/"
+        },
+        {
+          "name": "Altitude+",
+          "region": "US regional streaming (Denver)",
+          "status": "Confirmed listing",
+          "source": "https://www.sportsmediawatch.com/tv-schedules/nba-tv-schedule/boston-celtics/"
+        }
+      ]
+    },
+    "2026-11-21|Sacramento Kings": {
+      "channels": [
+        {
+          "name": "NBA TV",
+          "region": "US national",
+          "status": "Confirmed listing",
+          "source": "https://www.sportsmediawatch.com/tv-schedules/nba-tv-schedule/boston-celtics/"
+        },
+        {
+          "name": "NBC Sports Boston",
+          "region": "US regional (Boston)",
+          "status": "Confirmed listing",
+          "source": "https://www.sportsmediawatch.com/tv-schedules/nba-tv-schedule/boston-celtics/"
+        },
+        {
+          "name": "Peacock",
+          "region": "US streaming",
+          "status": "Confirmed listing",
+          "source": "https://www.sportsmediawatch.com/tv-schedules/nba-tv-schedule/boston-celtics/"
+        },
+        {
+          "name": "NBC Sports California",
+          "region": "US regional (Sacramento)",
+          "status": "Confirmed listing",
+          "source": "https://www.sportsmediawatch.com/tv-schedules/nba-tv-schedule/boston-celtics/"
+        }
+      ]
+    },
+    "2026-11-22|Golden State Warriors": {
+      "channels": [
+        {
+          "name": "NBC Sports Boston",
+          "region": "US regional (Boston)",
+          "status": "Confirmed listing",
+          "source": "https://www.sportsmediawatch.com/tv-schedules/nba-tv-schedule/boston-celtics/"
+        },
+        {
+          "name": "Peacock",
+          "region": "US streaming",
+          "status": "Confirmed listing",
+          "source": "https://www.sportsmediawatch.com/tv-schedules/nba-tv-schedule/boston-celtics/"
+        },
+        {
+          "name": "NBC Sports Bay Area",
+          "region": "US regional (Golden State)",
+          "status": "Confirmed listing",
+          "source": "https://www.sportsmediawatch.com/tv-schedules/nba-tv-schedule/boston-celtics/"
+        },
+        {
+          "name": "NBA League Pass",
+          "region": "US out-of-market streaming",
+          "status": "Confirmed listing",
+          "source": "https://www.sportsmediawatch.com/tv-schedules/nba-tv-schedule/boston-celtics/"
+        }
+      ]
+    },
+    "2026-11-24|Washington Wizards": {
+      "channels": [
+        {
+          "name": "NBC",
+          "region": "US national",
+          "status": "Confirmed listing",
+          "source": "https://www.nba.com/news/every-nba-game-on-nbc-and-peacock-in-2026-27"
+        },
+        {
+          "name": "Peacock",
+          "region": "US streaming",
+          "status": "Confirmed listing",
+          "source": "https://www.nba.com/news/every-nba-game-on-nbc-and-peacock-in-2026-27"
+        },
+        {
+          "name": "NBC Sports Boston",
+          "region": "US regional (Boston)",
+          "status": "Confirmed listing",
+          "source": "https://www.sportsmediawatch.com/tv-schedules/nba-tv-schedule/boston-celtics/"
+        }
+      ]
+    },
+    "2026-11-27|Atlanta Hawks": {
+      "channels": [
+        {
+          "name": "NBC Sports Boston",
+          "region": "US regional (Boston)",
+          "status": "Confirmed listing",
+          "source": "https://www.sportsmediawatch.com/tv-schedules/nba-tv-schedule/boston-celtics/"
+        },
+        {
+          "name": "Peacock",
+          "region": "US streaming",
+          "status": "Confirmed listing",
+          "source": "https://www.sportsmediawatch.com/tv-schedules/nba-tv-schedule/boston-celtics/"
+        },
+        {
+          "name": "WANF",
+          "region": "US local (Atlanta)",
+          "status": "Confirmed listing",
+          "source": "https://www.sportsmediawatch.com/tv-schedules/nba-tv-schedule/boston-celtics/"
+        },
+        {
+          "name": "WPCH.2",
+          "region": "US local (Atlanta)",
+          "status": "Confirmed listing",
+          "source": "https://www.sportsmediawatch.com/tv-schedules/nba-tv-schedule/boston-celtics/"
+        },
+        {
+          "name": "NBA League Pass",
+          "region": "US out-of-market streaming",
+          "status": "Confirmed listing",
+          "source": "https://www.sportsmediawatch.com/tv-schedules/nba-tv-schedule/boston-celtics/"
+        }
+      ]
+    },
+    "2026-11-29|San Antonio Spurs": {
+      "channels": [
+        {
+          "name": "NBA TV",
+          "region": "US national",
+          "status": "Confirmed listing",
+          "source": "https://www.sportsmediawatch.com/tv-schedules/nba-tv-schedule/boston-celtics/"
+        },
+        {
+          "name": "NBC Sports Boston",
+          "region": "US regional (Boston)",
+          "status": "Confirmed listing",
+          "source": "https://www.sportsmediawatch.com/tv-schedules/nba-tv-schedule/boston-celtics/"
+        },
+        {
+          "name": "Peacock",
+          "region": "US streaming",
+          "status": "Confirmed listing",
+          "source": "https://www.sportsmediawatch.com/tv-schedules/nba-tv-schedule/boston-celtics/"
+        },
+        {
+          "name": "DAZN",
+          "region": "US regional (San Antonio), provider as listed",
+          "status": "Confirmed listing",
+          "source": "https://www.sportsmediawatch.com/tv-schedules/nba-tv-schedule/boston-celtics/"
+        }
+      ]
+    },
+    "2026-11-30|Dallas Mavericks": {
+      "channels": [
+        {
+          "name": "NBC Sports Boston",
+          "region": "US regional (Boston)",
+          "status": "Confirmed listing",
+          "source": "https://www.sportsmediawatch.com/tv-schedules/nba-tv-schedule/boston-celtics/"
+        },
+        {
+          "name": "KFAA-TV",
+          "region": "US local (Dallas)",
+          "status": "Confirmed listing",
+          "source": "https://nbacalendar.com/teams/boston-celtics/"
+        },
+        {
+          "name": "MavsTV",
+          "region": "US regional (Dallas)",
+          "status": "Confirmed listing",
+          "source": "https://nbacalendar.com/teams/boston-celtics/"
+        }
+      ]
+    },
+    "2026-12-16|Washington Wizards": {
+      "channels": [
+        {
+          "name": "ESPN",
+          "region": "US national",
+          "status": "Confirmed listing",
+          "source": "https://www.nba.com/stats/team/1610612738/schedule"
+        }
+      ]
+    },
+    "2026-12-25|Miami Heat": {
+      "channels": [
+        {
+          "name": "ABC",
+          "region": "US national",
+          "status": "Confirmed listing",
+          "source": "https://www.nba.com/stats/team/1610612738/schedule"
+        },
+        {
+          "name": "ESPN",
+          "region": "US national",
+          "status": "Confirmed listing",
+          "source": "https://www.nba.com/stats/team/1610612738/schedule"
+        }
+      ]
+    },
+    "2026-12-28|Cleveland Cavaliers": {
+      "channels": [
+        {
+          "name": "NBC",
+          "region": "US national",
+          "status": "Confirmed listing",
+          "source": "https://www.nba.com/news/every-nba-game-on-nbc-and-peacock-in-2026-27"
+        },
+        {
+          "name": "Peacock",
+          "region": "US streaming",
+          "status": "Confirmed listing",
+          "source": "https://www.nba.com/news/every-nba-game-on-nbc-and-peacock-in-2026-27"
+        }
+      ]
+    }
+  }
+}
