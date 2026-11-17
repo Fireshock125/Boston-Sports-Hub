@@ -1284,12 +1284,11 @@ function tvPanel(game) {
     const name = safeText(channel.name || "");
     if (!name) return "";
     const region = String(channel.region || "");
-    const country = /canada/i.test(region) ? "Canada"
-      : /portugal/i.test(region) ? "Portugal"
-      : /italy/i.test(region) ? "Italy"
-      : /united kingdom|(^|[^a-z])uk([^a-z]|$)/i.test(region) ? "UK"
-      : /united states|(^|[^a-z])us([^a-z]|$)/i.test(region) ? "USA"
-      : "Country unspecified";
+    const countries = ["Canada", "Portugal", "Italy", "France", "Poland", "Hungary", "Israel", "Qatar", "Türkiye", "Bulgaria", "Brazil", "Germany", "Spain", "Australia", "India", "Japan", "South Africa", "Netherlands"];
+    const country = countries.find(c => region.toLowerCase().includes(c.toLowerCase()))
+      || (/united kingdom|(^|[^a-z])uk([^a-z]|$)/i.test(region) ? "UK" : "")
+      || (/united states|(^|[^a-z])us([^a-z]|$)/i.test(region) ? "USA" : "")
+      || (region && !/unspecified|international/i.test(region) ? region : "Country unspecified");
     return `<li><strong>${name}</strong> · ${safeText(country)}</li>`;
   }).join("");
   return `<div class="tv-channel-panel" hidden><p class="tv-game-time"><strong>UK game time:</strong> ${ukDate} · ${ukTime}</p>${entries ? `<ul>${entries}</ul>` : '<p>No channel listings available for this game.</p>'}</div>`;
