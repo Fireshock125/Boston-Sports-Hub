@@ -554,8 +554,8 @@ footer {
 }
 
 .result-actions {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, max-content);
   gap: 8px;
   margin-top: 15px;
 }
@@ -565,6 +565,11 @@ footer {
   font-size: 12px;
 }
 
+.tv-channel-panel { margin-top: 10px; padding: 12px; border: 1px solid var(--border); border-radius: 10px; font-size: 13px; }
+.tv-channel-panel ul { margin: 8px 0 0; padding-left: 20px; }
+.tv-channel-panel li { margin: 5px 0; }
+.tv-channel-panel p { margin: 0; }
+.tv-button { padding: 9px 13px; font-size: 12px; }
 .result-actions .watch-button {
   border-color: var(--accent);
 }
@@ -1013,14 +1018,46 @@ function updateResultScores() {
  $("spoiler-status").textContent = hideAllScores ? "Spoiler-free mode on" : "All scores visible";
 }
 $("toggle-all-scores").addEventListener("click",()=>{hideAllScores=!hideAllScores;  try{localStorage.setItem(SPOILER_STORAGE_KEY,String(hideAllScores))}catch{} updateResultScores();});
+let tvListings = {};
+const tvGamesById = new Map();
+async function loadTvListings() {
+  try {
+    const response = await fetch("patriots-tv-channels.json?updated=" + Date.now(), {cache:"no-store"});
+    if (response.ok) tvListings = (await response.json()).games || {};
+  } catch (error) { console.warn("TV listings unavailable", error); }
+}
+function tvChannelsFor(game) {
+  const parts = new Intl.DateTimeFormat("en-GB", {timeZone:"America/New_York",year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(new Date(game.date));
+  const part = type => parts.find(p => p.type === type)?.value || "";
+  const key = part("year") + "-" + part("month") + "-" + part("day") + "|" + (game.home === "New England Patriots" ? game.away : game.home);
+  const stored = (tvListings[String(game.id)] || tvListings[key])?.channels || [];
+  const broadcast = game.event?.competitions?.[0]?.broadcasts || [];
+  const combined = [...stored];
+  broadcast.forEach(b => (b.names || (b.name ? [b.name] : [])).forEach(name => {
+    if (!combined.some(c => c.name.toLowerCase() === String(name).toLowerCase())) combined.push({name,region:"USA"});
+  }));
+  return combined.filter(c => c.name).filter((c,i,a) => a.findIndex(x => x.name.toLowerCase() === c.name.toLowerCase() && x.region === c.region) === i);
+}
+function tvPanel(game) {
+  const channels = tvChannelsFor(game);
+  const rows = channels.map(c => '<li><strong>' + safeText(c.name) + '</strong> · ' + safeText(c.region || "Country unspecified") + '</li>').join("");
+  return '<div class="tv-channel-panel" hidden><p><strong>UK game time:</strong> ' + safeText(dateLabel(game.date)) + ' · ' + safeText(timeLabel(game.date)) + '</p>' + (rows ? '<ul>' + rows + '</ul>' : '<p>No channel listings available for this game.</p>') + '</div>';
+}
+function toggleTv(card, button) {
+  const panel = card.querySelector(".tv-channel-panel");
+  if (!panel) return;
+  panel.hidden = !panel.hidden;
+  button.setAttribute("aria-expanded", String(!panel.hidden));
+}
+
 const SUMMARY_URL = "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary";
 function gameCard(game, resultMode = false) {
  const header = `<div class="game-top"><span>NFL · New England Patriots</span><span>${safeText(dateLabel(game.date))}</span></div><div class="matchup">${safeText(game.away)} @ ${safeText(game.home)}</div>`;
- if(!resultMode) return `<article class="game">${header}<div class="game-bottom"><span>${safeText(americanTimeLabel(game.date,game.event))}</span><span>UK: ${safeText(timeLabel(game.date))}</span></div></article>`;
+ if(!resultMode) return `<article class="game" data-game-id="${safeText(game.id)}">${header}<div class="game-bottom"><span>${safeText(americanTimeLabel(game.date,game.event))}</span><span>UK: ${safeText(timeLabel(game.date))}</span></div><button type="button" class="tv-button" data-action="tv" aria-expanded="false">TV Channels</button>${tvPanel(game)}</article>`;
  const score = game.ownScore == null || game.opponentScore == null ? "Score unavailable" : `${game.ownScore} – ${game.opponentScore}`;
  const outcome = game.outcome || "";
  const scoreClass = outcome === "Win" ? "win" : outcome === "Loss" ? "loss" : outcome === "Tie" ? "tie" : "";
- return `<article class="game" data-game-id="${safeText(game.id)}">${header}<div class="game-bottom"><span class="score result-score ${scoreClass}" hidden>Final · ${safeText(score)} · ${safeText(outcome)}</span><span class="score-hidden">Final score hidden</span><span class="status">Completed</span></div><div class="result-actions"><button type="button" class="reveal-button" data-action="reveal">Reveal Score</button><button type="button" class="watch-button" data-action="highlights" aria-expanded="false" hidden>Watch Highlights</button></div><div class="highlight-player" hidden></div></article>`;
+ return `<article class="game" data-game-id="${safeText(game.id)}">${header}<div class="game-bottom"><span class="score result-score ${scoreClass}" hidden>Final · ${safeText(score)} · ${safeText(outcome)}</span><span class="score-hidden">Final score hidden</span><span class="status">Completed</span></div><div class="result-actions"><button type="button" class="reveal-button" data-action="reveal">Reveal Score</button><button type="button" class="watch-button" data-action="highlights" aria-expanded="false" hidden>Watch Highlights</button><button type="button" class="tv-button" data-action="tv" aria-expanded="false">TV Channels</button></div><div class="highlight-player" hidden></div>${tvPanel(game)}</article>`;
 }
 
 let extraHighlights = {};
@@ -1324,6 +1361,7 @@ $("results-list").addEventListener("click", event => {
   const card = button.closest(".game[data-game-id]");
   if (!card) return;
   const id = card.dataset.gameId;
+  if (button.dataset.action === "tv") { toggleTv(card, button); return; }
   if (button.dataset.action === "reveal") {
     if (individuallyRevealed.has(id)) individuallyRevealed.delete(id);
     else individuallyRevealed.add(id);
@@ -1369,6 +1407,7 @@ async function fetchSchedule(request) {
 }
 
 async function loadSchedule() {
+  await loadTvListings();
   const button = $("refresh-fixtures");
   button.disabled = true;
   $("fixture-status").textContent =
@@ -1414,6 +1453,7 @@ async function loadSchedule() {
     const games = [...gamesById.values()]
       .sort((a, b) => new Date(a.date) - new Date(b.date));
 
+    tvGamesById.clear(); games.forEach(game => tvGamesById.set(String(game.id), game));
     const now = Date.now();
 
     const upcoming = games.filter(game =>
@@ -1460,6 +1500,11 @@ async function loadSchedule() {
     button.disabled = false;
   }
 }
+
+$("fixtures-list").addEventListener("click", event => {
+  const button = event.target.closest('button[data-action="tv"]');
+  if (button) toggleTv(button.closest(".game"), button);
+});
 
 /* NFL STANDINGS */
 
