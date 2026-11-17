@@ -38,10 +38,11 @@ def refresh_sky_schedule(games, events_by_key):
         if (away + " @ " + home).casefold() not in page:
             continue
         record = games.setdefault(key, {"channels": []})
-        evidence = record.setdefault("broadcastEvidence", [])
-        if not any(item.get("source") == SKY_SCHEDULE for item in evidence):
-            evidence.append({"broadcaster": "Sky Sports", "country": "UK",
-                             "source": SKY_SCHEDULE, "exactChannel": False})
+        channels = record.setdefault("channels", [])
+        if not any(c.get("name", "").casefold().startswith("sky sports") for c in channels):
+            channels.append({"name": "Sky Sports", "region": "UK",
+                             "status": "Broadcaster listed; specific channel unknown",
+                             "source": SKY_SCHEDULE})
             count += 1
     return count
 
