@@ -519,6 +519,12 @@
           "region": "US national",
           "status": "Confirmed listing",
           "source": "https://www.nba.com/stats/team/1610612738/schedule"
+        },
+        {
+          "name": "Sky Sports",
+          "region": "UK",
+          "status": "Broadcaster listed; specific channel unknown",
+          "source": "https://www.skysports.com/nba/news/13599587/nba-on-sky-sports-dates-schedule-uk-start-times-and-how-to-watch-or-stream-live-regular-season-and-playoff-action"
         }
       ]
     },
@@ -535,6 +541,12 @@
           "region": "US national",
           "status": "Confirmed listing",
           "source": "https://www.nba.com/stats/team/1610612738/schedule"
+        },
+        {
+          "name": "Sky Sports",
+          "region": "UK",
+          "status": "Broadcaster listed; specific channel unknown",
+          "source": "https://www.skysports.com/nba/news/13599587/nba-on-sky-sports-dates-schedule-uk-start-times-and-how-to-watch-or-stream-live-regular-season-and-playoff-action"
         }
       ]
     },
@@ -551,8 +563,55 @@
           "region": "US streaming",
           "status": "Confirmed listing",
           "source": "https://www.nba.com/news/every-nba-game-on-nbc-and-peacock-in-2026-27"
+        },
+        {
+          "name": "Sky Sports",
+          "region": "UK",
+          "status": "Broadcaster listed; specific channel unknown",
+          "source": "https://www.skysports.com/nba/news/13599587/nba-on-sky-sports-dates-schedule-uk-start-times-and-how-to-watch-or-stream-live-regular-season-and-playoff-action"
+        }
+      ]
+    },
+    "2026-12-14|Washington Wizards": {
+      "channels": [
+        {
+          "name": "Sky Sports",
+          "region": "UK",
+          "status": "Broadcaster listed; specific channel unknown",
+          "source": "https://www.skysports.com/nba/news/13599587/nba-on-sky-sports-dates-schedule-uk-start-times-and-how-to-watch-or-stream-live-regular-season-and-playoff-action"
+        }
+      ]
+    },
+    "2027-01-13|New York Knicks": {
+      "channels": [
+        {
+          "name": "Sky Sports",
+          "region": "UK",
+          "status": "Broadcaster listed; specific channel unknown",
+          "source": "https://www.skysports.com/nba/news/13599587/nba-on-sky-sports-dates-schedule-uk-start-times-and-how-to-watch-or-stream-live-regular-season-and-playoff-action"
+        }
+      ]
+    },
+    "2027-01-18|Washington Wizards": {
+      "channels": [
+        {
+          "name": "Sky Sports",
+          "region": "UK",
+          "status": "Broadcaster listed; specific channel unknown",
+          "source": "https://www.skysports.com/nba/news/13599587/nba-on-sky-sports-dates-schedule-uk-start-times-and-how-to-watch-or-stream-live-regular-season-and-playoff-action"
+        }
+      ]
+    },
+    "2027-01-25|Toronto Raptors": {
+      "channels": [
+        {
+          "name": "Sky Sports",
+          "region": "UK",
+          "status": "Broadcaster listed; specific channel unknown",
+          "source": "https://www.skysports.com/nba/news/13599587/nba-on-sky-sports-dates-schedule-uk-start-times-and-how-to-watch-or-stream-live-regular-season-and-playoff-action"
         }
       ]
     }
-  }
+  },
+  "lastAutoRefresh": "2026-11-17T19:30:46.393516+00:00"
 }
