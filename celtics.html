@@ -1319,7 +1319,7 @@ function gameCard(game, resultMode = false) {
              target="_blank"
              rel="noopener noreferrer">${content}</a>`
         : content
-    }${actions}</article>`;
+    }<div class="tv-channel-actions"><button type="button" class="tv-channel-button" data-action="tv" aria-expanded="false">TV Channels</button></div>${tvPanel(game)}</article>`;
   }
 
   const scoreText =
