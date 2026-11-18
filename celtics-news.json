@@ -1,12 +1,52 @@
 {
-  "updated": "2026-11-18T01:25:27.748901+00:00",
+  "updated": "2026-11-18T04:02:27.485050+00:00",
   "articles": [
     {
-      "title": "76ers' Brown to miss Wednesday's game vs. Magic with hamstring strain",
-      "description": "Philadelphia 76ers forward Jaylen Brown will miss Wednesday's game against the Orlando Magic with a left hamstring strain, the Sixers announced Tuesday afternoon.",
-      "url": "https://www.espn.com/nba/story/_/id/50514320/76ers-brown-hamstring-miss-wednesday-game-vs-magic",
-      "source": "ESPN",
-      "published": "2026-11-18T00:56:57+00:00",
+      "title": "The media blitz of star Boston Celtics forward Jayson Tatum is getting ridiculous",
+      "description": "The media blitz of star Boston Celtics forward Jayson Tatum is getting ridiculous Yahoo Sports",
+      "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxQX1FtNGhSMHFIMFo5bWdhNW9oczdRamRJU3N1MzRQT1kydzl3SXVfd1RPTlJIdVg1ZGlpTUY5a0JwZTlGS1hETF9yNVY2SV8tUV81aEpRNVVjQkFvanlXX0pfNi1qTUs0cDZUd29FUkhzMFhraEppRGNJQnpUQ2ZuWFk4OVg5Tmc?oc=5",
+      "source": "Yahoo Sports",
+      "published": "2026-11-18T03:02:00+00:00",
+      "image": ""
+    },
+    {
+      "title": "Are the Boston Celtics big men capping their contention ceiling?",
+      "description": "Are the Boston Celtics big men capping their contention ceiling? Yahoo Sports",
+      "url": "https://news.google.com/rss/articles/CBMihgFBVV95cUxNNHMtN0xQUk8xQm9JVkJrSkMxbkpJMTdpZkJ6bU5UMDlHVVlqc0JKcHFCelFPVjM5clRmZ3lrRW9vRjZzRTlIZFhwNnJCWEp3MkowazNtT3M3UDdlTlMtT2RvLVVTMTNDYzliZk1pMUlGRHZScGFac3Z0Y0R5bzZnSWNRNDhVQQ?oc=5",
+      "source": "Yahoo Sports",
+      "published": "2026-11-18T02:38:00+00:00",
+      "image": ""
+    },
+    {
+      "title": "Is it time for the Boston Celtics to push the Mitchell Robinson panic button?",
+      "description": "Is it time for the Boston Celtics to push the Mitchell Robinson panic button? Yahoo Sports",
+      "url": "https://news.google.com/rss/articles/CBMiigFBVV95cUxONks0a19ZRFNZZF83SjNkZTVSZTN6Q01OU3FhcWxhRXFzNmhPd3VqOFhuc3N6U1VkbXI0X05iTUFNOVZ2Ty0yV2ZQZnhLeUx4cWJkNnVsTmd0dVhzUUF4NVJSR3dqTG5ockk1d0U4TE1mWjF4TGtBcXI3ckVZTnVYM3d3LVNlUlplbkE?oc=5",
+      "source": "Yahoo Sports",
+      "published": "2026-11-18T01:56:25+00:00",
+      "image": ""
+    },
+    {
+      "title": "Boston Celtics Have Done Something Impressive in Recent Drafting",
+      "description": "Boston Celtics Have Done Something Impressive in Recent Drafting roundtable.io",
+      "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxPTXZIZTFkWFVVaUNIeks0bDFxd2xDUFNxVHVsWDBlMnFkMUhaQ0ZTRnFZMGlCZjFBWUlQSTVfOHc0ZTg3QzM4Qk5ES0VZcVJyMzFPVnF6TVg1bzk5dnk0aDdEM3RRY00xYmlqLUREc0tITHN1aWlpZFhpQTVPRW5VVERzeEJHZjBPUGgyVlNnU1ZSQnZNQ1RNVGZ1NEFiSVZFUWpIR1Z2QS1VQzZJQndz?oc=5",
+      "source": "roundtable.io",
+      "published": "2026-11-18T00:54:08+00:00",
+      "image": ""
+    },
+    {
+      "title": "Celtics get good injury news ahead of game vs. Nuggets",
+      "description": "Celtics get good injury news ahead of game vs. Nuggets CelticsBlog",
+      "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxOX2RMQ2EybHBIajl2QVBUd3FQcTJkZU1oYVJFSUI4RjFPcnk3Unl0dGQ4aVV2YjNweEt1ZXlQbExrRVgtQVRZZkdhU3BpUjU3RGpnQ2RPNnJOdTY1VVJXY0wyNTliWVpTUzd4U1hRdl9SaDY4QlQzS1Z5MTVGNFU5QmZMTG9zdHpBTG16MHB5bEdBS3ltQnluODdOcUtIQThYU3V3V3NJYXI?oc=5",
+      "source": "CelticsBlog",
+      "published": "2026-11-17T23:37:51+00:00",
+      "image": ""
+    },
+    {
+      "title": "Mavericks Crushed By Celtics In Historic Blowout At TD Garden",
+      "description": "Mavericks Crushed By Celtics In Historic Blowout At TD Garden Yahoo Sports",
+      "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxPQllLV2w0eEpqc3FORldaWlZQZmk3bVpEdXZtTHluMHlpV0RNaTN3akRyR1d0YjhpTHlhV3FTMXJzNVd0UkVIM1F6YXN2Unl1N1hnaENMb3M2XzNvUTNXMktsbXZmbFlLc1ZILWhuZzB1S2daMlVoR3c2Y28tZGFZWFJhOTZuSjhMblVlX2UzSWJWeTVlQmc?oc=5",
+      "source": "Yahoo Sports",
+      "published": "2026-11-17T23:05:08+00:00",
       "image": ""
     },
     {
@@ -39,46 +79,6 @@
       "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxPQ3Z6YUc3M21mYUJVLXFJN1dOTjRwU09UdWZhY1pvQXlza3VDWDJLYU5YNG9aV2lXNmZ2b2ZiM3Z4WDNIT1JBRkU4OVZKUzBHVmMyMVFNOE5EdTQ4LWpXcm9SbUNkR3JJNmNKel84TFIxdkNjekZmQ3p3TG9zUVNZU1ZXVDc?oc=5",
       "source": "Yahoo Sports",
       "published": "2026-11-17T22:00:22+00:00",
-      "image": ""
-    },
-    {
-      "title": "Today in Boston Celtics history: Joe Mullaney born; Allan Ray, Michael Smith debut",
-      "description": "Today in Boston Celtics history: Joe Mullaney born; Allan Ray, Michael Smith debut Yahoo Sports",
-      "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxPSXNYSUlwWVQydnRNTlptMXJicldnNVhCbldsUjU0WGN5MGY5TkNsYmRMVkdkY3pyblYtMlJqTjRucGo3aHlOSFpDdUYzVmJtX1p0MkV4eVNWNlhKOGw0a1ZwOWYwSVF2ZXJlS1hic3IycTAtd1dLRThVTFdhWmViWjBsbU1XVnMw?oc=5",
-      "source": "Yahoo Sports",
-      "published": "2026-11-17T22:00:17+00:00",
-      "image": ""
-    },
-    {
-      "title": "NBA Veteran Sheds Light on Celtics Biggest Area of Concern",
-      "description": "NBA Veteran Sheds Light on Celtics Biggest Area of Concern Yahoo Sports",
-      "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxPNmxVSGFtN2lzVkVLZDN4dnNidzNYcDdYSGRjQlpBd0hYVlhkemg0dFBuSFNlb09XSG5FV1J3M0Jaa2FmbDRKNmUxbWdLLVhxeTFiT2hlZEpFUnhjLXBFbjQ5bllSM0FxejRHTndIVTR4WnNSQzJUM1p4OHdoS3dhZE81NGsteFE?oc=5",
-      "source": "Yahoo Sports",
-      "published": "2026-11-17T21:23:59+00:00",
-      "image": ""
-    },
-    {
-      "title": "Boston Celtics vs Denver Nuggets Prediction, 11/18/2026 Preview and Pick",
-      "description": "Boston Celtics vs Denver Nuggets Prediction, 11/18/2026 Preview and Pick Doc's Sports",
-      "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxNUkNfVHp2SjBSOUFVMDFtYW5DYjZVSG9Bb0NURXZ5UkV2ZXZ4OU5MSXJjQlBfME1nVldkMHBBWUhmWHI3NFQyQXMzS01ZblhqMzFFT1hQVWg2d1FwLTcwVTJwTy1WQ1Vvak9PbHc4LXZOUzZVR2c0VlNVYkNtVFF6VTctTVJBVEt1ZUd5YXFISjJjTHdmRzRFb3lGdHFrYzJ1RHpUSW9CakdUdkJ4QmI5dXhteWlCa3FfWmpmUjBrRQ?oc=5",
-      "source": "Doc's Sports",
-      "published": "2026-11-17T21:18:05+00:00",
-      "image": ""
-    },
-    {
-      "title": "Sean Sweeney Breaks Down Orlando Magic's Statement Victory Over Boston Celtics",
-      "description": "Sean Sweeney Breaks Down Orlando Magic's Statement Victory Over Boston Celtics Yahoo Sports",
-      "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxPR21MYmVFSzVSNC1fUkFCMUZlbEFzWUVPc21YY2JDUnV6V2k1TFVVbkJ1UmFEYkZWa3hmUmRxaWgtX0ZtU1NrTlcxUWp5eUNmaVR5WWJlQVlzTVctMWFweXBubVlBbzd2LWZ1R0JQVGtNV3JhNTBNOFJJcnpjcHp5TEd3UE93SWJ6?oc=5",
-      "source": "Yahoo Sports",
-      "published": "2026-11-17T20:00:06+00:00",
-      "image": ""
-    },
-    {
-      "title": "Celtics news: Jayson Tatum reveals illuminating 6-hour lunch with 'Uncle Mike' Jordan",
-      "description": "Celtics news: Jayson Tatum reveals illuminating 6-hour lunch with 'Uncle Mike' Jordan ClutchPoints",
-      "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxNZ3VtQ05uUU5rVHRnZWxScEpSN0JVdERSYWVVb2FVVGJDOHJfUlFSTE9Ua195TzJpUmtIc1hJV25vSDlSb1hoZld1QzZ4ZTdLMDU3VTJXSFlSUHdFMjdHOXlZc3NVcmdoc21CR0hlU0kxbWpjX1NHckZ4Z2dDM3BIcGJ6Y0xCQ044NVFyZXBObERfQzNmdlViX2JwWFR6c3dGM1E?oc=5",
-      "source": "ClutchPoints",
-      "published": "2026-11-17T19:36:34+00:00",
       "image": ""
     }
   ]
