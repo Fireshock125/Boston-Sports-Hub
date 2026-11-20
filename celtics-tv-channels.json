@@ -611,7 +611,17 @@
           "source": "https://www.skysports.com/nba/news/13599587/nba-on-sky-sports-dates-schedule-uk-start-times-and-how-to-watch-or-stream-live-regular-season-and-playoff-action"
         }
       ]
+    },
+    "2027-02-02|Los Angeles Lakers": {
+      "channels": [
+        {
+          "name": "Sky Sports",
+          "region": "UK",
+          "status": "Broadcaster listed; specific channel unknown",
+          "source": "https://www.skysports.com/nba/news/13599587/nba-on-sky-sports-dates-schedule-uk-start-times-and-how-to-watch-or-stream-live-regular-season-and-playoff-action"
+        }
+      ]
     }
   },
-  "lastAutoRefresh": "2026-11-19T19:28:45.099268+00:00"
+  "lastAutoRefresh": "2026-11-20T07:45:41.729026+00:00"
 }
