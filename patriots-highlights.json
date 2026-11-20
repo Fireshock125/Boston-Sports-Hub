@@ -220,11 +220,11 @@
           "providerUrl": "https://www.youtube.com/watch?v=cqL6vHzne4k"
         },
         {
-          "youtubeId": "aDNlC6LPy00",
+          "youtubeId": "zcjSXOo6IzU",
           "source": "YouTube highlights",
-          "category": "standard",
-          "durationSeconds": 1173,
-          "providerUrl": "https://www.youtube.com/watch?v=aDNlC6LPy00"
+          "category": "full",
+          "durationSeconds": 946,
+          "providerUrl": "https://www.youtube.com/watch?v=zcjSXOo6IzU"
         }
       ]
     },
@@ -273,11 +273,11 @@
           "providerUrl": "https://www.youtube.com/watch?v=y6_dUamJX4U"
         },
         {
-          "youtubeId": "IKwDEhmHHTM",
+          "youtubeId": "R0bF5z-qYe8",
           "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 991,
-          "providerUrl": "https://www.youtube.com/watch?v=IKwDEhmHHTM"
+          "category": "standard",
+          "durationSeconds": 825,
+          "providerUrl": "https://www.youtube.com/watch?v=R0bF5z-qYe8"
         }
       ]
     }
