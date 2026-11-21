@@ -1,79 +1,5 @@
 {
   "games": {
-    "401909288": {
-      "videos": [
-        {
-          "youtubeId": "-XVI0clyuPY",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 2139,
-          "providerUrl": "https://www.youtube.com/watch?v=-XVI0clyuPY"
-        },
-        {
-          "youtubeId": "OLFN0_d5hpk",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 1988,
-          "providerUrl": "https://www.youtube.com/watch?v=OLFN0_d5hpk"
-        },
-        {
-          "youtubeId": "G6KZlnt0pzY",
-          "source": "YouTube highlights",
-          "category": "standard",
-          "durationSeconds": 1349,
-          "providerUrl": "https://www.youtube.com/watch?v=G6KZlnt0pzY"
-        },
-        {
-          "youtubeId": "BtknV7FBr8Q",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 1240,
-          "providerUrl": "https://www.youtube.com/watch?v=BtknV7FBr8Q"
-        },
-        {
-          "youtubeId": "djGC-d6rVW0",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 1182,
-          "providerUrl": "https://www.youtube.com/watch?v=djGC-d6rVW0"
-        },
-        {
-          "youtubeId": "5K4vt-kL2Zo",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 591,
-          "providerUrl": "https://www.youtube.com/watch?v=5K4vt-kL2Zo"
-        },
-        {
-          "youtubeId": "fGFgYAOKUFw",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 588,
-          "providerUrl": "https://www.youtube.com/watch?v=fGFgYAOKUFw"
-        },
-        {
-          "youtubeId": "edcQnsbi94s",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 542,
-          "providerUrl": "https://www.youtube.com/watch?v=edcQnsbi94s"
-        },
-        {
-          "youtubeId": "RIawyf3oXWM",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 512,
-          "providerUrl": "https://www.youtube.com/watch?v=RIawyf3oXWM"
-        },
-        {
-          "youtubeId": "4UozaJRKGw8",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 509,
-          "providerUrl": "https://www.youtube.com/watch?v=4UozaJRKGw8"
-        }
-      ]
-    },
     "401909949": {
       "videos": [
         {
@@ -96,6 +22,20 @@
           "category": "full",
           "durationSeconds": 1022,
           "providerUrl": "https://www.youtube.com/watch?v=jgLh2Nn6Cx4"
+        },
+        {
+          "youtubeId": "cNOFDBy8CpY",
+          "source": "YouTube highlights",
+          "category": "full",
+          "durationSeconds": 695,
+          "providerUrl": "https://www.youtube.com/watch?v=cNOFDBy8CpY"
+        },
+        {
+          "youtubeId": "K1CQYbRDLgI",
+          "source": "YouTube highlights",
+          "category": "full",
+          "durationSeconds": 615,
+          "providerUrl": "https://www.youtube.com/watch?v=K1CQYbRDLgI"
         },
         {
           "youtubeId": "LJSD4gd7Ds4",
@@ -131,20 +71,6 @@
           "category": "standard",
           "durationSeconds": 1113,
           "providerUrl": "https://www.youtube.com/watch?v=aIT8FcBqH5o"
-        },
-        {
-          "youtubeId": "PtfCeUZxHZM",
-          "source": "YouTube highlights",
-          "category": "standard",
-          "durationSeconds": 806,
-          "providerUrl": "https://www.youtube.com/watch?v=PtfCeUZxHZM"
-        },
-        {
-          "youtubeId": "ugINGhTlhGU",
-          "source": "YouTube highlights",
-          "category": "standard",
-          "durationSeconds": 584,
-          "providerUrl": "https://www.youtube.com/watch?v=ugINGhTlhGU"
         }
       ],
       "analysis": [
@@ -181,13 +107,6 @@
           "providerUrl": "https://www.youtube.com/watch?v=Ka1TjRn4qRw"
         },
         {
-          "youtubeId": "IFZxyd_P2bc",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 2191,
-          "providerUrl": "https://www.youtube.com/watch?v=IFZxyd_P2bc"
-        },
-        {
           "youtubeId": "ZxehyokHAsw",
           "source": "YouTube highlights",
           "category": "full",
@@ -202,11 +121,11 @@
           "providerUrl": "https://www.youtube.com/watch?v=8T_mNg82yM8"
         },
         {
-          "youtubeId": "5k013Z7nyxA",
+          "youtubeId": "IFZxyd_P2bc",
           "source": "YouTube highlights",
           "category": "full",
-          "durationSeconds": 872,
-          "providerUrl": "https://www.youtube.com/watch?v=5k013Z7nyxA"
+          "durationSeconds": 2191,
+          "providerUrl": "https://www.youtube.com/watch?v=IFZxyd_P2bc"
         },
         {
           "youtubeId": "myKqcewe5i0",
@@ -228,6 +147,13 @@
           "category": "full",
           "durationSeconds": 744,
           "providerUrl": "https://www.youtube.com/watch?v=_9nD_hkg8Vk"
+        },
+        {
+          "youtubeId": "SBLuqvorPJE",
+          "source": "YouTube highlights",
+          "category": "full",
+          "durationSeconds": 646,
+          "providerUrl": "https://www.youtube.com/watch?v=SBLuqvorPJE"
         }
       ]
     },
@@ -239,6 +165,13 @@
           "category": "full",
           "durationSeconds": 2791,
           "providerUrl": "https://www.youtube.com/watch?v=O6pwP-0c7Z0"
+        },
+        {
+          "youtubeId": "DxO2u-pch3U",
+          "source": "YouTube highlights",
+          "category": "full",
+          "durationSeconds": 2679,
+          "providerUrl": "https://www.youtube.com/watch?v=DxO2u-pch3U"
         },
         {
           "youtubeId": "grzta2h_AAk",
@@ -260,6 +193,13 @@
           "category": "full",
           "durationSeconds": 665,
           "providerUrl": "https://www.youtube.com/watch?v=3ktzjVpU-d4"
+        },
+        {
+          "youtubeId": "mOK1ECDluV4",
+          "source": "YouTube highlights",
+          "category": "full",
+          "durationSeconds": 623,
+          "providerUrl": "https://www.youtube.com/watch?v=mOK1ECDluV4"
         },
         {
           "youtubeId": "z_ecujTEFXk",
@@ -288,31 +228,17 @@
           "category": "full",
           "durationSeconds": 282,
           "providerUrl": "https://www.youtube.com/watch?v=UKZyJimhqE4"
-        },
-        {
-          "youtubeId": "n7GSgRpdQ6I",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 277,
-          "providerUrl": "https://www.youtube.com/watch?v=n7GSgRpdQ6I"
-        },
-        {
-          "youtubeId": "y0AQg7bH_z4",
-          "source": "YouTube highlights",
-          "category": "standard",
-          "durationSeconds": 147,
-          "providerUrl": "https://www.youtube.com/watch?v=y0AQg7bH_z4"
         }
       ]
     },
     "401909989": {
       "videos": [
         {
-          "youtubeId": "lnPxCrpYXjw",
+          "youtubeId": "EjXwWaLbhns",
           "source": "YouTube highlights",
           "category": "full",
-          "durationSeconds": 2277,
-          "providerUrl": "https://www.youtube.com/watch?v=lnPxCrpYXjw"
+          "durationSeconds": 2378,
+          "providerUrl": "https://www.youtube.com/watch?v=EjXwWaLbhns"
         },
         {
           "youtubeId": "7lviEKbTW7c",
@@ -389,18 +315,18 @@
           "providerUrl": "https://www.youtube.com/watch?v=RElUzd4y0Fk"
         },
         {
+          "youtubeId": "avxLxzoJ6wM",
+          "source": "YouTube highlights",
+          "category": "full",
+          "durationSeconds": 2266,
+          "providerUrl": "https://www.youtube.com/watch?v=avxLxzoJ6wM"
+        },
+        {
           "youtubeId": "gHZMmUBqoBw",
           "source": "YouTube highlights",
           "category": "full",
           "durationSeconds": 1128,
           "providerUrl": "https://www.youtube.com/watch?v=gHZMmUBqoBw"
-        },
-        {
-          "youtubeId": "afzQVfseU1Y",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 616,
-          "providerUrl": "https://www.youtube.com/watch?v=afzQVfseU1Y"
         },
         {
           "youtubeId": "FVhaYjEULG4",
@@ -463,6 +389,13 @@
           "providerUrl": "https://www.youtube.com/watch?v=G54pKMxedtQ"
         },
         {
+          "youtubeId": "Khuy7NA5-Is",
+          "source": "YouTube highlights",
+          "category": "full",
+          "durationSeconds": 2851,
+          "providerUrl": "https://www.youtube.com/watch?v=Khuy7NA5-Is"
+        },
+        {
           "youtubeId": "dborbqoQ2Ms",
           "source": "YouTube highlights",
           "category": "full",
@@ -505,25 +438,11 @@
           "providerUrl": "https://www.youtube.com/watch?v=1UreSYrQmXc"
         },
         {
-          "youtubeId": "gZ-quxy5mks",
+          "youtubeId": "efF2bfbzOz8",
           "source": "YouTube highlights",
           "category": "standard",
-          "durationSeconds": 1257,
-          "providerUrl": "https://www.youtube.com/watch?v=gZ-quxy5mks"
-        },
-        {
-          "youtubeId": "w5i2kjbMBY0",
-          "source": "YouTube highlights",
-          "category": "standard",
-          "durationSeconds": 1185,
-          "providerUrl": "https://www.youtube.com/watch?v=w5i2kjbMBY0"
-        },
-        {
-          "youtubeId": "-FU2dZ3bs3c",
-          "source": "YouTube highlights",
-          "category": "standard",
-          "durationSeconds": 558,
-          "providerUrl": "https://www.youtube.com/watch?v=-FU2dZ3bs3c"
+          "durationSeconds": 230,
+          "providerUrl": "https://www.youtube.com/watch?v=efF2bfbzOz8"
         }
       ]
     },
