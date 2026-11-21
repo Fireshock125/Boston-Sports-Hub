@@ -252,18 +252,18 @@
           "providerUrl": "https://www.youtube.com/watch?v=R0bF5z-qYe8"
         },
         {
+          "youtubeId": "KGC7D04reKk",
+          "source": "YouTube highlights",
+          "category": "standard",
+          "durationSeconds": 966,
+          "providerUrl": "https://www.youtube.com/watch?v=KGC7D04reKk"
+        },
+        {
           "youtubeId": "y6_dUamJX4U",
           "source": "YouTube highlights",
           "category": "full",
           "durationSeconds": 979,
           "providerUrl": "https://www.youtube.com/watch?v=y6_dUamJX4U"
-        },
-        {
-          "youtubeId": "IKwDEhmHHTM",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 991,
-          "providerUrl": "https://www.youtube.com/watch?v=IKwDEhmHHTM"
         },
         {
           "youtubeId": "R0bF5z-qYe8",
@@ -273,11 +273,11 @@
           "providerUrl": "https://www.youtube.com/watch?v=R0bF5z-qYe8"
         },
         {
-          "youtubeId": "VAwgFI4IbcE",
+          "youtubeId": "e-bL0_WOvPE",
           "source": "YouTube highlights",
           "category": "standard",
-          "durationSeconds": 1707,
-          "providerUrl": "https://www.youtube.com/watch?v=VAwgFI4IbcE"
+          "durationSeconds": 534,
+          "providerUrl": "https://www.youtube.com/watch?v=e-bL0_WOvPE"
         }
       ]
     }
