@@ -224,18 +224,18 @@
           "providerUrl": "https://www.youtube.com/watch?v=R0bF5z-qYe8"
         },
         {
-          "youtubeId": "y6_dUamJX4U",
-          "source": "YouTube highlights",
-          "category": "full",
-          "durationSeconds": 979,
-          "providerUrl": "https://www.youtube.com/watch?v=y6_dUamJX4U"
-        },
-        {
           "youtubeId": "IKwDEhmHHTM",
           "source": "YouTube highlights",
           "category": "full",
           "durationSeconds": 991,
           "providerUrl": "https://www.youtube.com/watch?v=IKwDEhmHHTM"
+        },
+        {
+          "youtubeId": "y6_dUamJX4U",
+          "source": "YouTube highlights",
+          "category": "full",
+          "durationSeconds": 979,
+          "providerUrl": "https://www.youtube.com/watch?v=y6_dUamJX4U"
         },
         {
           "youtubeId": "vDoseTmsIs0",
