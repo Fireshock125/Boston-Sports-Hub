@@ -621,7 +621,17 @@
           "source": "https://www.skysports.com/nba/news/13599587/nba-on-sky-sports-dates-schedule-uk-start-times-and-how-to-watch-or-stream-live-regular-season-and-playoff-action"
         }
       ]
+    },
+    "2027-02-07|Philadelphia 76ers": {
+      "channels": [
+        {
+          "name": "Sky Sports",
+          "region": "UK",
+          "status": "Broadcaster listed; specific channel unknown",
+          "source": "https://www.skysports.com/nba/news/13599587/nba-on-sky-sports-dates-schedule-uk-start-times-and-how-to-watch-or-stream-live-regular-season-and-playoff-action"
+        }
+      ]
     }
   },
-  "lastAutoRefresh": "2026-11-24T18:01:59.421822+00:00"
+  "lastAutoRefresh": "2026-11-25T02:40:43.059005+00:00"
 }
