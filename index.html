@@ -587,6 +587,12 @@ footer {
 .header-inner .theme-button { order: 1; flex-shrink: 0; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 #teams .teams { margin-top: 0; }
+/* Full-width brand header */
+.header-inner { flex-direction: column; align-items: stretch; padding: 12px 18px; }
+.header-brand { order: 0; margin: 0; display: flex; justify-content: center; background: white; }
+.brand-logo { width: 100%; max-width: 560px; height: auto; border-radius: 0; }
+.header-inner .theme-button { order: 1; align-self: flex-end; }
+html[data-theme="light"] .header-brand { background: transparent; }
 </style>
 
 <script>
