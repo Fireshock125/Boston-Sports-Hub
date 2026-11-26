@@ -582,6 +582,11 @@ footer {
   .live-dot { animation: none; }
   .team { transition: none; }
 }
+.header-brand { order: 2; margin-left: auto; min-width: 0; }
+.brand-logo { display: block; width: clamp(145px, 42vw, 260px); height: auto; border-radius: 4px; }
+.header-inner .theme-button { order: 1; flex-shrink: 0; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+#teams .teams { margin-top: 0; }
 </style>
 
 <script>
@@ -607,10 +612,7 @@ footer {
 
 <header class="site-header">
   <div class="header-inner">
-    <div>
-      <div class="site-brand">Boston Sports Hub</div>
-      <div class="site-subtitle">Four teams. One city.</div>
-    </div>
+    <div class="header-brand"><img class="brand-logo" src="./boston-sports-hub-logo.webp" alt="Boston Sports Hub" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><span class="site-brand" hidden>Boston Sports Hub</span></div>
     <button id="theme-toggle"
             class="theme-button"
             type="button"
@@ -623,14 +625,7 @@ footer {
 <main>
 
 <section id="teams">
-  <div class="section-heading">
-    <p class="section-kicker">Your teams</p>
-    <h1>Boston. All in one place.</h1>
-    <p class="summary">
-      Follow your four teams. Select a badge for fixtures,
-      results, standings and the latest news.
-    </p>
-  </div>
+  <h1 class="visually-hidden">Your teams</h1>
 
   <div class="teams">
 
